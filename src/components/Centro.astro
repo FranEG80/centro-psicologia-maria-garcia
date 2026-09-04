@@ -1,0 +1,301 @@
+---
+import { Image } from 'astro:assets';
+
+import { centro, galeria } from '../data/contenido.js';
+
+const [fachada, ...interiores] = galeria;
+
+/* El bloque de estancias: canto contra canto, con un filete de un píxel entre
+   placas. Anchos 5/3/4 y 3/5/4 sobre doce columnas y dos alturas de hilera,
+   así que ninguna placa mide lo mismo que su vecina y no hay rejilla de
+   tarjetas iguales.
+
+   El foco es por fotografía. Son interiores reales tomados desde la puerta y
+   un recorte centrado corta lámparas arriba y suelo abajo, así que cada una
+   lleva el suyo.
+
+   La cascada es diagonal, no en orden de DOM: el retardo sale de columna más
+   fila, así que el taco entero se lee como un solo material que aparece desde
+   la esquina de entrada. */
+const reparto = [
+  { trozo: 5, hilera: 'alta', col: 0, foco: '50% 45%' },
+  { trozo: 3, hilera: 'alta', col: 1, foco: '50% 40%' },
+  { trozo: 4, hilera: 'alta', col: 2, foco: '50% 45%' },
+  { trozo: 3, hilera: 'baja', col: 0, foco: '50% 42%' },
+  { trozo: 5, hilera: 'baja', col: 1, foco: '50% 45%' },
+  { trozo: 4, hilera: 'baja', col: 2, foco: '50% 55%' },
+];
+const diagonal = (p, i) => (p.col + (p.hilera === 'baja' ? 1 : 0)) * 50 + (i === 0 ? 0 : 0);
+
+/* Ancho pedido por placa. El bloque pasa de 12 columnas a 6 en 900px y a 2 en
+   560px, y el trozo se reparte distinto en cada tramo, así que cada anchura
+   lleva su propio `sizes`. Los porcentajes van sobre el ancho útil de la
+   envoltura, no sobre el viewport entero. */
+const ANCHOS_PLACA = [320, 480, 640, 765];
+const SIZES_PLACA = {
+  3: '(max-width: 560px) 46vw, (max-width: 900px) 31vw, (max-width: 84rem) 23vw, 336px',
+  4: '(max-width: 560px) 46vw, (max-width: 900px) 61vw, (max-width: 84rem) 31vw, 448px',
+  5: '(max-width: 560px) 46vw, (max-width: 900px) 46vw, (max-width: 84rem) 39vw, 560px',
+};
+---
+
+<section class="centro seccion" id="centro">
+  <hr class="canto" />
+
+  <div class="envoltura centro__cabecera" data-revelar-grupo>
+    <h2 class="h2 centro__titulo" data-revelar>El centro</h2>
+    <p class="cuerpo cuerpo--2 centro__entrada" data-revelar>
+      {centro.direccion}, {centro.cp} {centro.localidad}. Fachada de granito
+      negro, recepción, sala de espera, tres despachos y un rincón infantil.
+    </p>
+  </div>
+
+  <!-- La fachada, a sangre: es la calle, y es por donde se entra. -->
+  <figure class="centro__fachada" data-centro-fachada>
+    <div class="centro__fachada-marco">
+      <Image
+        src={fachada.src}
+        widths={[640, 960, 1280, 1360]}
+        sizes="100vw"
+        alt={fachada.alt}
+        loading="lazy"
+        decoding="async"
+        data-revelar="lamina"
+        data-centro-fachada-img
+      />
+    </div>
+    <figcaption class="envoltura">{fachada.pie}</figcaption>
+  </figure>
+
+  <div class="envoltura">
+    <!--
+      Sin data-revelar-grupo: el escalonado de main.js va por orden de DOM y
+      aquí el orden es diagonal, así que el retardo se escribe desde el
+      servidor.
+    -->
+    <div class="centro__bloque" data-centro-bloque>
+      {
+        interiores.map((f, i) => {
+          const p = reparto[i] ?? reparto[reparto.length - 1];
+          return (
+            <figure
+              class="centro__plato"
+              data-trozo={p.trozo}
+              data-hilera={p.hilera}
+            >
+              <Image
+                src={f.src}
+                widths={ANCHOS_PLACA}
+                sizes={SIZES_PLACA[p.trozo]}
+                alt={f.alt}
+                loading="lazy"
+                decoding="async"
+                data-revelar="lamina"
+                style={`--revelar-retardo:${diagonal(p, i)}ms;object-position:${p.foco}`}
+              />
+              <figcaption>{f.pie}</figcaption>
+            </figure>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .centro {
+    overflow-x: clip;
+  }
+
+  .centro__cabecera {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--paso-2);
+    row-gap: var(--paso-2);
+    align-items: end;
+    margin-block: var(--paso-4) var(--paso-3);
+  }
+
+  .centro__titulo {
+    grid-column: 1 / span 5;
+    max-width: 12ch;
+  }
+
+  .centro__entrada {
+    grid-column: 6 / span 7;
+    max-width: 52ch;
+  }
+
+  /* -- La fachada -------------------------------------------------------- */
+  .centro__fachada {
+    margin: 0 0 var(--paso-3);
+  }
+
+  /* El marco recorta, y la imagen se mueve dentro de él: así el zoom del
+     scroll no cambia el tamaño de la caja ni provoca reflow. */
+  .centro__fachada-marco {
+    overflow: hidden;
+    height: clamp(14rem, 40vh, 26rem);
+  }
+
+  .centro__fachada img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 54%;
+    transform-origin: center;
+    will-change: transform;
+  }
+
+  .centro__fachada figcaption {
+    margin-top: 0.6rem;
+    font-size: var(--t-micro-2);
+    color: var(--tinta-2);
+    text-align: right;
+    text-wrap: pretty;
+  }
+
+  /* -- El bloque de estancias -------------------------------------------- */
+  /* Canto contra canto: un píxel entre placas, y aire solo entre hileras, el
+     justo para que el pie no toque la fotografía de abajo. */
+  .centro__bloque {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: 1px;
+    row-gap: var(--paso-2);
+  }
+
+  .centro__plato {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .centro__plato[data-trozo='3'] {
+    grid-column: span 3;
+  }
+  .centro__plato[data-trozo='4'] {
+    grid-column: span 4;
+  }
+  .centro__plato[data-trozo='5'] {
+    grid-column: span 5;
+  }
+
+  /* Altura fija por hilera: es lo que permite que las placas queden a ras
+     aunque midan distinto de ancho. La segunda hilera es más baja, y eso da el
+     ritmo sin necesidad de huecos. */
+  .centro__plato img {
+    display: block;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .centro__plato[data-hilera='alta'] img {
+    height: clamp(15rem, 38vh, 27rem);
+  }
+
+  .centro__plato[data-hilera='baja'] img {
+    height: clamp(12rem, 30vh, 21rem);
+  }
+
+  .centro__plato figcaption {
+    margin-top: 0.6rem;
+    padding-right: var(--paso-1);
+    font-size: var(--t-micro-2);
+    line-height: 1.45;
+    color: var(--tinta-2);
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 900px) {
+    .centro__cabecera {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .centro__titulo,
+    .centro__entrada {
+      grid-column: 1;
+    }
+
+    /* Tres placas a ras en un móvil dejan cada fotografía en 90 px. Se pasa a
+       dos por hilera, manteniendo el canto contra canto y los anchos
+       desiguales, que es lo que da el ritmo. */
+    .centro__bloque {
+      grid-template-columns: repeat(6, 1fr);
+    }
+    .centro__plato[data-trozo='3'] {
+      grid-column: span 2;
+    }
+    .centro__plato[data-trozo='4'] {
+      grid-column: span 4;
+    }
+    .centro__plato[data-trozo='5'] {
+      grid-column: span 3;
+    }
+    .centro__plato[data-hilera='alta'] img {
+      height: clamp(12rem, 30vw, 18rem);
+    }
+    .centro__plato[data-hilera='baja'] img {
+      height: clamp(10rem, 26vw, 15rem);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .centro__bloque {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .centro__plato[data-trozo='3'],
+    .centro__plato[data-trozo='4'],
+    .centro__plato[data-trozo='5'] {
+      grid-column: span 1;
+    }
+    .centro__plato[data-hilera='alta'] img,
+    .centro__plato[data-hilera='baja'] img {
+      height: clamp(11rem, 42vw, 15rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .centro__fachada img {
+      will-change: auto;
+    }
+  }
+</style>
+
+<script>
+  /* El zoom de la fachada. Del 100 al 104% a lo largo de la sección, ligado al
+     scroll. Solo transform, dentro de un marco con overflow hidden: ni una
+     propiedad de layout se toca, así que no hay reflow en ningún fotograma.
+
+     Es el único movimiento de la sección aparte de la cascada de entrada, y
+     está aquí porque la fachada es la puerta: acercarse a ella mientras se lee
+     es lo que hace la sección. */
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const marco = document.querySelector('[data-centro-fachada]');
+  const img = document.querySelector('[data-centro-fachada-img]');
+
+  if (!reducido && marco && img) {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        img,
+        { scale: 1 },
+        {
+          scale: 1.04,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: marco,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        }
+      );
+    });
+    window.addEventListener('pagehide', () => ctx.revert(), { once: true });
+  }
+</script>

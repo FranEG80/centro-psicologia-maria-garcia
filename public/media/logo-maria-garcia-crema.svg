@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="72 24 382 305" role="img" aria-labelledby="title desc">
+  <title id="title">Firma de María García</title>
+  <desc id="desc">Monograma manuscrito de María García rodeado por un trazo ovalado.</desc>
+  <g fill="none" stroke="#E3DBC6" stroke-linecap="round" stroke-linejoin="round">
+    <path
+      d="M229 60C181 62 125 91 103 137C77 190 92 247 136 282C178 315 264 327 327 309C354 301 364 282 357 259C354 249 349 240 344 233"
+      stroke-width="2.2"
+    />
+    <path
+      d="M229 60C296 45 371 57 408 98C438 131 443 161 422 179C405 194 374 202 342 208C318 213 299 212 286 208"
+      stroke-width="2.2"
+    />
+    <path
+      d="M188 295C208 237 215 145 231 38C219 112 216 188 222 230C226 260 236 255 244 220L258 153C260 145 263 147 264 161L268 199C270 218 277 228 286 211L302 178C307 167 311 168 314 181L318 205C321 222 329 223 336 207L345 187C349 179 354 185 356 196C359 210 368 215 382 211C397 207 412 201 426 194"
+      stroke-width="2.7"
+    />
+  </g>
+</svg>

@@ -1,0 +1,313 @@
+---
+import { Image } from 'astro:assets';
+
+import { centro, formacion, trayectoria } from '../data/contenido.js';
+import retrato from '../assets/retrato.webp';
+---
+
+<section
+  class="sobre seccion"
+  id="sobre-mi"
+  aria-labelledby="sobre-titulo"
+  data-sobre
+  data-revelar-grupo
+>
+  <hr class="canto sobre__canto" />
+
+  <div class="envoltura">
+    <div class="sobre__reticula">
+      <figure class="sobre__retrato" data-revelar>
+        {/*
+          PENDIENTE: sustituir src/assets/retrato.webp por la fotografía real
+          de María García en cuanto la envíe el estudio, y ajustar el pie de la
+          figura, que hoy avisa de que la imagen es provisional.
+          La imagen actual es GENERADA: no es una fotografía de la
+          profesional y no puede publicarse como si lo fuera.
+        */}
+        <div class="sobre__marco">
+          {/* 5 de 12 columnas sobre --maxw (84rem) ≈ 540px; por debajo de
+              900px la retícula colapsa a una columna y ocupa el ancho útil. */}
+          <Image
+            src={retrato}
+            widths={[400, 640, 800, 1024]}
+            sizes="(max-width: 900px) 92vw, (max-width: 84rem) 40vw, 540px"
+            alt="Retrato de estudio en tonos cálidos. Imagen provisional generada, no es una fotografía de María García."
+            loading="eager"
+            decoding="async"
+            data-sobre-retrato
+          />
+        </div>
+        <figcaption class="sobre__pie">
+          Imagen provisional, generada para esta maqueta. Queda pendiente la
+          fotografía real de {centro.profesional}.
+        </figcaption>
+      </figure>
+
+      <div class="sobre__texto">
+        <div class="sobre__intro">
+          <h2 class="h2" id="sobre-titulo" data-revelar>Sobre mí</h2>
+          <p class="plomo sobre__entrada" data-revelar>
+            Soy psicóloga sanitaria y mediadora familiar. Atiendo en consulta
+            privada en {centro.localidad} desde {centro.desde}, con niños,
+            adolescentes, adultos, parejas y familias.
+          </p>
+        </div>
+
+        <div class="sobre__creditos">
+          <section class="sobre__bloque" data-revelar>
+            <h3 class="h3">Formación</h3>
+            <ul class="sobre__lista">
+              {formacion.map((linea) => <li>{linea}</li>)}
+            </ul>
+          </section>
+
+          <hr class="canto sobre__corte" />
+
+          <section class="sobre__bloque" data-revelar>
+            <h3 class="h3">Trayectoria</h3>
+            <ul class="sobre__lista">
+              {trayectoria.map((linea) => <li>{linea}</li>)}
+            </ul>
+          </section>
+        </div>
+
+        <dl class="sobre__registros" data-revelar>
+          {
+            centro.credenciales.map((registro) => (
+              <div class="sobre__registro">
+                <dt>{registro.etiqueta}</dt>
+                <dd>{registro.valor}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* El corte de la sección, a sangre: fuera de la envoltura, del ancho de la
+     ventana. Es el único filete de la sección junto al que separa formación de
+     trayectoria. */
+  .sobre__canto {
+    margin-bottom: var(--paso-4);
+  }
+
+  .sobre__reticula {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--paso-2);
+    row-gap: var(--paso-4);
+    align-items: start;
+  }
+
+  /* -- Retrato. Columnas 1 a 5 ------------------------------------------- */
+  .sobre__retrato {
+    /* Recorrido del paralaje. El marco recorta y la imagen mide justo esto
+       más que el marco, así que el desplazamiento nunca deja hueco.
+       El script lee este mismo valor: no se duplica el número. */
+    --sobre-desliz: 64px;
+    grid-column: 1 / span 5;
+    margin: 0;
+  }
+
+  .sobre__marco {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--lino);
+  }
+
+  .sobre__marco img {
+    width: 100%;
+    height: calc(100% + var(--sobre-desliz));
+    object-fit: cover;
+    object-position: 50% 28%;
+    will-change: transform;
+  }
+
+  .sobre__pie {
+    margin-top: var(--paso-2);
+    max-width: 34ch;
+    font-size: var(--t-micro-2);
+    line-height: 1.5;
+    color: var(--tinta-2);
+    text-wrap: pretty;
+  }
+
+  /* -- Texto. Columnas 7 a 12 -------------------------------------------- */
+  .sobre__texto {
+    grid-column: 7 / -1;
+    display: grid;
+    gap: var(--paso-3);
+    align-content: start;
+  }
+
+  .sobre__intro {
+    display: grid;
+    gap: var(--paso-2);
+  }
+
+  .sobre__entrada {
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+
+  .sobre__creditos {
+    display: grid;
+    gap: var(--paso-3);
+  }
+
+  .sobre__corte {
+    margin: 0;
+  }
+
+  .sobre__bloque {
+    display: grid;
+    gap: var(--paso-2);
+  }
+
+  .sobre__lista {
+    display: grid;
+    gap: var(--paso-2);
+    font-size: var(--t-lista);
+    line-height: 1.55;
+    color: var(--tinta);
+    max-width: 62ch;
+  }
+
+  .sobre__lista li {
+    text-wrap: pretty;
+    overflow-wrap: break-word;
+  }
+
+  /* -- Registros colegiales. Fila de datos, sin filetes ------------------- */
+  .sobre__registros {
+    margin: var(--paso-2) 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+    column-gap: var(--paso-2);
+  }
+
+  /* Subrejilla para que los tres valores queden a la misma altura aunque una
+     etiqueta ocupe tres líneas. */
+  .sobre__registro {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    align-content: start;
+  }
+
+  .sobre__registro dt {
+    font-size: var(--t-micro);
+    font-weight: 450;
+    line-height: 1.45;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tinta-2);
+    text-wrap: pretty;
+    overflow-wrap: break-word;
+  }
+
+  .sobre__registro dd {
+    margin: var(--paso-1) 0 0;
+    align-self: start;
+    font-size: var(--t-cuerpo);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.03em;
+    color: var(--tinta);
+  }
+
+  /* -- Colapso ----------------------------------------------------------- */
+  @media (max-width: 900px) {
+    .sobre__reticula {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--paso-3);
+    }
+    .sobre__retrato {
+      grid-column: 1;
+      max-width: 24rem;
+    }
+    .sobre__texto {
+      grid-column: 1;
+    }
+    .sobre__registros {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: none;
+      row-gap: var(--paso-2);
+    }
+    .sobre__registro {
+      display: block;
+      grid-row: auto;
+    }
+  }
+
+  /* Sin movimiento no hay paralaje, y el marco recorta 64px de imagen que ya
+     no se van a recorrer: se devuelve la altura exacta del marco. */
+  @media (prefers-reduced-motion: reduce) {
+    .sobre__retrato {
+      --sobre-desliz: 0px;
+    }
+    .sobre__marco img {
+      will-change: auto;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const seccion = document.querySelector('[data-sobre]');
+  const retrato = seccion?.querySelector('[data-sobre-retrato]');
+  const menosMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  let contexto = null;
+
+  /* Paralaje mínimo del retrato: el único gesto de la sección. La imagen
+     recorre dentro de su marco lo que sobra de alto, y ni un píxel más. */
+  function crear() {
+    if (!seccion || !retrato || contexto || menosMovimiento.matches) return;
+
+    const desliz =
+      parseFloat(
+        getComputedStyle(retrato).getPropertyValue('--sobre-desliz')
+      ) || 64;
+    if (!desliz) return;
+
+    contexto = gsap.context(() => {
+      gsap.fromTo(
+        retrato,
+        { y: 0 },
+        {
+          y: -desliz,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: seccion,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        }
+      );
+    }, seccion);
+  }
+
+  function retirar() {
+    contexto?.revert();
+    contexto = null;
+  }
+
+  crear();
+
+  menosMovimiento.addEventListener('change', () => {
+    if (menosMovimiento.matches) retirar();
+    else crear();
+  });
+
+  window.addEventListener('pagehide', retirar, { once: true });
+</script>

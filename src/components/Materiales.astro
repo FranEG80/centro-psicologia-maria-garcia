@@ -1,0 +1,235 @@
+---
+import { Image } from 'astro:assets';
+
+import { materiales } from '../data/contenido.js';
+
+const [rorschach, bloques, hanoi] = materiales;
+
+/* Anchos pedidos por el bento. Sobre --maxw (84rem) la mancha ocupa 6 de 12
+   columnas y las otras dos piezas 5; por debajo de 900px todo cae a una
+   columna y ocupa el ancho útil de la envoltura. */
+const ANCHOS = [480, 720, 960, 1200];
+const SIZES_MANCHA = '(max-width: 900px) 92vw, (max-width: 84rem) 48vw, 650px';
+const SIZES_PIEZA = '(max-width: 900px) 92vw, (max-width: 84rem) 40vw, 540px';
+---
+
+<section class="materiales seccion" aria-labelledby="materiales-titulo">
+  <hr class="canto" />
+
+  <div class="envoltura">
+    <div class="materiales__cabecera" data-revelar-grupo>
+      <h2 class="h2 materiales__titulo" id="materiales-titulo" data-revelar>
+        Con qué se trabaja
+      </h2>
+      <p class="cuerpo cuerpo--2 materiales__entrada" data-revelar>
+        Parte de la valoración se hace con material estandarizado de siempre.
+        Con los niños, además, funciona como puente: se empieza jugando y se
+        acaba hablando.
+      </p>
+    </div>
+
+    <div class="materiales__bento">
+      <!--
+        La lámina de Rorschach es la tesis de la página hecha objeto: la misma
+        mancha, y lo que cada persona ve en ella. Manda por tamaño y por
+        posición, y se ve limpia.
+      -->
+      <figure class="materiales__pieza materiales__pieza--mancha">
+        <Image
+          src={rorschach.src}
+          widths={ANCHOS}
+          sizes={SIZES_MANCHA}
+          alt={rorschach.alt}
+          loading="lazy"
+          decoding="async"
+          data-revelar="lamina"
+        />
+        <figcaption data-revelar-grupo>
+          <h3 class="h3" data-revelar>{rorschach.titulo}</h3>
+          <p data-revelar>{rorschach.nota}</p>
+        </figcaption>
+      </figure>
+
+      <figure class="materiales__pieza materiales__pieza--bloques">
+        <Image
+          src={bloques.src}
+          widths={ANCHOS}
+          sizes={SIZES_PIEZA}
+          alt={bloques.alt}
+          loading="lazy"
+          decoding="async"
+          data-revelar="lamina"
+        />
+        <figcaption data-revelar-grupo>
+          <h3 class="h3" data-revelar>{bloques.titulo}</h3>
+          <p data-revelar>{bloques.nota}</p>
+        </figcaption>
+      </figure>
+
+      <figure class="materiales__pieza materiales__pieza--hanoi">
+        <Image
+          src={hanoi.src}
+          widths={ANCHOS}
+          sizes={SIZES_PIEZA}
+          alt={hanoi.alt}
+          loading="lazy"
+          decoding="async"
+          data-revelar="lamina"
+        />
+        <figcaption data-revelar-grupo>
+          <h3 class="h3" data-revelar>{hanoi.titulo}</h3>
+          <p data-revelar>{hanoi.nota}</p>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .materiales__cabecera {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--paso-2);
+    row-gap: var(--paso-2);
+    align-items: end;
+    margin-block: var(--paso-4) var(--paso-4);
+  }
+
+  .materiales__titulo {
+    grid-column: 1 / span 5;
+    max-width: 14ch;
+  }
+
+  .materiales__entrada {
+    grid-column: 7 / span 6;
+    font-size: var(--t-cuerpo-lg);
+    max-width: 52ch;
+  }
+
+  /* Tres piezas, tres celdas, tres tamaños. El borde interior queda desigual a
+     propósito: la torre de Hanoi entra una columna a la izquierda de los
+     cubos, así que el bloque no cierra en rectángulo. */
+  .materiales__bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--paso-2);
+    row-gap: var(--paso-4);
+    align-items: start;
+  }
+
+  .materiales__pieza {
+    margin: 0;
+    display: grid;
+    gap: var(--paso-2);
+    align-content: start;
+    min-width: 0;
+  }
+
+  .materiales__pieza--mancha {
+    grid-column: 1 / span 6;
+    grid-row: 1 / span 2;
+  }
+
+  .materiales__pieza--bloques {
+    grid-column: 8 / span 5;
+    grid-row: 1;
+  }
+
+  .materiales__pieza--hanoi {
+    grid-column: 7 / span 5;
+    grid-row: 2;
+  }
+
+  .materiales__pieza img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    background: var(--lino);
+  }
+
+  .materiales__pieza--mancha img {
+    aspect-ratio: 4 / 5;
+  }
+  .materiales__pieza--bloques img {
+    aspect-ratio: 16 / 10;
+  }
+  .materiales__pieza--hanoi img {
+    aspect-ratio: 14 / 11;
+  }
+
+  .materiales__pieza figcaption {
+    display: grid;
+    gap: 0.4rem;
+    max-width: 44ch;
+  }
+
+  .materiales__pieza figcaption p {
+    font-size: var(--t-lista);
+    color: var(--tinta-2);
+    text-wrap: pretty;
+  }
+
+  /* -- El gesto de la sección -------------------------------------------- */
+  /* La mancha se revela desde el centro hacia fuera, no desde abajo como el
+     resto de la página. Es una excepción deliberada y se justifica sola: una
+     mancha simétrica se lee desde su eje, y abrirla desde el centro es
+     exactamente lo que hace quien la mira.
+
+     Va con :global(html.js) porque el estado escondido de los revelados solo
+     existe cuando hay JS para deshacerlo: sin esa condición, un fallo del
+     script dejaría la lámina recortada a cero para siempre. */
+  :global(html.js) .materiales__pieza--mancha img[data-revelar='lamina'] {
+    clip-path: circle(0% at 50% 48%);
+  }
+
+  :global(html.js)
+    .materiales__pieza--mancha
+    img[data-revelar='lamina'].es-visible {
+    clip-path: circle(82% at 50% 48%);
+    transition: clip-path var(--dur-material) var(--ease-hoja);
+    transition-delay: var(--revelar-retardo, 0ms);
+  }
+
+  @media (max-width: 900px) {
+    .materiales__cabecera {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .materiales__titulo,
+    .materiales__entrada {
+      grid-column: 1;
+    }
+    .materiales__bento {
+      grid-template-columns: 1fr;
+      row-gap: var(--paso-3);
+    }
+    .materiales__pieza--mancha,
+    .materiales__pieza--bloques,
+    .materiales__pieza--hanoi {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    /* El retranqueo se mantiene en una columna con un sangrado, o las tres
+       piezas quedan en una pila idéntica. */
+    .materiales__pieza--hanoi {
+      margin-inline-start: var(--paso-3);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .materiales__pieza--hanoi {
+      margin-inline-start: var(--paso-1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .materiales__pieza--mancha img[data-revelar='lamina'],
+    :global(html.js)
+      .materiales__pieza--mancha
+      img[data-revelar='lamina'].es-visible {
+      clip-path: none;
+      transition: none;
+    }
+  }
+</style>

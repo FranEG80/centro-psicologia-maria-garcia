@@ -1,0 +1,139 @@
+/* ==========================================================================
+   Tokens. Paleta fijada por la clienta, vinculante.
+   crema #F8F4EB · lino #EDE6D8 · azul petróleo #35617F
+   Neutros derivados permitidos: topo #A79E90 · piedra #8C8375 · carbón #1F2426
+
+   Contraste medido (WCAG 2.1) sobre crema:
+     carbón      14.29:1   texto corrido
+     petróleo     6.04:1   texto y enlaces
+     petróleo-800 8.39:1   enlaces sobre lino y sobre tintes
+     piedra-700   5.16:1   texto secundario
+     piedra       3.41:1   SOLO texto grande (>=24px) o no textual
+     topo         2.41:1   SOLO filetes y decoración, nunca texto
+   crema sobre petróleo 6.04:1  (relleno de botón)
+   carbón sobre petróleo 2.37:1 PROHIBIDO
+   ========================================================================== */
+
+:root {
+  /* -- Paleta vinculante ------------------------------------------------- */
+  --crema: #f8f4eb;
+  --lino: #ede6d8;
+  --petroleo: #35617f;
+  --topo: #a79e90;
+  --piedra: #8c8375;
+  --carbon: #1f2426;
+
+  /* -- Neutros y tonos derivados ---------------------------------------- */
+  --petroleo-800: #2a4b62;
+  --petroleo-300: #7d9db3;
+  --piedra-700: #6e665a;
+  --crema-alta: #fdfbf6;
+
+  /* -- Roles semánticos -------------------------------------------------- */
+  --fondo: var(--crema);
+  --fondo-tinte: color-mix(in srgb, var(--petroleo) 5%, var(--crema));
+  --fondo-lino: var(--lino);
+  --tinta: var(--carbon);
+  --tinta-2: var(--piedra-700);
+  --acento: var(--petroleo);
+  --acento-fuerte: var(--petroleo-800);
+
+  --filete: color-mix(in srgb, var(--piedra) 34%, transparent);
+  --filete-fuerte: color-mix(in srgb, var(--carbon) 22%, transparent);
+
+  /* -- Vidrio ------------------------------------------------------------
+     Un solo sistema de lámina para toda la página, con las mismas cinco
+     densidades de azul transmitido que las láminas del primer cuadro. Nada
+     de tintes sueltos: si algo es azul en esta página, es porque hay una
+     lámina delante. */
+  --vidrio-1: color-mix(in srgb, var(--petroleo) 8%, transparent);
+  --vidrio-2: color-mix(in srgb, var(--petroleo) 18%, transparent);
+  --vidrio-3: color-mix(in srgb, var(--petroleo) 32%, transparent);
+  --vidrio-4: color-mix(in srgb, var(--petroleo) 52%, transparent);
+  --vidrio-5: color-mix(in srgb, var(--petroleo) 74%, transparent);
+  --vidrio: var(--vidrio-1);
+
+  /* Canto del vidrio laminado. Es el único color de la página que no sale
+     de la paleta: es luz, no pigmento. */
+  --canto: #cdeaf5;
+  --canto-fuerte: #a9dcef;
+
+  /* Campo pleno de petróleo. crema sobre este campo = 7.0:1 */
+  --campo: #2f5670;
+  --campo-tinta: var(--crema);
+  --campo-tinta-2: #c8d7e1; /* 4.9:1 sobre --campo */
+
+  /* -- Tipografía -------------------------------------------------------- */
+  --fuente: 'Host Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* Escala fluida.
+     El titular se queda en la escala de la referencia (~46px a 1440), que ya
+     estaba bien. Lo que sube es TODO lo demás: el cuerpo arranca en 18px, las
+     versalitas en 14px y las listas en 17px, muy por encima del
+     mini-minimalismo del brief, que a 11px no se lee. */
+  --t-micro: 0.875rem; /* 14px  versalitas de interfaz */
+  --t-micro-2: 0.9375rem; /* 15px  versalitas de contenido */
+  --t-cuerpo: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem); /* 18 -> 20 */
+  --t-cuerpo-lg: clamp(1.25rem, 1.1rem + 0.62vw, 1.5rem); /* 20 -> 24 */
+  --t-lista: clamp(1.0625rem, 1rem + 0.26vw, 1.1875rem); /* 17 -> 19 */
+  --t-h3: clamp(1.25rem, 1.1rem + 0.62vw, 1.625rem); /* 20 -> 26 */
+  --t-h2: clamp(1.625rem, 1.3rem + 1.55vw, 2.5rem); /* 26 -> 40 */
+  --t-h1: clamp(1.75rem, 1.15rem + 2.2vw, 2.9rem); /* 28 -> 46 */
+  --t-declaracion: clamp(1.625rem, 1.2rem + 1.85vw, 2.75rem); /* 26 -> 44 */
+
+  --track-caps: 0.24em;
+  --track-caps-ancho: 0.34em;
+  --track-h1: 0.1em;
+  --track-h2: 0.015em;
+
+  /* -- Retícula ---------------------------------------------------------- */
+  --gutter: clamp(1.25rem, 1rem + 3.2vw, 4.5rem);
+  --maxw: 84rem;
+  --medida: 62ch;
+
+  --paso-1: clamp(0.5rem, 0.45rem + 0.25vw, 0.75rem);
+  --paso-2: clamp(1rem, 0.9rem + 0.5vw, 1.5rem);
+  --paso-3: clamp(1.75rem, 1.5rem + 1.2vw, 2.75rem);
+  --paso-4: clamp(3rem, 2.4rem + 2.6vw, 5rem);
+  --paso-5: clamp(4.5rem, 3.4rem + 5vw, 9rem);
+  --paso-6: clamp(6rem, 4rem + 8vw, 13rem);
+
+  /* -- Forma. Un solo sistema: canto recto, como el vidrio. -------------- */
+  --radio: 0px;
+
+  /* -- Movimiento -------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  /* Curva de las hojas y paneles de iOS. Sale casi vertical y aterriza muy
+     larga, y es la que hace que un material translúcido parezca que tiene
+     masa en vez de opacidad animada. */
+  --ease-hoja: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-pulsar: 160ms;
+  --dur-ui: 220ms;
+  --dur-revelado: 620ms;
+  --dur-material: 720ms;
+
+  /* -- Vitrina -----------------------------------------------------------
+     Los tres números que separan un cristal de verdad de un div con
+     backdrop-blur: el desenfoque, el brillo de canto interior de 1px que
+     dibuja el bisel, y la sombra interior que le da espesor. Se declaran una
+     vez para que toda la página tenga el mismo vidrio. */
+  --vitrina-blur: 22px;
+  --vitrina-fondo: color-mix(in srgb, var(--crema) 62%, transparent);
+  --vitrina-borde: color-mix(in srgb, white 46%, transparent);
+  --vitrina-luz: inset 0 1px 0 color-mix(in srgb, white 72%, transparent);
+  --vitrina-espesor: inset 0 -1px 0 color-mix(in srgb, var(--piedra) 22%, transparent);
+  --vitrina-sombra: 0 1px 0 color-mix(in srgb, var(--piedra) 20%, transparent),
+    0 12px 34px -22px color-mix(in srgb, var(--carbon) 34%, transparent);
+
+  /* -- Capas ------------------------------------------------------------- */
+  --z-lienzo: 0;
+  --z-contenido: 1;
+  --z-nav: 40;
+  --z-salto: 60;
+
+  --sombra-baja: 0 1px 2px color-mix(in srgb, var(--piedra) 22%, transparent),
+    0 12px 28px -18px color-mix(in srgb, var(--carbon) 30%, transparent);
+  --sombra-media: 0 2px 4px color-mix(in srgb, var(--piedra) 20%, transparent),
+    0 26px 60px -30px color-mix(in srgb, var(--carbon) 38%, transparent);
+}

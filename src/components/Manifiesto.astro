@@ -1,0 +1,184 @@
+---
+import { centro } from '../data/contenido.js';
+
+/* El texto de sala. Cambia el registro: después de la instalación del primer
+   cuadro, la página se aparta y deja leer. Sin imagen, sin vidrio, sin color:
+   el contraste con el hero es el diseño de esta sección.
+
+   La frase se compone en tres líneas fijas para poder revelarla línea a línea.
+   Se escribe una sola vez y se une para el aria-label, así el lector de
+   pantalla siempre oye la misma frase que se ve, sin riesgo de que las dos
+   versiones se separen al editar. */
+const lineas = ['Trato de tú a tú,', 'de la mano en todo', 'momento.'];
+const frase = lineas.join(' ');
+---
+
+<section class="manifiesto seccion" id="contenido">
+  {/* El único corte de la página: filete de luz de 1px, a sangre, en el borde
+      superior de la sección. Decorativo, de ahí el hr sin contenido. */}
+  <hr class="canto manifiesto__corte" />
+
+  <div class="envoltura manifiesto__reticula">
+    <h2 class="manifiesto__frase" aria-label={frase} data-manifiesto-frase>
+      {
+        lineas.map((linea, i) => (
+          <span class="manifiesto__linea" style={`--linea-retardo: ${i * 60}ms`}>
+            <span class="manifiesto__glifos">{linea}</span>
+          </span>
+        ))
+      }
+    </h2>
+
+    <div class="manifiesto__nota">
+      <p class="manifiesto__parrafo">
+        {centro.profesional} es psicóloga sanitaria y mediadora familiar en {
+          centro.localidad
+        } desde {centro.desde}. Atiende a niños, adolescentes, adultos, parejas
+        y familias, y elabora informes y peritajes para el ámbito judicial.
+      </p>
+      <p class="manifiesto__parrafo-2">
+        Lo que se habla en la consulta se queda en la consulta. Si no sabes en
+        qué área encaja lo tuyo, llama y lo vemos.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .manifiesto {
+    /* Mismo ritmo que el resto del catálogo. El canto va absoluto en el borde
+       para que el aire de la sección quede debajo del corte, no encima. */
+    padding-block: var(--paso-6);
+    scroll-margin-top: 4.25rem;
+  }
+
+  .manifiesto__corte {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: var(--z-contenido);
+    pointer-events: none;
+  }
+
+  /* -- Retícula ---------------------------------------------------------- */
+  .manifiesto__reticula {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--paso-2);
+    row-gap: var(--paso-4);
+    align-items: start;
+  }
+
+  /* La frase arranca en la segunda columna y para en la novena: el vacío de
+     los lados es parte de la composición, no un margen. */
+  .manifiesto__frase {
+    grid-column: 2 / span 8;
+    max-width: 24ch;
+    font-size: var(--t-declaracion);
+    font-weight: 300;
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    color: var(--tinta);
+  }
+
+  /* -- El gesto: la frase entra por líneas ------------------------------- */
+  /* Cada línea es una ventana con la máscara justo en su base. El recorte va
+     en clip-path y no en overflow para no tocar la caja: se abre hacia arriba
+     y un poco hacia los lados, así los acentos y los rasgos salientes no se
+     cortan en reposo, y queda ajustado abajo, que es por donde entra. */
+  .manifiesto__linea {
+    display: block;
+    clip-path: inset(-0.5em -0.14em -0.12em -0.14em);
+  }
+
+  .manifiesto__glifos {
+    display: block;
+  }
+
+  /* Estado de partida solo si hay JS que vaya a devolverlas. El plazo de
+     gracia de la plantilla retira la clase js si el script no da señales. */
+  :global(html.js) .manifiesto__frase .manifiesto__glifos {
+    /* 120% pasa de sobra el borde inferior del recorte (1.24em de alto). */
+    transform: translate3d(0, 120%, 0);
+  }
+
+  :global(html.js) .manifiesto__frase.esta-revelada .manifiesto__glifos {
+    transform: none;
+    transition: transform var(--dur-material) var(--ease-hoja);
+    transition-delay: var(--linea-retardo, 0ms);
+  }
+
+  /* -- Los dos párrafos, desplazados a la derecha ------------------------ */
+  .manifiesto__nota {
+    grid-column: 7 / span 6;
+    display: grid;
+    gap: var(--paso-2);
+  }
+
+  .manifiesto__parrafo,
+  .manifiesto__parrafo-2 {
+    max-width: 60ch;
+    text-wrap: pretty;
+    overflow-wrap: break-word;
+    /* El año de la cifra alineado como cifra, no como texto. */
+    font-variant-numeric: tabular-nums;
+  }
+
+  .manifiesto__parrafo {
+    font-size: var(--t-cuerpo-lg);
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--tinta);
+  }
+
+  .manifiesto__parrafo-2 {
+    font-size: var(--t-cuerpo);
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--tinta-2);
+  }
+
+  /* -- Colapso ----------------------------------------------------------- */
+  @media (max-width: 900px) {
+    .manifiesto__frase,
+    .manifiesto__nota {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .manifiesto__frase .manifiesto__glifos,
+    :global(html.js) .manifiesto__frase.esta-revelada .manifiesto__glifos {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  /* Un solo gesto en la sección: las tres líneas suben tras su máscara,
+     escalonadas 60 ms. IntersectionObserver, nunca un listener de scroll. */
+  const frase = document.querySelector<HTMLElement>('[data-manifiesto-frase]');
+
+  if (frase) {
+    const revelar = () => frase.classList.add('esta-revelada');
+    const movimientoReducido = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+    if (movimientoReducido || !('IntersectionObserver' in window)) {
+      revelar();
+    } else {
+      const io = new IntersectionObserver(
+        (entradas) => {
+          if (!entradas.some((e) => e.isIntersecting)) return;
+          revelar();
+          io.disconnect();
+        },
+        { rootMargin: '0px 0px -15% 0px', threshold: 0.3 }
+      );
+      io.observe(frase);
+    }
+  }
+</script>

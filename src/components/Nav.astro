@@ -1,0 +1,387 @@
+---
+import { centro, navegacion } from '../data/contenido.js';
+---
+
+<header class="nav" data-nav>
+  <!--
+    La capa de material va aparte del contenido y solo cambia de opacidad.
+    Animar backdrop-filter o background-color obliga al navegador a recomponer
+    en cada fotograma; una capa que solo cruza de 0 a 1 de opacidad se compone
+    en GPU y no cuesta nada.
+  -->
+  <div class="nav__material vitrina" aria-hidden="true"></div>
+
+  <div class="nav__barra">
+    <a class="nav__marca" href="#top">
+      <img
+        class="nav__monograma"
+        src="/media/logo-maria-garcia.svg"
+        alt=""
+        width="34"
+        height="27"
+        aria-hidden="true"
+      />
+      <span class="caps nav__nombre nav__nombre--largo">{centro.nombre}</span>
+      <span class="caps nav__nombre nav__nombre--corto">María García</span>
+    </a>
+
+    <nav class="nav__enlaces" aria-label="Secciones">
+      <ul>
+        {
+          navegacion.map((n) => (
+            <li>
+              <a class="caps nav__enlace" href={n.href}>
+                {n.texto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="nav__derecha">
+      <!--
+        Aquí va el teléfono y no el WhatsApp. El rótulo "Escribir por WhatsApp"
+        ya vive en el primer cuadro y en el cierre; una tercera aparición sería
+        la misma intención repetida. Llamar es otra cosa, y en una consulta es
+        el gesto de más valor.
+      -->
+      <a class="nav__telefono" href={`tel:${centro.telefonoTel}`}>
+        {centro.telefono}
+      </a>
+      <button
+        class="nav__conmutador"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-panel"
+        data-nav-boton
+      >
+        <span class="solo-lectores">Abrir el menú</span>
+        <span class="nav__trazos" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav__panel vitrina" id="nav-panel" hidden data-nav-panel>
+    <ul>
+      {
+        navegacion.map((n) => (
+          <li>
+            <a class="nav__panel-enlace" href={n.href}>
+              {n.texto}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="boton nav__panel-boton" href={centro.whatsapp} rel="noopener">
+      Escribir por WhatsApp
+    </a>
+    <a class="nav__panel-tel" href={`tel:${centro.telefonoTel}`}>
+      {centro.telefono}
+    </a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: var(--z-nav);
+    isolation: isolate;
+  }
+
+  /* -- El material ------------------------------------------------------- */
+  /* Sobre el primer cuadro no hay barra: el hormigón de la escena ya es el
+     fondo, y meter un cristal delante de otro cristal es ruido. Al salir del
+     cuadro la barra aparece como material. */
+  .nav__material {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 1;
+    transition: opacity var(--dur-material) var(--ease-hoja);
+  }
+
+  :global(body.sobre-vidrio) .nav__material {
+    opacity: 0;
+  }
+
+  /* -- La barra ---------------------------------------------------------- */
+  .nav__barra {
+    height: 64px;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--paso-2);
+  }
+
+  .nav__marca {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+    /* El texto mide 21 px de alto: sin esto el objetivo de pulsado se queda a
+       menos de la mitad de los 44 px que pide WCAG 2.5.5. */
+    min-height: 44px;
+    text-decoration: none;
+    color: var(--tinta);
+    transition: transform var(--dur-pulsar) var(--ease-out);
+  }
+
+  .nav__marca:active {
+    transform: scale(0.97);
+  }
+
+  .nav__monograma {
+    width: 26px;
+    height: auto;
+    flex: none;
+  }
+
+  .nav__nombre {
+    font-size: var(--t-micro);
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
+    white-space: nowrap;
+    color: inherit;
+  }
+
+  /* El nombre completo es largo y a 900px envolvía a dos líneas, que en una
+     barra de una sola línea se lee como un error. No se recorta el nombre
+     real: se cambia por la versión corta y el completo sigue en el pie. */
+  .nav__nombre--corto {
+    display: none;
+  }
+
+  .nav__enlaces {
+    justify-self: end;
+    min-width: 0;
+  }
+
+  .nav__enlaces ul {
+    display: flex;
+    gap: clamp(1rem, 2.2vw, 2.25rem);
+  }
+
+  .nav__enlace {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    position: relative;
+    font-size: var(--t-micro);
+    letter-spacing: 0.18em;
+    text-indent: 0.18em;
+    white-space: nowrap;
+    color: var(--tinta);
+    text-decoration: none;
+  }
+
+  /* El subrayado se dibuja de izquierda a derecha, el mismo gesto de enlace de
+     toda la página. */
+  .nav__enlace::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0.18em;
+    bottom: 0.9rem;
+    height: 1px;
+    background: currentColor;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--dur-ui) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav__enlace:hover::after {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  .nav__enlace:focus-visible::after {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .nav__derecha {
+    display: flex;
+    align-items: center;
+    gap: var(--paso-2);
+  }
+
+  .nav__telefono {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: var(--t-micro);
+    letter-spacing: 0.14em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--tinta);
+    text-decoration: none;
+    position: relative;
+  }
+
+  .nav__telefono::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.9rem;
+    height: 1px;
+    background: currentColor;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--dur-ui) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav__telefono:hover::after {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  .nav__telefono:focus-visible::after {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* -- Conmutador -------------------------------------------------------- */
+  .nav__conmutador {
+    display: none;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    color: var(--tinta);
+    transition: transform var(--dur-pulsar) var(--ease-out);
+  }
+
+  .nav__conmutador:active {
+    transform: scale(0.97);
+  }
+
+  .nav__trazos {
+    display: grid;
+    gap: 5px;
+    width: 18px;
+  }
+
+  .nav__trazos i {
+    display: block;
+    height: 1px;
+    background: currentColor;
+    transition: transform var(--dur-ui) var(--ease-out);
+  }
+
+  .nav__conmutador[aria-expanded='true'] .nav__trazos i:first-child {
+    transform: translateY(3px);
+  }
+
+  .nav__conmutador[aria-expanded='true'] .nav__trazos i:last-child {
+    transform: translateY(-3px);
+  }
+
+  /* -- Panel ------------------------------------------------------------- */
+  .nav__panel {
+    padding: var(--paso-2) var(--gutter) var(--paso-3);
+    display: grid;
+    gap: var(--paso-2);
+    justify-items: start;
+    transform-origin: top center;
+    animation: nav-hoja var(--dur-material) var(--ease-hoja) both;
+  }
+
+  /* Nada entra desde scale(0): un panel que sale de la nada no tiene masa. */
+  @keyframes nav-hoja {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -8px, 0) scale(0.985);
+    }
+  }
+
+  .nav__panel[hidden] {
+    display: none;
+  }
+
+  .nav__panel ul {
+    display: grid;
+    gap: 0.15rem;
+    width: 100%;
+  }
+
+  .nav__panel-enlace {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    font-size: var(--t-lista);
+    color: var(--tinta);
+    text-decoration: none;
+    border-bottom: 1px solid var(--filete);
+  }
+
+  .nav__panel-boton {
+    margin-top: var(--paso-1);
+  }
+
+  .nav__panel-tel {
+    font-size: var(--t-cuerpo);
+    letter-spacing: 0.14em;
+    font-variant-numeric: tabular-nums;
+    color: var(--tinta-2);
+    text-decoration: none;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* -- Sobre el primer cuadro -------------------------------------------- */
+  /* La escena arranca llena de azul transmitido y acaba en hormigón claro. El
+     script conmuta la clase en el 32% del recorrido, que es cuando la pared
+     entra por la parte de arriba del cuadro. */
+  :global(body.sobre-vidrio) .nav__marca,
+  :global(body.sobre-vidrio) .nav__enlace,
+  :global(body.sobre-vidrio) .nav__telefono,
+  :global(body.sobre-vidrio) .nav__conmutador {
+    color: var(--crema);
+  }
+
+  @media (max-width: 1080px) {
+    .nav__nombre--largo {
+      display: none;
+    }
+    .nav__nombre--corto {
+      display: inline;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .nav__barra {
+      height: 56px;
+      grid-template-columns: 1fr auto;
+    }
+    .nav__enlaces {
+      display: none;
+    }
+    .nav__telefono {
+      display: none;
+    }
+    .nav__conmutador {
+      display: grid;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav__material,
+    .nav__enlace::after,
+    .nav__telefono::after,
+    .nav__trazos i {
+      transition: none;
+    }
+    .nav__panel {
+      animation: none;
+    }
+    .nav__marca:active,
+    .nav__conmutador:active {
+      transform: none;
+    }
+  }
+</style>

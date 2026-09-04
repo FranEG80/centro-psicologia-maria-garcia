@@ -1,0 +1,124 @@
+---
+import '../styles/global.css';
+import { centro } from '../data/contenido.js';
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+}
+
+const { titulo, descripcion } = Astro.props;
+const canonica = new URL(Astro.url.pathname, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Psychologist',
+  name: centro.nombre,
+  description: descripcion,
+  url: canonica,
+  image: new URL('/media/og.jpg', Astro.site).href,
+  telephone: `+34 ${centro.telefono}`,
+  email: centro.email,
+  founder: { '@type': 'Person', name: centro.profesional },
+  foundingDate: centro.desde,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: centro.direccion,
+    postalCode: centro.cp,
+    addressLocality: centro.localidad,
+    addressRegion: centro.provincia,
+    addressCountry: 'ES',
+  },
+  areaServed: `${centro.localidad}, ${centro.provincia}`,
+  knowsLanguage: 'es-ES',
+  identifier: centro.credenciales.map((c) => `${c.etiqueta} ${c.valor}`),
+};
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonica} />
+    <meta name="theme-color" content="#F8F4EB" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonica} />
+    <meta property="og:image" content={new URL('/media/og.jpg', Astro.site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link
+      rel="preload"
+      href="/fonts/host-grotesk-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <script is:inline>
+      // Antes del primer pintado: los revelados solo se esconden si hay JS
+      // para volver a mostrarlos.
+      document.documentElement.classList.add('js');
+
+      // El primer cuadro es un recorrido de cámara anclado con scroll. Si el
+      // navegador restaura el desplazamiento anterior al recargar, el visitante
+      // aterriza a mitad del recorrido, o peor: antes de que exista el ancla,
+      // en la sección siguiente.
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+      // Y solo mientras ese JS siga vivo. Si el módulo no arranca (error de
+      // red, navegador que no soporta algo, bloqueador), esta página se
+      // quedaría con la mitad del contenido a opacidad 0 para siempre. A los
+      // tres segundos sin señal de vida se retira la clase y todo vuelve a ser
+      // visible: en una web sanitaria el contenido no puede depender de que un
+      // revelado funcione.
+      setTimeout(function () {
+        if (!window.__revelado) {
+          document.documentElement.classList.remove('js');
+        }
+      }, 3000);
+    </script>
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!--
+      El módulo va en el head, no al final del body. Un script de tipo module
+      está diferido por definición, así que aquí no bloquea el parseo, pero el
+      escáner de precarga lo encuentra en el byte ~2.000 en lugar del ~35.500,
+      y con él encuentra three.js, que es su dependencia estática.
+    -->
+    <script>
+      import '../scripts/main.js';
+    </script>
+  </head>
+
+  <body>
+    <!--
+      DIRECCIÓN · seed: brief-pinned (El Prisma, CONTEMPORÁNEA)
+      THESIS: lo mismo, visto con luz suficiente. Un solo material (vidrio
+      dicroico sobre hormigón pálido) sustituye el retrato tranquilizador y la
+      rejilla de tarjetas que esta categoría siempre publica.
+      OWN-WORLD: crema #F8F4EB, lino #EDE6D8, azul petróleo #35617F; grotesca
+      neutra en versalitas muy espaciadas, ninguna serif; canto recto en todo,
+      filetes de 1px, sin sombras de tarjeta; el color llega como densidad de
+      azul transmitido, nunca como acento suelto.
+      STORY: quien llega entiende que aquí se mira su caso desde otro punto de
+      vista, ve las seis áreas y el centro real, y escribe por WhatsApp.
+      FIRST VIEWPORT: vidrio y hormigón ocupan el 65% superior; todo el texto
+      vive en el 35% inferior, centrado, con el botón fantasma bajo la línea de
+      las cinco áreas. La cámara arranca dentro del azul y retrocede.
+      FORM: instalación de vidrio, 1ª de la lista, fijada por el brief.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with
+      the finish review, the verdict, DESIGN.md, and every shipping raster
+      carrying its provenance.
+    -->
+    <a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+    <slot />
+  </body>
+</html>

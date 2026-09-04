@@ -1,0 +1,8 @@
+./astro
+
+.claude/
+.impeccable
+.kombai
+dist
+node_modules
+.astro

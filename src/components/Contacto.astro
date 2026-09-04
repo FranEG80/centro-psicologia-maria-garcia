@@ -1,0 +1,343 @@
+---
+import { centro } from '../data/contenido.js';
+
+const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${centro.provincia}`;
+---
+
+<section
+  class="contacto"
+  id="contacto"
+  data-contacto
+  data-revelar-grupo
+>
+  {/* El canto abre la sección, a sangre, con la primitiva compartida. Es el
+      único corte de la página. */}
+  <hr class="canto contacto__canto" />
+
+  <div class="envoltura contacto__reticula">
+    <div class="contacto__llamada">
+      <h2 class="h2 contacto__titulo" data-revelar>Escribe o llama.</h2>
+
+      <p class="plomo contacto__plomo" data-revelar>
+        La primera conversación no compromete a nada. Cuéntame qué pasa y vemos
+        por dónde empezar.
+      </p>
+
+      <a
+        class="boton boton--claro contacto__boton"
+        href={centro.whatsapp}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-revelar
+      >
+        Escribir por WhatsApp
+        <span class="solo-lectores">(se abre en una pestaña nueva)</span>
+      </a>
+    </div>
+
+    <dl class="contacto__datos">
+      <div class="contacto__dato" data-revelar>
+        <dt class="caps contacto__etiqueta">Teléfono</dt>
+        <dd>
+          <a
+            class="contacto__grande contacto__grande--cifra"
+            href={`tel:${centro.telefonoTel}`}
+          >
+            {centro.telefono}
+          </a>
+        </dd>
+      </div>
+
+      <div class="contacto__dato" data-revelar>
+        <dt class="caps contacto__etiqueta">Correo</dt>
+        <dd>
+          <a class="contacto__grande" href={`mailto:${centro.email}`}>
+            {centro.email}
+          </a>
+        </dd>
+      </div>
+
+      <div class="contacto__dato" data-revelar>
+        <dt class="caps contacto__etiqueta">Dirección</dt>
+        <dd>
+          <a
+            class="contacto__grande contacto__grande--direccion"
+            href={centro.mapa}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {direccion}
+            <span class="solo-lectores">(se abre en una pestaña nueva)</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<style>
+  /* El cierre es el único bloque de color de toda la página: petróleo pleno,
+     de borde a borde del viewport, sin una sola imagen. Un campo a escala de
+     página aguanta solo, y aquí es además la señal de que la lectura ha
+     terminado y toca escribir o llamar.
+
+     Contraste medido sobre var(--campo) #2f5670:
+       var(--campo-tinta)   crema    7.12:1
+       var(--campo-tinta-2) #C8D7E1  5.31:1
+       var(--canto)         #CDEAF5  6.21:1  (foco)
+     Nada en carbón dentro de esta sección: carbón sobre petróleo es 2.01:1. */
+  .contacto {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: var(--paso-6);
+    background: var(--campo);
+    color: var(--campo-tinta);
+  }
+
+  .contacto__canto {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  /* EL GESTO. Un barrido de luz cruza el campo una vez, con la inclinación
+     del haz del primer cuadro: en la escena el haz va del punto (-21, 27) al
+     (2.2, -9) del mundo, es decir baja hacia la derecha a 57 grados de la
+     horizontal. Aquí es una banda vertical girada -33 grados, que da esos
+     mismos 57 grados, y se mueve solo con translate.
+
+     El núcleo de la banda es luz cálida al 6% en screen. Con ese tope, el
+     compuesto en el instante más claro es #3B6078: crema queda en 6.11:1 y
+     la tinta secundaria en 4.56:1, así que ni en el pico del barrido baja
+     nada de AA. */
+  .contacto::before {
+    content: '';
+    position: absolute;
+    top: -80%;
+    bottom: -80%;
+    left: -12%;
+    width: 34%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: screen;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 252, 244, 0) 0%,
+      rgba(255, 252, 244, 0.06) 50%,
+      rgba(255, 252, 244, 0) 100%
+    );
+    transform: translate3d(-40%, 0, 0) rotate(-33deg);
+  }
+
+  .contacto.esta-barrida::before {
+    animation: contacto-barrido calc(var(--dur-material) * 1.5)
+      var(--ease-hoja) both;
+  }
+
+  @keyframes contacto-barrido {
+    0% {
+      opacity: 0;
+      transform: translate3d(-40%, 0, 0) rotate(-33deg);
+    }
+    22% {
+      opacity: 1;
+    }
+    72% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(330%, 0, 0) rotate(-33deg);
+    }
+  }
+
+  .contacto__reticula {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--paso-2);
+    row-gap: var(--paso-4);
+    align-items: start;
+  }
+
+  .contacto__llamada {
+    grid-column: 1 / span 5;
+    display: grid;
+    gap: var(--paso-2);
+    justify-items: start;
+  }
+
+  /* Los dos llevan el ancestro porque pisan una medida y un color de las
+     primitivas .h2 y .plomo, que tienen la misma especificidad. */
+  .contacto .contacto__titulo {
+    color: var(--campo-tinta);
+    max-width: 13ch;
+  }
+
+  .contacto .contacto__plomo {
+    color: var(--campo-tinta-2);
+    max-width: 38ch;
+  }
+
+  .contacto__boton {
+    margin-top: var(--paso-1);
+  }
+
+  /* El relleno claro entra por clip-path (global). Al enfocar con teclado hay
+     que pasar la tinta a carbón sobre el relleno crema, o quedaría crema
+     sobre crema. Es el único carbón de la sección y va sobre crema: 14.29:1. */
+  .contacto__boton:focus-visible {
+    color: var(--carbon);
+    border-color: var(--crema);
+  }
+
+  .contacto__datos {
+    grid-column: 7 / span 6;
+    display: grid;
+    gap: var(--paso-3);
+  }
+
+  /* Los tres datos van separados por un filete de 1px de la tinta secundaria
+     al 22%: no hay ninguna regla gris en la página. */
+  .contacto__dato {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .contacto__dato + .contacto__dato {
+    padding-top: var(--paso-3);
+    border-top: 1px solid
+      color-mix(in srgb, var(--campo-tinta-2) 22%, transparent);
+  }
+
+  .contacto__etiqueta {
+    color: var(--campo-tinta-2);
+  }
+
+  /* Enlace grande. El subrayado se dibuja de izquierda a derecha con
+     clip-path: es el gesto de enlace de toda la página, aquí en tinta crema.
+     Alineado al pie para que el filete quede pegado al texto mientras el área
+     pulsable llega a 44px. */
+  .contacto__grande {
+    display: inline-flex;
+    align-items: flex-end;
+    position: relative;
+    min-height: 44px;
+    padding-bottom: 0.14em;
+    font-size: var(--t-h3);
+    font-weight: 400;
+    line-height: 1.24;
+    letter-spacing: 0.005em;
+    color: var(--campo-tinta);
+    text-decoration: none;
+    text-wrap: pretty;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+    max-width: 30ch;
+    transition: transform var(--dur-pulsar) var(--ease-out);
+  }
+
+  /* El teléfono es el dato mayor de la sección. */
+  .contacto__grande--cifra {
+    font-size: var(--t-declaracion);
+    font-weight: 300;
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    max-width: none;
+  }
+
+  .contacto__grande--direccion {
+    max-width: 26ch;
+    text-wrap: balance;
+  }
+
+  .contacto__grande::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--campo-tinta);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--dur-ui) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .contacto__grande:hover::after {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  .contacto__grande:focus-visible::after {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .contacto__grande:active {
+    transform: scale(0.97);
+  }
+
+  /* El foco de la página es petróleo oscuro y sobre este campo no se vería:
+     dentro de la sección el contorno es luz de canto, 6.21:1. */
+  .contacto a:focus-visible {
+    outline-color: var(--canto);
+  }
+
+  @media (max-width: 900px) {
+    .contacto__llamada,
+    .contacto__datos {
+      grid-column: 1 / -1;
+    }
+    .contacto .contacto__titulo {
+      max-width: 18ch;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contacto::before,
+    .contacto.esta-barrida::before {
+      animation: none;
+      opacity: 0;
+    }
+    .contacto__grande {
+      transition: none;
+    }
+    .contacto__grande::after {
+      transition: none;
+    }
+    .contacto__grande:active {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  /* El barrido ocurre una vez, cuando la sección entra en pantalla, y nunca
+     si el usuario ha pedido menos movimiento. IntersectionObserver, no un
+     listener de scroll, y se deja de observar en cuanto dispara. */
+  const seccion = document.querySelector('[data-contacto]');
+
+  if (
+    seccion &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    const io = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((entrada) => {
+          if (!entrada.isIntersecting) return;
+          entrada.target.classList.add('esta-barrida');
+          io.unobserve(entrada.target);
+        });
+      },
+      { threshold: 0.25 }
+    );
+
+    io.observe(seccion);
+  }
+</script>
