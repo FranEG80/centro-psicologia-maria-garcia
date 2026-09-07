@@ -6,3 +6,6 @@
 dist
 node_modules
 .astro
+# variables de entorno locales
+.env
+.env.local
