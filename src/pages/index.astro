@@ -2,13 +2,27 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
-import Manifiesto from '../components/Manifiesto.astro';
-import Areas from '../components/Areas.astro';
-import SobreMi from '../components/SobreMi.astro';
-import Centro from '../components/Centro.astro';
-import Materiales from '../components/Materiales.astro';
-import Contacto from '../components/Contacto.astro';
-import Footer from '../components/Footer.astro';
+import Prisma from '../components/Prisma.astro';
+import AreasLaminas from '../components/AreasLaminas.astro';
+import AreasMuro from '../components/AreasMuro.astro';
+import Ambientes from '../components/Ambientes.astro';
+import Profesional from '../components/Profesional.astro';
+import Pie from '../components/Pie.astro';
+
+/* La secuencia de láminas. La página atraviesa hoja tras hoja y el azul se
+   hace más denso al bajar, con el hormigón volviendo antes del cierre para
+   que la segunda mitad no sea un solo bloque azul:
+
+     hero        escena 3D, hormigón y vidrio          (intacta)
+     Prisma      petróleo pleno                        densidad 3
+     Áreas       hoja pálida con poro                  densidad 1
+     Ambientes   petróleo pleno                        densidad 3
+     Profesional hormigón                              respiro
+     Pie         petróleo y carbón                     densidad 5
+
+   Las dos versiones de la sección de áreas están construidas: AreasLaminas
+   son las filas regladas con relleno al pasar, AreasMuro son los rótulos
+   centrados sobre el haz. Se cambia una línea de import para ver la otra. */
 ---
 
 <Base
@@ -16,14 +30,13 @@ import Footer from '../components/Footer.astro';
   descripcion="Psicología general, infantil y juvenil, mediación familiar, neuropsicología y psicología jurídica y forense en Motril. María García Molina, psicóloga sanitaria y mediadora familiar desde 2005."
 >
   <Nav />
-  <main>
+  <main id="contenido">
     <Hero />
-    <Manifiesto />
-    <Areas />
-    <SobreMi />
-    <Centro />
-    <Materiales />
-    <Contacto />
+    <Prisma />
+    <AreasLaminas />
+    <AreasMuro id="areas-muro" />
+    <Ambientes />
+    <Profesional />
   </main>
-  <Footer />
+  <Pie />
 </Base>

@@ -57,6 +57,19 @@ const registros = [
       </ul>
     </div>
   </div>
+
+  <!--
+    Fuera del escenario a propósito: el escenario lo ancla ScrollTrigger y pasa
+    a tener transformada propia. La flecha va fija al hueco de la pantalla y se
+    retira al primer gesto de scroll, que es justo cuando deja de hacer falta.
+  -->
+  <div class="hero__flecha" data-hero-flecha aria-hidden="true">
+    <svg viewBox="0 0 22 30" fill="none" stroke="currentColor" stroke-width="1.4">
+      <path d="M11 1V27" stroke-linecap="round"></path>
+      <path d="M3 20L11 28L19 20" stroke-linecap="round" stroke-linejoin="round"
+      ></path>
+    </svg>
+  </div>
 </section>
 
 <style>
@@ -88,20 +101,19 @@ const registros = [
      hay WebGL, el texto del cuadro queda sobre crema y el contraste se
      mantiene en 14.29:1. */
   .hero__ambiente {
-    z-index: 0;
+    /* Velo de carga: siempre por encima del render, nunca mezclado con él. */
+    z-index: 3;
     background: var(--crema);
-    transition: opacity var(--dur-material) var(--ease-out);
+    opacity: 1;
+    transition: opacity 460ms var(--ease-out);
   }
 
   /* Solo cuando hay JS que va a montar la escena se pinta el azul del primer
-     fotograma. */
+     fotograma. Plano, no en degradado: el gradiente imitaba el compuesto medido
+     del muro, pero el corte contra el lienzo se veía igual y un campo plano no
+     tiene costura que enseñar. */
   html.js .hero__ambiente {
-    background: linear-gradient(
-      to bottom,
-      #82abb8 0%,
-      #7ba6b5 46%,
-      #75a1b2 100%
-    );
+    background: #176b92;
   }
 
   /* Sin WebGL vuelve a hormigón: el texto tiene que poder leerse. */
@@ -115,12 +127,8 @@ const registros = [
 
   .hero__lienzo {
     z-index: 1;
-    opacity: 0;
-    transition: opacity 500ms var(--ease-out);
-  }
-
-  .hero__lienzo.esta-listo {
     opacity: 1;
+    transform: scale(var(--hero-esmerilado-zoom, 1));
   }
 
   /* Esmerilado de arranque.
@@ -138,6 +146,43 @@ const registros = [
   .hero__lienzo.esta-esmerilado {
     filter: blur(var(--hero-esmerilado, 0px)) saturate(1.05);
     will-change: filter;
+  }
+
+  /* -- Flecha de arranque ------------------------------------------------- */
+  .hero__flecha {
+    position: fixed;
+    left: 50%;
+    bottom: clamp(0.75rem, 2.4vh, 1.75rem);
+    z-index: 4;
+    width: 22px;
+    margin-left: -11px;
+    color: var(--carbon);
+    pointer-events: none;
+    transition: opacity 420ms var(--ease-out);
+  }
+
+  .hero__flecha.esta-oculta {
+    opacity: 0;
+  }
+
+  .hero__flecha svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* El rebote no sale de cero y vuelve a cero: arranca ya desplazado hacia
+       arriba, así el reposo del ciclo está en el punto alto y el gesto empuja
+       hacia abajo, que es lo que se está pidiendo. */
+    animation: hero-rebote 2s var(--ease-in-out) infinite;
+  }
+
+  @keyframes hero-rebote {
+    0%,
+    100% {
+      transform: translate3d(0, -3px, 0);
+    }
+    50% {
+      transform: translate3d(0, 4px, 0);
+    }
   }
 
   .hero__velo {
@@ -167,7 +212,7 @@ const registros = [
      de la plantilla retira html.js y el texto vuelve a ser visible. */
   .hero__copia {
     position: relative;
-    z-index: 3;
+    z-index: 4;
     grid-row: 2;
     align-self: center;
     display: grid;
@@ -299,6 +344,17 @@ const registros = [
   @media (max-height: 620px) and (min-width: 701px) {
     .hero__escenario {
       grid-template-rows: 55fr 45fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__flecha svg {
+      animation: none;
+    }
+    .hero__flecha,
+    .hero__ambiente,
+    .hero__lienzo {
+      transition: none;
     }
   }
 </style>

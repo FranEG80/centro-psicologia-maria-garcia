@@ -1,0 +1,457 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Portico from '../../components/Portico.astro';
+import Pie from '../../components/Pie.astro';
+import { centro, areas, materiales } from '../../data/contenido.js';
+import { detallesAreas, metaAreas, laminaRorschach } from '../../data/paginas.js';
+
+/* Una página por área. Seis rutas estáticas, generadas del mismo listado del
+   que salen la portada y el pie: si mañana cambia un punto clínico, cambia en
+   un sitio y en todas partes a la vez.
+
+   La secuencia de láminas de la portada se conserva a escala de página:
+
+     pórtico    hormigón con poro            respiro
+     listado    hoja pálida con el material  densidad 1
+     cierre     petróleo pleno               densidad 3
+     Pie        petróleo y carbón            densidad 5
+
+   Contraste medido (WCAG 2.1):
+     carbón #1F2426 sobre hoja #C3D8E2   10.6:1  listado
+     --tinta-hoja  sobre hoja             6.2:1  secundario
+     crema  #F8F4EB sobre petróleo        6.04:1 cierre
+     --campo-tinta-2 sobre petróleo       4.9:1  versalitas del cierre */
+
+export function getStaticPaths() {
+  return areas.map((area) => ({
+    params: { area: area.id },
+    props: { area },
+  }));
+}
+
+const { area } = Astro.props;
+const detalle = detallesAreas[area.id];
+
+/* Vecinas, para poder seguir sin volver al índice. El recorrido es circular
+   a propósito: la sexta área lleva a la primera en vez de a un callejón. */
+const i = areas.findIndex((a) => a.id === area.id);
+const anterior = areas[(i - 1 + areas.length) % areas.length];
+const siguiente = areas[(i + 1) % areas.length];
+---
+
+<Base
+  titulo={`${area.titulo} · ${centro.nombre}`}
+  descripcion={metaAreas[area.id]}
+>
+  <Nav />
+
+  <main id="contenido">
+    <Portico
+      marca={area.sumario}
+      titulo={area.titulo}
+      entradilla={detalle.entradilla}
+      cuerpo={detalle.cuerpo}
+      migas={[
+        { href: '/', texto: 'Inicio' },
+        { href: '/areas', texto: 'Áreas' },
+      ]}
+    />
+
+    {/* ---- Listado clínico, sobre la hoja pálida ----------------------- */}
+    <section class="listado" aria-labelledby="listado-titulo">
+      <div class="envoltura listado__reticula" data-revelar-grupo>
+        <div class="listado__texto">
+          <h2 class="caps listado__epigrafe" id="listado-titulo" data-revelar>
+            Se valora e interviene en
+          </h2>
+
+          <ul class="listado__puntos" data-revelar>
+            {area.puntos.map((p) => <li class="listado__punto">{p}</li>)}
+          </ul>
+
+          {
+            detalle.acreditacion && (
+              <div class="acreditacion" data-revelar>
+                <h3 class="caps acreditacion__epigrafe">
+                  {detalle.acreditacion.epigrafe}
+                </h3>
+                <p class="acreditacion__texto">{detalle.acreditacion.texto}</p>
+              </div>
+            )
+          }
+        </div>
+
+        <figure class="listado__figura" data-revelar="lamina">
+          <Image
+            src={detalle.imagen.src}
+            widths={[420, 640, 860]}
+            sizes="(max-width: 900px) 100vw, 40vw"
+            alt={detalle.imagen.alt}
+            loading="eager"
+            fetchpriority="low"
+            decoding="async"
+          />
+          <figcaption class="caps caps--contenido listado__pie">
+            {detalle.imagen.pie}
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    {/* ---- Material de evaluación. Solo en neuropsicología ------------- */}
+    {
+      detalle.muestraMateriales && (
+        <section class="material" aria-labelledby="material-titulo">
+          <div class="envoltura material__cabecera">
+            <p class="caps material__marca">Material de evaluación</p>
+            <h2 class="h2 material__titulo" id="material-titulo">
+              Lo que hay encima de la mesa
+            </h2>
+            <p class="plomo material__plomo">
+              Instrumentos reales del centro. Cada uno mide algo concreto, y
+              por eso una valoración no es una conversación larga: es una
+              prueba con resultado.
+            </p>
+          </div>
+
+          <ul class="material__tira" data-revelar-grupo>
+            {/* La lámina de Rorschach encabeza la tira: es la prueba que
+                cualquiera reconoce, y sirve de puerta de entrada al resto. */}
+            <li class="pieza" data-revelar="lamina">
+              <Image
+                src={laminaRorschach.src}
+                widths={[380, 560, 760]}
+                sizes="(max-width: 860px) 100vw, 33vw"
+                alt={laminaRorschach.alt}
+                loading="eager"
+                fetchpriority="low"
+                decoding="async"
+              />
+              <div class="pieza__texto">
+                <h3 class="h3 pieza__nombre">Lámina de Rorschach</h3>
+                <p class="pieza__nota">
+                  Prueba proyectiva. La misma mancha, y lo que cada persona ve
+                  en ella.
+                </p>
+              </div>
+            </li>
+
+            {materiales
+              .filter((m) => m.titulo !== 'Lámina de Rorschach')
+              .map((m) => (
+                <li class="pieza" data-revelar="lamina">
+                  <Image
+                    src={m.src}
+                    widths={[380, 560, 760]}
+                    sizes="(max-width: 860px) 100vw, 33vw"
+                    alt={m.alt}
+                    loading="eager"
+                    fetchpriority="low"
+                    decoding="async"
+                  />
+                  <div class="pieza__texto">
+                    <h3 class="h3 pieza__nombre">{m.titulo}</h3>
+                    <p class="pieza__nota">{m.nota}</p>
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {/* ---- Cuándo pedir cita, sobre el campo de petróleo --------------- */}
+    <section class="cuando" aria-labelledby="cuando-titulo">
+      <hr class="canto" />
+      <div class="envoltura cuando__caja">
+        <h2 class="cuando__titulo" id="cuando-titulo">
+          {detalle.cierre.epigrafe}
+        </h2>
+        <p class="cuando__texto">{detalle.cierre.texto}</p>
+      </div>
+    </section>
+
+    {/* ---- Las áreas vecinas ------------------------------------------- */}
+    <nav class="vecinas" aria-label="Otras áreas">
+      <div class="envoltura vecinas__reticula">
+        <a class="vecina vecina--atras" href={`/areas/${anterior.id}`}>
+          <span class="caps vecina__marca">Área anterior</span>
+          <span class="vecina__nombre">{anterior.titulo}</span>
+        </a>
+        <a class="vecina vecina--adelante" href={`/areas/${siguiente.id}`}>
+          <span class="caps vecina__marca">Área siguiente</span>
+          <span class="vecina__nombre">{siguiente.titulo}</span>
+        </a>
+      </div>
+      <p class="envoltura vecinas__todas">
+        <a class="enlace" href="/areas">Ver las seis áreas</a>
+      </p>
+    </nav>
+  </main>
+
+  <Pie />
+</Base>
+
+<style>
+  /* ---- Listado --------------------------------------------------------- */
+  /* La hoja pálida del laminado, la misma que rellena las filas de la
+     portada: aquí está puesta, porque el área ya se eligió. */
+  .listado {
+    background: var(--vidrio-hoja);
+    color: var(--carbon);
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-5);
+  }
+
+  .listado__reticula {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--paso-4);
+    align-items: start;
+  }
+
+  .listado__epigrafe {
+    color: var(--tinta-hoja);
+  }
+
+  .listado__puntos {
+    margin-top: var(--paso-3);
+    display: grid;
+    gap: var(--paso-2);
+    font-size: var(--t-lista);
+    max-width: 58ch;
+  }
+
+  .listado__punto {
+    position: relative;
+    padding-left: 1.6em;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .listado__punto::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.74em;
+    width: 0.8em;
+    height: 1px;
+    background: var(--petroleo-800);
+  }
+
+  /* La acreditación de mediación: no es un punto más del listado, es un
+     registro oficial, así que va separada por un filete y con su epígrafe. */
+  .acreditacion {
+    margin-top: var(--paso-3);
+    padding-top: var(--paso-2);
+    border-top: 1px solid var(--filete-hoja);
+    max-width: 44ch;
+  }
+
+  .acreditacion__epigrafe {
+    color: var(--tinta-hoja);
+  }
+
+  .acreditacion__texto {
+    margin-top: var(--paso-1);
+    font-size: var(--t-lista);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .listado__figura {
+    background: var(--crema);
+    padding: var(--paso-2);
+    box-shadow: var(--sombra-baja);
+  }
+
+  .listado__figura img {
+    width: 100%;
+    height: clamp(15rem, 30vw, 24rem);
+    object-fit: cover;
+  }
+
+  .listado__pie {
+    margin-top: var(--paso-2);
+    color: var(--tinta-2);
+  }
+
+  /* ---- Material -------------------------------------------------------- */
+  .material {
+    background: var(--hormigon);
+    position: relative;
+    isolation: isolate;
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-5) 0;
+  }
+
+  .material::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .material__cabecera {
+    margin-bottom: var(--paso-4);
+  }
+
+  .material__marca {
+    color: var(--tinta-2);
+  }
+
+  .material__titulo {
+    margin-top: var(--paso-1);
+  }
+
+  .material__plomo {
+    margin-top: var(--paso-2);
+  }
+
+  .material__tira {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--filete);
+  }
+
+  .pieza {
+    padding-bottom: var(--paso-5);
+  }
+
+  .pieza + .pieza {
+    border-left: 1px solid var(--filete);
+  }
+
+  .pieza img {
+    width: 100%;
+    height: clamp(12rem, 22vw, 18rem);
+    object-fit: cover;
+  }
+
+  .pieza__texto {
+    padding: var(--paso-2) var(--paso-2) 0;
+  }
+
+  .pieza__nota {
+    margin-top: var(--paso-1);
+    font-size: var(--t-micro-2);
+    color: var(--tinta-2);
+    text-wrap: pretty;
+  }
+
+  /* ---- Cuándo pedir cita ----------------------------------------------- */
+  .cuando {
+    background: var(--petroleo);
+    color: var(--crema);
+  }
+
+  .cuando__caja {
+    padding-block: var(--paso-5);
+  }
+
+  .cuando__titulo {
+    font-size: var(--t-h2);
+    font-weight: 300;
+    line-height: 1.14;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-indent: 0.06em;
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+
+  /* Un solo párrafo largo, en cuerpo grande: es la parte de la página que más
+     se lee y la que decide si alguien escribe o cierra la pestaña. */
+  .cuando__texto {
+    margin-top: var(--paso-3);
+    font-size: var(--t-cuerpo-lg);
+    font-weight: 300;
+    line-height: 1.5;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+
+  /* ---- Vecinas --------------------------------------------------------- */
+  .vecinas {
+    background: var(--hormigon);
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-4);
+  }
+
+  .vecinas__reticula {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--paso-2);
+  }
+
+  .vecina {
+    display: flex;
+    flex-direction: column;
+    gap: var(--paso-1);
+    padding: var(--paso-2) 0;
+    color: var(--carbon);
+    text-decoration: none;
+    border-top: 1px solid var(--filete);
+    transition: color var(--dur-ui) ease;
+  }
+
+  .vecina--adelante {
+    text-align: right;
+  }
+
+  .vecina__marca {
+    color: var(--tinta-2);
+  }
+
+  .vecina__nombre {
+    font-size: var(--t-h3);
+    font-weight: 300;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vecina:hover {
+      color: var(--acento-fuerte);
+    }
+  }
+
+  .vecinas__todas {
+    margin-top: var(--paso-3);
+    font-size: var(--t-micro-2);
+  }
+
+  @media (max-width: 900px) {
+    .listado__reticula {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .material__tira {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .pieza {
+      padding-bottom: var(--paso-3);
+    }
+    .pieza + .pieza {
+      border-left: 0;
+      border-top: 1px solid var(--filete);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .vecinas__reticula {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .vecina--adelante {
+      text-align: left;
+    }
+  }
+</style>

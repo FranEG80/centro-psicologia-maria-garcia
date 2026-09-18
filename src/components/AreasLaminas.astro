@@ -1,0 +1,280 @@
+---
+import { areas, resumenAreas } from '../data/contenido.js';
+
+/* Las seis áreas como seis filas regladas sobre el hormigón, con su poro.
+   La hoja de vidrio no está puesta: baja al pasar por encima.
+
+   Ese es el gesto de la página —la lámina que desciende, el mismo de .boton—
+   y así la sección en reposo es material, no color, que es lo que separa esto
+   de una lista con fondo azul.
+
+   Medidas del comp aprobado (artifacts/figma-import): filas de 104px, número
+   a 88px, nombre a 30px en Light con 0.05em.
+
+   Contraste medido (WCAG 2.1):
+     carbón #1F2426 sobre hormigón #F4EFE4   13.0:1  nombre en reposo
+     --tinta-2 #6E665A sobre hormigón         4.9:1  nota en reposo
+     --petroleo-800 sobre hormigón            7.6:1  número en reposo
+     carbón sobre hoja #C3D8E2               10.6:1  nombre al pasar
+     --tinta-hoja #284A60 sobre hoja          6.2:1  nota al pasar
+     --petroleo-800 sobre hoja                5.6:1  número al pasar */
+
+/* El ancla es un prop para que las dos versiones de la sección puedan
+   convivir en la misma página mientras se decide cuál se queda: dos
+   id="areas" en el mismo documento rompen el salto del menú. */
+const { id = 'areas' } = Astro.props;
+---
+
+<section class="laminas" id={id} aria-labelledby={`${id}-titulo`}>
+  <div class="laminas__poro" aria-hidden="true"></div>
+
+  <div class="envoltura laminas__cabecera">
+    <p class="caps laminas__marca">Seis áreas</p>
+    <h2 class="h2 laminas__titulo" id={`${id}-titulo`}>
+      Valoración e intervención
+    </h2>
+  </div>
+
+  <ul class="laminas__filas" data-revelar-grupo>
+    {
+      areas.map((a, i) => (
+        <li class="laminas__fila" data-revelar>
+          <a class="hoja" href={`/areas/${a.id}`}>
+            <span class="hoja__relleno" aria-hidden="true" />
+            <span class="hoja__linea">
+              <span class="hoja__numero" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span class="hoja__nombre">{a.titulo}</span>
+              <span class="hoja__nota">{resumenAreas[a.id] ?? a.sumario}</span>
+              <span class="hoja__flecha" aria-hidden="true">
+                <svg viewBox="0 0 24 10" width="24" height="10" fill="none">
+                  <path
+                    d="M0 5h22M18 1l4 4-4 4"
+                    stroke="currentColor"
+                    stroke-width="1"
+                  />
+                </svg>
+              </span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  /* Hormigón, no vidrio: en reposo la sección es el mismo muro del primer
+     cuadro. El canto encendido de 1px es lo único que la separa de la
+     sección anterior. */
+  .laminas {
+    position: relative;
+    isolation: isolate;
+    background: var(--hormigon);
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-5) var(--paso-5);
+  }
+
+  /* El poro, en capa propia y multiplicando: como imagen de fondo del bloque
+     taparía el tono cálido en vez de modularlo, porque la textura es gris
+     neutra. */
+  .laminas__poro {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.45;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .laminas__cabecera {
+    margin-bottom: var(--paso-4);
+  }
+
+  .laminas__marca {
+    color: var(--tinta-2);
+  }
+
+  .laminas__titulo {
+    margin-top: var(--paso-1);
+    color: var(--carbon);
+  }
+
+  /* ------------------------------------------------------------------------
+     Las filas. A sangre, pegadas entre sí: lo único que las separa es el
+     filete, como las hojas de un laminado vistas de canto.
+     ---------------------------------------------------------------------- */
+  .laminas__filas {
+    border-top: 1px solid var(--filete);
+    border-bottom: 1px solid var(--filete);
+  }
+
+  .laminas__fila + .laminas__fila {
+    border-top: 1px solid var(--filete);
+  }
+
+  /* El enlace va a sangre para que el relleno cruce toda la ventana. La
+     retícula de contenido vive dentro, centrada y con el gutter de la página:
+     si la rejilla estuviera en el propio enlace, el azul se cortaría en los
+     márgenes y la fila parecería una tarjeta ancha. */
+  .hoja {
+    position: relative;
+    isolation: isolate;
+    display: block;
+    width: 100%;
+    color: var(--carbon);
+    text-decoration: none;
+    transition: color var(--dur-ui) ease;
+  }
+
+  .hoja__linea {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 29.5rem) minmax(0, 1fr) 3rem;
+    align-items: center;
+    gap: var(--paso-2);
+    width: 100%;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    min-height: 6.5rem;
+  }
+
+  /* El relleno. Sube desde abajo con clip-path, igual que .boton::before:
+     una lámina que baja sobre la fila, no un fundido de fondo. */
+  .hoja__relleno {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--vidrio-hoja);
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path var(--dur-material) var(--ease-hoja);
+  }
+
+  /* El canto encendido del borde de entrada, que solo aparece con el relleno. */
+  .hoja__relleno::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: var(--canto);
+    opacity: 0;
+    transition: opacity var(--dur-ui) ease;
+  }
+
+  .hoja__numero {
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--tinta-2);
+    font-variant-numeric: tabular-nums;
+    transition: color var(--dur-ui) ease;
+  }
+
+  .hoja__nombre {
+    font-size: var(--t-h3);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .hoja__nota {
+    font-size: var(--t-lista);
+    line-height: 1.5;
+    color: var(--tinta-2);
+    text-wrap: pretty;
+    transition: color var(--dur-ui) ease;
+  }
+
+  .hoja__flecha {
+    justify-self: end;
+    color: var(--topo);
+    opacity: 0;
+    translate: -0.75rem 0;
+    transition: opacity var(--dur-ui) ease,
+      translate var(--dur-ui) var(--ease-out), color var(--dur-ui) ease;
+  }
+
+  /* El estado activo se declara una vez y lo comparten el ratón y el foco: un
+     teclado tiene que ver exactamente lo mismo. */
+  @media (hover: hover) and (pointer: fine) {
+    .hoja:hover .hoja__relleno {
+      clip-path: inset(0 0 0 0);
+    }
+    .hoja:hover .hoja__relleno::after {
+      opacity: 1;
+    }
+    .hoja:hover .hoja__numero,
+    .hoja:hover .hoja__nota {
+      color: var(--tinta-hoja);
+    }
+    .hoja:hover .hoja__flecha {
+      opacity: 1;
+      translate: 0 0;
+      color: var(--petroleo-800);
+    }
+  }
+
+  .hoja:focus-visible {
+    outline-offset: -3px;
+  }
+  .hoja:focus-visible .hoja__relleno {
+    clip-path: inset(0 0 0 0);
+  }
+  .hoja:focus-visible .hoja__relleno::after {
+    opacity: 1;
+  }
+  .hoja:focus-visible .hoja__numero,
+  .hoja:focus-visible .hoja__nota {
+    color: var(--tinta-hoja);
+  }
+  .hoja:focus-visible .hoja__flecha {
+    opacity: 1;
+    translate: 0 0;
+    color: var(--petroleo-800);
+  }
+
+  @media (max-width: 1100px) {
+    .hoja__linea {
+      grid-template-columns: 4rem minmax(0, 1fr) 2.5rem;
+      row-gap: var(--paso-1);
+      padding-block: var(--paso-2);
+    }
+    .hoja__nota {
+      grid-column: 2 / 3;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .hoja__linea {
+      grid-template-columns: 3.25rem minmax(0, 1fr);
+      min-height: 5.5rem;
+    }
+    .hoja__flecha {
+      display: none;
+    }
+    .hoja__nota {
+      font-size: var(--t-micro-2);
+    }
+  }
+
+  /* Sin movimiento el relleno sigue existiendo: cambia de golpe en vez de
+     subir. Lo que no puede pasar es que el estado deje de verse. */
+  @media (prefers-reduced-motion: reduce) {
+    .hoja,
+    .hoja__relleno,
+    .hoja__relleno::after,
+    .hoja__numero,
+    .hoja__nota,
+    .hoja__flecha {
+      transition-duration: 1ms;
+    }
+    .hoja__flecha {
+      translate: 0 0;
+    }
+  }
+</style>

@@ -1,0 +1,303 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Portico from '../components/Portico.astro';
+import Pie from '../components/Pie.astro';
+import { centro, formacion, trayectoria } from '../data/contenido.js';
+import { sobreMi } from '../data/paginas.js';
+import retrato from '../assets/retrato.webp';
+
+/* Sobre mí. Formación, trayectoria y registros, y nada más: no hay texto en
+   primera persona porque la clienta todavía no lo ha escrito, y una biografía
+   inventada en una web sanitaria es exactamente lo que no puede haber aquí.
+
+   PENDIENTE: confirmar que el retrato es el definitivo y que se autoriza su
+   uso. Sin él la página funciona igual —la columna de imagen desaparece y el
+   texto ocupa el ancho—, pero pierde lo que más conecta.
+
+   Contraste medido (WCAG 2.1) sobre hoja #C3D8E2:
+     carbón #1F2426   10.6:1  listados
+     --tinta-hoja      6.2:1  epígrafes */
+---
+
+<Base
+  titulo={`Sobre mí · ${centro.profesional}`}
+  descripcion={`${centro.profesional}, psicóloga sanitaria y mediadora familiar en ${centro.localidad} desde ${centro.desde}. Especialista en Neuropsicología y máster en Psicología Jurídica y Forense.`}
+>
+  <Nav />
+
+  <main id="contenido">
+    <Portico
+      marca={sobreMi.marca}
+      titulo={sobreMi.titulo}
+      entradilla={sobreMi.entradilla}
+      cuerpo={sobreMi.cuerpo}
+      migas={[{ href: '/', texto: 'Inicio' }]}
+    >
+      {/* Dentro del grupo de revelado del pórtico: sin data-revelar entraría
+          antes que el titular que tiene encima. */}
+      <p class="caps portico__oficio" data-revelar>{sobreMi.sumario}</p>
+    </Portico>
+
+    {/* ---- Retrato y registros ----------------------------------------- */}
+    <section class="quien" aria-labelledby="quien-titulo">
+      <h2 class="solo-lectores" id="quien-titulo">Quién atiende</h2>
+
+      <div class="envoltura quien__reticula" data-revelar-grupo>
+        <figure class="quien__figura" data-revelar="lamina">
+          <span class="quien__marco" aria-hidden="true"></span>
+          <Image
+            src={retrato}
+            widths={[420, 640, 860]}
+            sizes="(max-width: 900px) 100vw, 40vw"
+            alt={`${centro.profesional}, psicóloga sanitaria y mediadora familiar.`}
+            loading="eager"
+            decoding="async"
+          />
+        </figure>
+
+        <div class="quien__texto">
+          <p class="plomo quien__plomo" data-revelar>
+            Quien valora es quien interviene y quien acompaña. Sin derivaciones
+            internas ni cambio de profesional a mitad del proceso.
+          </p>
+
+          <dl class="registros" data-revelar>
+            {
+              centro.credenciales.map((c) => (
+                <div class="registro">
+                  <dt class="registro__etiqueta">{c.etiqueta}</dt>
+                  <dd class="registro__valor">{c.valor}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    {/* ---- Formación y trayectoria ------------------------------------- */}
+    <section class="curriculo" aria-labelledby="curriculo-titulo">
+      <h2 class="solo-lectores" id="curriculo-titulo">
+        Formación y trayectoria
+      </h2>
+
+      <div class="envoltura curriculo__reticula" data-revelar-grupo>
+        <div class="columna" data-revelar>
+          <h3 class="caps columna__epigrafe">Formación</h3>
+          <ul class="columna__lista">
+            {formacion.map((f) => <li class="columna__punto">{f}</li>)}
+          </ul>
+        </div>
+
+        <div class="columna" data-revelar>
+          <h3 class="caps columna__epigrafe">Trayectoria</h3>
+          <ul class="columna__lista">
+            {trayectoria.map((t) => <li class="columna__punto">{t}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    {/* ---- Lo que hace distinto al centro ------------------------------ */}
+    <section class="alcance" aria-labelledby="alcance-titulo">
+      <hr class="canto" />
+      <div class="envoltura alcance__caja">
+        <h2 class="alcance__titulo" id="alcance-titulo">
+          Tres formaciones, un solo despacho
+        </h2>
+        <p class="alcance__texto">
+          La neuropsicología, el ámbito jurídico y forense y la mediación
+          familiar no suelen coincidir en la misma profesional. Aquí sí, y por
+          eso el mismo despacho puede valorar a un niño con dificultades de
+          aprendizaje, mediar en una separación y elaborar un informe pericial.
+        </p>
+        <a class="boton boton--claro alcance__boton" href="/areas">
+          Ver las seis áreas
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Pie />
+</Base>
+
+<style>
+  /* El oficio va dentro del pórtico, justo debajo del nombre: es la línea que
+     dice qué es, antes que la que dice qué hace. */
+  .portico__oficio {
+    margin-top: var(--paso-2);
+    color: var(--acento-fuerte);
+  }
+
+  /* ---- Quién ----------------------------------------------------------- */
+  .quien {
+    background: var(--vidrio-hoja);
+    color: var(--carbon);
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-5);
+  }
+
+  .quien__reticula {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--paso-4);
+    align-items: center;
+  }
+
+  /* Marco y paspartú, como en la portada: el retrato va montado sobre crema,
+     no pegado al fondo. */
+  .quien__figura {
+    position: relative;
+    background: var(--crema);
+    padding: var(--paso-2);
+    box-shadow: var(--sombra-baja);
+  }
+
+  .quien__marco {
+    position: absolute;
+    inset: calc(var(--paso-2) / 2);
+    border: 1px solid var(--filete);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .quien__figura img {
+    width: 100%;
+    height: clamp(20rem, 42vw, 34rem);
+    object-fit: cover;
+    object-position: center 28%;
+    filter: grayscale(1) contrast(1.04);
+  }
+
+  .registros {
+    margin-top: var(--paso-3);
+    display: grid;
+    gap: var(--paso-1);
+    border-top: 1px solid var(--filete-hoja);
+    padding-top: var(--paso-2);
+  }
+
+  .registro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 0.9rem;
+  }
+
+  .registro__etiqueta {
+    font-size: var(--t-micro);
+    font-weight: 450;
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--tinta-hoja);
+  }
+
+  .registro__valor {
+    font-size: var(--t-lista);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- Currículo ------------------------------------------------------- */
+  .curriculo {
+    background: var(--hormigon);
+    position: relative;
+    isolation: isolate;
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-5);
+  }
+
+  .curriculo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .curriculo__reticula {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--paso-4);
+    align-items: start;
+  }
+
+  .columna__epigrafe {
+    color: var(--tinta-2);
+    padding-bottom: var(--paso-2);
+    border-bottom: 1px solid var(--filete);
+  }
+
+  .columna__lista {
+    margin-top: var(--paso-2);
+    display: grid;
+    gap: var(--paso-2);
+    font-size: var(--t-lista);
+  }
+
+  .columna__punto {
+    position: relative;
+    padding-left: 1.6em;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .columna__punto::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.74em;
+    width: 0.8em;
+    height: 1px;
+    background: var(--acento);
+  }
+
+  /* ---- Alcance --------------------------------------------------------- */
+  .alcance {
+    background: var(--petroleo);
+    color: var(--crema);
+  }
+
+  .alcance__caja {
+    padding-block: var(--paso-5);
+  }
+
+  .alcance__titulo {
+    font-size: var(--t-h2);
+    font-weight: 300;
+    line-height: 1.14;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-indent: 0.06em;
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+
+  .alcance__texto {
+    margin-top: var(--paso-3);
+    font-size: var(--t-cuerpo-lg);
+    font-weight: 300;
+    line-height: 1.5;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+
+  .alcance__boton {
+    margin-top: var(--paso-3);
+  }
+
+  @media (max-width: 900px) {
+    .quien__reticula,
+    .curriculo__reticula {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .quien__figura img {
+      height: clamp(16rem, 58vw, 24rem);
+    }
+  }
+</style>

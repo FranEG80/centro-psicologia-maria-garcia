@@ -1,0 +1,133 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Portico from '../components/Portico.astro';
+import PaginaLegal from '../components/PaginaLegal.astro';
+import Pie from '../components/Pie.astro';
+import { centro } from '../data/contenido.js';
+
+/* POLÍTICA DE COOKIES — BORRADOR.
+
+   Lo que dice esta página sobre el sitio es comprobable en el propio
+   repositorio, no una suposición: no hay analítica, no hay píxeles de
+   seguimiento y la tipografía va autoalojada en /public/fonts. Sí hay un
+   contenido de tercero, el mapa de Google del pie, y por eso el sitio pide
+   consentimiento previo: el iframe no está en el HTML, lo monta
+   consentimiento.js solo después de un sí explícito.
+
+   Lo que falta y no depende de nosotros es la confirmación por escrito de la
+   asesoría, porque quien responde ante la AEPD es la titular del sitio.
+
+   IMPORTANTE para quien siga tocando esto: cualquier añadido nuevo de tercero
+   —Google Analytics, un vídeo de YouTube, un chat, un píxel de Meta— entra por
+   el mismo sitio. Se marca con data-tercero y su data-tercero-src, nunca con
+   la etiqueta cargada de serie, y se enumera aquí abajo. */
+---
+
+<Base
+  titulo={`Política de cookies · ${centro.nombre}`}
+  descripcion={`Uso de cookies y tecnologías similares en el sitio web del ${centro.nombre}.`}
+>
+  <Nav />
+
+  <main id="contenido">
+    <Portico
+      marca="Información legal"
+      titulo="Política de cookies"
+      entradilla="Qué guarda este sitio en tu navegador. La respuesta corta: nada, salvo lo que autorices para el mapa."
+      migas={[{ href: '/', texto: 'Inicio' }]}
+    />
+
+    <PaginaLegal>
+      <h2>Qué es una cookie</h2>
+      <p>
+        Una cookie es un pequeño archivo que un sitio web guarda en el
+        navegador de quien lo visita. Sirve para recordar información entre
+        páginas o entre visitas: desde una preferencia de idioma hasta el
+        rastro de navegación con fines publicitarios.
+      </p>
+
+      <h2>Qué cookies usa este sitio</h2>
+      <p>
+        Ninguna propia con fines de análisis, publicidad o perfilado. Al abrir
+        una página no se instala nada en tu navegador:
+      </p>
+      <ul>
+        <li>No hay herramientas de analítica ni de medición de audiencia.</li>
+        <li>
+          No hay píxeles de seguimiento, ni etiquetas publicitarias, ni redes
+          sociales incrustadas.
+        </li>
+        <li>
+          La tipografía se sirve desde este mismo dominio, no desde un servicio
+          externo de fuentes.
+        </li>
+        <li>
+          No se usa la huella digital del navegador con fines de
+          identificación.
+        </li>
+      </ul>
+      <p>
+        La única excepción es técnica y la decides tú: si eliges una opción en
+        el aviso, el sitio guarda esa elección —y solo esa— en el
+        almacenamiento local de tu navegador, para no volver a preguntarte en
+        cada página. No identifica a nadie ni sale de tu equipo.
+      </p>
+
+      <h2>El mapa de Google</h2>
+      <p>
+        El pie de página incluye un mapa servido por Google. Al cargarlo,
+        Google puede instalar cookies en tu navegador y recibir tu dirección IP
+        y datos de tu dispositivo, con arreglo a sus propias políticas.
+      </p>
+      <p>
+        Por eso el mapa no se carga solo. En su lugar verás un marco vacío con
+        un botón, y hasta que no lo pulses —o aceptes en el aviso inferior— el
+        contenido de Google no llega a pedirse: no es que se cargue oculto, es
+        que no existe en la página. Rechazar deja el sitio completo salvo ese
+        mapa, y la dirección sigue escrita en el pie junto al enlace para
+        abrirla en la aplicación de mapas que prefieras.
+      </p>
+
+      <h2>Tu elección, y cómo cambiarla</h2>
+      <p data-consentimiento-estado>
+        Todavía no has elegido. Mientras tanto, el mapa de Google no se carga.
+      </p>
+      <p>
+        Puedes cambiarla cuando quieras, sin coste ni penalización, desde{' '}
+        <button class="enlace" type="button" data-consentimiento-abrir>
+          preferencias de cookies
+        </button>{' '}
+        —el mismo enlace está en el pie de todas las páginas—. Si retiras el
+        consentimiento, el mapa deja de cargarse de inmediato.
+      </p>
+
+      <h2>Enlaces que salen del sitio</h2>
+      <p>
+        Hay además enlaces a servicios externos: el botón de WhatsApp y el
+        enlace para abrir la dirección en Google Maps. Esos servicios no se
+        cargan dentro de la página —no recibirás cookies suyas por estar
+        aquí—, pero sí pueden instalarlas en cuanto pulses el enlace y salgas
+        hacia ellos. Lo que ocurra a partir de ahí se rige por sus políticas,
+        no por esta.
+      </p>
+
+      <h2>Cómo controlar las cookies de todos modos</h2>
+      <p>
+        Aunque este sitio no las use, cualquier navegador permite ver, bloquear
+        o borrar las cookies que tenga guardadas, normalmente desde el apartado
+        de privacidad o de datos de navegación de sus ajustes.
+      </p>
+
+      <h2>Cambios en esta política</h2>
+      <p>
+        Si en el futuro se incorpora al sitio alguna herramienta más que
+        instale cookies, se enumerará aquí y se pedirá tu consentimiento previo
+        igual que con el mapa. Para cualquier duda:{' '}
+        <a class="enlace" href={`mailto:${centro.email}`}>{centro.email}</a>.
+      </p>
+    </PaginaLegal>
+  </main>
+
+  <Pie />
+</Base>

@@ -1,0 +1,651 @@
+---
+import { centro, navegacion, areas } from '../data/contenido.js';
+
+const anio = new Date().getFullYear();
+
+/* Mapa de Google, centrado en el portal. Zoom 16: la manzana y las calles de
+   alrededor, que es lo que sirve para situarse, no la comarca entera.
+
+   El iframe NO se sirve en el HTML: aquí solo va el marco, con la dirección
+   en un data-atributo. Google deja cookies de terceros en cuanto carga, así
+   que lo monta consentimiento.js y solo después de un sí explícito, sea el
+   de la franja o el botón de este mismo marco. Se eligió Google a pesar de
+   ese coste porque la atribución de OpenStreetMap es obligatoria por licencia
+   y ocupaba dos líneas dentro del marco. */
+const { lat, lon } = centro.coordenadas;
+const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&output=embed`;
+
+/* La última hoja del laminado, la más densa: el cierre en marino. Encima, el
+   campo de petróleo con la llamada; debajo, los datos sobre carbón.
+
+   Contraste medido (WCAG 2.1):
+     crema #F8F4EB sobre petróleo #35617F   6.04:1
+     crema #F8F4EB sobre carbón #1F2426    14.3:1
+     --campo-tinta-2 sobre petróleo         4.9:1
+     --topo #A79E90 sobre carbón            6.4:1  versalitas y secundario */
+---
+
+<footer class="pie">
+  {/* ---- Cierre: el campo pleno con la llamada a la acción -------------- */}
+  <section class="cierre" aria-labelledby="cierre-titulo">
+    <hr class="canto" />
+    <div class="envoltura cierre__caja">
+      <div class="cierre__texto">
+        <h2 class="cierre__titulo" id="cierre-titulo">Escríbeme y lo vemos</h2>
+        <p class="cierre__plomo">
+          Lo más rápido es WhatsApp. Si prefieres llamar, el mismo número sirve
+          para las dos cosas.
+        </p>
+      </div>
+
+      <div class="cierre__acciones">
+        <a
+          class="boton boton--claro cierre__boton"
+          href={centro.whatsapp}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Escribir por WhatsApp
+        </a>
+        <a class="cierre__tel" href={`tel:${centro.telefonoTel}`}>
+          {centro.telefono}
+        </a>
+        <p class="cierre__horario">{centro.direccion}, {centro.localidad}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ---- Datos ---------------------------------------------------------- */}
+  <div class="pie__fondo">
+    <hr class="canto" />
+
+    <div class="envoltura pie__reticula">
+      <div class="pie__cabecera">
+        <div class="pie__marca">
+        {/* Monograma decorativo: el nombre va justo debajo como texto, así que
+            un alt aquí solo duplicaría el anuncio del lector. */}
+          <img
+            class="pie__monograma"
+            src="/media/logo-maria-garcia-crema.svg"
+            alt=""
+            width="382"
+            height="305"
+            aria-hidden="true"
+            decoding="async"
+          />
+          <p class="pie__nombre">{centro.nombre}</p>
+        </div>
+
+        {/* Registros verificados, literales. El NICA es obligatorio a la vista
+            en un centro sanitario, así que sube a la primera línea del pie. */}
+        <dl class="pie__registros">
+          {
+            centro.credenciales.map((c) => (
+              <div class="pie__registro">
+                <dt class="pie__etiqueta">{c.etiqueta}</dt>
+                <dd class="pie__valor">{c.valor}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <nav class="pie__bloque" aria-label="Páginas">
+        <h2 class="caps pie__epigrafe">Páginas</h2>
+        <ul class="pie__lista">
+          {
+            navegacion.map((n) => (
+              <li>
+                <a class="pie__enlace" href={n.href}>
+                  {n.texto}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav class="pie__bloque" aria-label="Áreas de atención">
+        <h2 class="caps pie__epigrafe">Áreas</h2>
+        <ul class="pie__lista">
+          {
+            areas.map((a) => (
+              <li>
+                <a class="pie__enlace" href={`/areas/${a.id}`}>
+                  {a.titulo}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="pie__bloque pie__bloque--contacto">
+        <h2 class="caps pie__epigrafe">Contacto</h2>
+        <ul class="pie__lista">
+          <li>
+            <a class="pie__enlace" href={`tel:${centro.telefonoTel}`}>
+              {centro.telefono}
+            </a>
+          </li>
+          <li>
+            <a
+              class="pie__enlace"
+              href={centro.whatsapp}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              WhatsApp
+            </a>
+          </li>
+          <li>
+            <a class="pie__enlace" href={`mailto:${centro.email}`}>
+              {centro.email}
+            </a>
+          </li>
+        </ul>
+
+        <h2 class="caps pie__epigrafe pie__epigrafe--sitio">Dónde estamos</h2>
+        <address class="pie__direccion">
+          {centro.direccion}<br />
+          {centro.cp} {centro.localidad}, {centro.provincia}
+        </address>
+        <a
+          class="pie__enlace pie__mapa"
+          href={centro.mapa}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Cómo llegar
+          <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
+        </a>
+      </div>
+
+      {/* El iframe lo inyecta consentimiento.js dentro de este marco, sin
+          loading="lazy": Lenis conduce el scroll y el navegador deja de
+          reevaluar la distancia al viewport, así que un marco diferido en el
+          pie no llega a cargarse nunca. Es el mismo motivo por el que las
+          fotografías de la página van en eager. */}
+      <div class="pie__bloque pie__bloque--mapa">
+        <div
+          class="pie__lienzo"
+          data-tercero="mapa"
+          data-tercero-src={mapaEmbebido}
+          data-tercero-titulo={`Mapa con la ubicación del centro en ${centro.direccion}, ${centro.localidad}`}
+        >
+          <div class="marco" data-tercero-aviso>
+            {/* Plano desenfocado servido desde este dominio: dice que ahí hay
+                un mapa sin pedirle nada a Google. Sale de teselas de
+                OpenStreetMap bajadas una vez (herramientas/mapa-previo.mjs),
+                y la atribución de abajo es obligatoria por su licencia. */}
+            <img
+              class="marco__plano"
+              src="/media/mapa-previo.webp"
+              alt=""
+              aria-hidden="true"
+              width="760"
+              height="470"
+              decoding="async"
+            />
+            <div class="marco__contenido">
+              <p class="caps marco__epigrafe">Mapa de Google</p>
+              <p class="marco__texto">
+                Este mapa lo sirve Google y deja cookies suyas en tu navegador.
+                No se carga hasta que lo autorices.
+              </p>
+              <button class="boton boton--claro marco__boton" type="button" data-tercero-cargar>
+                Cargar el mapa
+              </button>
+              <a
+                class="pie__enlace marco__alterna"
+                href={centro.mapa}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                O abrirlo en Google Maps
+                <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
+              </a>
+            </div>
+            <!-- <p class="marco__licencia">Vista previa © OpenStreetMap</p> -->
+          </div>
+        </div>
+      </div>
+
+      <hr class="pie__filete" />
+
+      <div class="pie__cola">
+        <p class="pie__legal">
+          © {anio} {centro.profesional}. Todos los derechos reservados.
+        </p>
+        <nav class="pie__legales" aria-label="Información legal">
+          <a class="pie__enlace" href="/aviso-legal">Aviso legal</a>
+          <a class="pie__enlace" href="/privacidad">Protección de datos</a>
+          <a class="pie__enlace" href="/cookies">Cookies</a>
+          {/* Retirar el consentimiento tiene que costar lo mismo que darlo:
+              un clic, y desde cualquier página. */}
+          <button class="pie__enlace pie__preferencias" type="button" data-consentimiento-abrir>
+            Preferencias de cookies
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* ---- Cierre ---------------------------------------------------------- */
+  .cierre {
+    background: var(--petroleo);
+    color: var(--crema);
+  }
+
+  /* Dos columnas: el texto a la izquierda y las acciones a la derecha. En una
+     sola columna el bloque se estiraba media pantalla con el botón perdido al
+     fondo; enfrentados, la llamada queda a la altura del titular y la sección
+     ocupa lo que pesa. */
+  .cierre__caja {
+    padding-block: var(--paso-5);
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--paso-3) var(--paso-4);
+    align-items: center;
+  }
+
+  .cierre__titulo {
+    font-size: var(--t-h2);
+    font-weight: 300;
+    line-height: 1.14;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-indent: 0.06em;
+    max-width: 16ch;
+    text-wrap: balance;
+  }
+
+  .cierre__plomo {
+    margin-top: var(--paso-2);
+    max-width: 42ch;
+    color: var(--campo-tinta-2);
+    text-wrap: pretty;
+  }
+
+  .cierre__acciones {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--paso-2);
+  }
+
+  .cierre__boton {
+    width: 100%;
+    max-width: 22rem;
+  }
+
+  .cierre__horario {
+    font-size: var(--t-micro-2);
+    color: var(--campo-tinta-2);
+  }
+
+  .cierre__tel {
+    font-size: var(--t-cuerpo-lg);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: var(--crema);
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--crema) 40%, transparent);
+    padding-bottom: 0.15em;
+    transition: border-color var(--dur-ui) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .cierre__tel:hover {
+      border-color: var(--crema);
+    }
+  }
+
+  /* ---- Pie ------------------------------------------------------------- */
+  .pie__fondo {
+    background: var(--carbon);
+    color: var(--crema);
+  }
+
+  .pie__reticula {
+    padding-block: var(--paso-4) var(--paso-3);
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--paso-3) var(--paso-2);
+    align-items: start;
+  }
+
+  /* Primera línea del pie: la firma y los registros enfrentados, separados del
+     resto por un filete. Los datos que acreditan el centro se leen antes que
+     los menús, y el pie deja de ser una columna larga de bloques. */
+  .pie__cabecera {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--paso-2) var(--paso-4);
+    align-items: center;
+    padding-bottom: var(--paso-3);
+    border-bottom: 1px solid color-mix(in srgb, var(--topo) 26%, transparent);
+  }
+
+  .pie__marca {
+    display: flex;
+    align-items: center;
+    gap: var(--paso-2);
+  }
+
+  .pie__monograma {
+    width: clamp(2.75rem, 4vw, 3.5rem);
+    height: auto;
+    opacity: 0.9;
+    flex: none;
+  }
+
+  .pie__nombre {
+    font-size: var(--t-micro-2);
+    font-weight: 300;
+    line-height: 1.35;
+    max-width: 16ch;
+  }
+
+  .pie__bloque {
+    grid-column: span 2;
+  }
+
+  /* Contacto y localización comparten columna: son la misma pregunta, cómo
+     llego a ti. El hueco que queda a la derecha lo ocupa el mapa. */
+  .pie__bloque--contacto {
+    grid-column: span 3;
+  }
+
+  .pie__bloque--mapa {
+    grid-column: span 5;
+  }
+
+  .pie__epigrafe--sitio {
+    margin-top: var(--paso-3);
+  }
+
+  /* A color: en gris no se distinguía el viario del resto y dejaba de servir
+     para lo único que tiene que hacer, que alguien sepa dónde está la puerta.
+     Altura fija, no al 100% de la fila: estirándola quedaba hueco muerto.
+     Mismas medidas con marco y con mapa, para que aceptar no dé un salto. */
+  .pie__lienzo {
+    width: 100%;
+    height: 19rem;
+    border: 1px solid color-mix(in srgb, var(--topo) 34%, transparent);
+    display: block;
+    position: relative;
+  }
+
+  /* El iframe lo crea el script, así que queda fuera del ámbito de esta hoja
+     y hay que alcanzarlo en global. */
+  .pie__lienzo :global(iframe) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  /* Marco antes de aceptar: el plano desenfocado detrás, el texto delante.
+     El plano entra en `screen` sobre el carbón —aclara donde hay calle y no
+     hace nada donde hay manzana— y el azul lo pone la lámina de encima, como
+     en el resto de la página. Con la imagen a pelo el texto caía sobre un
+     gris medio y no había contraste que valiera. */
+  .marco {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--paso-2);
+    background: var(--carbon);
+    overflow: hidden;
+  }
+
+  /* El display declarado aquí gana al del navegador: sin esta regla el
+     atributo hidden no oculta el marco y el aviso se queda encima del mapa
+     ya cargado. */
+  .marco[hidden] {
+    display: none;
+  }
+
+  .marco__plano {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+    mix-blend-mode: screen;
+  }
+
+  /* Tinte de lámina sobre el plano: lo enfría y lo baja de brillo, pero deja
+     el viario visible. El texto no se apoya en él, se apoya en su propia
+     placa: velar el marco entero para que leyera el texto dejaba el plano en
+     una textura gris que no se reconocía como mapa, que era justo lo que
+     había que evitar. */
+  .marco::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--petroleo) 34%, transparent);
+  }
+
+  /* La placa. Vidrio oscuro sobre el plano: crema sobre esta base = 11.8:1
+     con el plano más claro debajo. */
+  .marco__contenido {
+    position: relative;
+    z-index: 1;
+    align-self: flex-start;
+    max-width: 24rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--paso-1);
+    padding: var(--paso-2);
+    background: color-mix(in srgb, var(--carbon) 86%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid color-mix(in srgb, var(--topo) 26%, transparent);
+  }
+
+  .marco__epigrafe {
+    color: var(--topo);
+  }
+
+  .marco__texto {
+    font-size: var(--t-micro-2);
+    line-height: 1.6;
+    max-width: 32ch;
+    color: var(--crema);
+    text-wrap: pretty;
+  }
+
+  .marco__boton {
+    margin-top: var(--paso-1);
+  }
+
+  .marco__alterna {
+    border-bottom-color: color-mix(in srgb, var(--topo) 60%, transparent);
+  }
+
+  /* Atribución de OpenStreetMap: obligatoria por licencia, y por eso va en el
+     propio marco y no en la política. Pequeña, pero legible: --topo sobre el
+     carbón de esta esquina da 6.4:1. */
+  .marco__licencia {
+    position: absolute;
+    z-index: 1;
+    right: var(--paso-2);
+    top: var(--paso-1);
+    font-size: var(--t-micro);
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--topo);
+  }
+
+  /* En pantallas estrechas baja al flujo, debajo del texto. No se oculta:
+     la atribución es una condición de la licencia, no un adorno. */
+  @media (max-width: 480px) {
+    .marco__licencia {
+      position: static;
+      margin-top: var(--paso-2);
+      align-self: flex-start;
+    }
+  }
+
+  .pie__epigrafe {
+    color: var(--topo);
+    margin-bottom: var(--paso-1);
+  }
+
+  .pie__lista {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .pie__enlace {
+    display: inline-block;
+    min-height: 1.5rem;
+    color: var(--crema);
+    font-size: var(--t-micro-2);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur-ui) ease, color var(--dur-ui) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pie__enlace:hover {
+      border-color: var(--canto);
+      color: var(--canto);
+    }
+  }
+
+  .pie__enlace:focus-visible {
+    outline-color: var(--canto);
+    outline-offset: 4px;
+  }
+
+  /* Botón con aspecto de enlace: en la cola legal es un elemento más de la
+     misma lista, y un botón de formulario ahí cantaría. */
+  .pie__preferencias {
+    background: none;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    padding: 0;
+    font: inherit;
+    font-size: var(--t-micro-2);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .pie__direccion {
+    font-style: normal;
+    font-size: var(--t-micro-2);
+    line-height: 1.65;
+    color: var(--crema);
+  }
+
+  .pie__mapa {
+    margin-top: var(--paso-1);
+    border-bottom-color: color-mix(in srgb, var(--topo) 60%, transparent);
+  }
+
+  .pie__registros {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--paso-1) var(--paso-3);
+  }
+
+  .pie__registro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .pie__etiqueta {
+    font-size: var(--t-micro);
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--topo);
+  }
+
+  .pie__valor {
+    font-size: var(--t-micro-2);
+    color: var(--crema);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pie__filete {
+    grid-column: 1 / -1;
+    height: 1px;
+    border: 0;
+    margin: var(--paso-1) 0 0;
+    background: color-mix(in srgb, var(--topo) 26%, transparent);
+  }
+
+  .pie__cola {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--paso-1) var(--paso-3);
+  }
+
+  .pie__legal {
+    font-size: var(--t-micro);
+    color: var(--topo);
+    margin: 0;
+  }
+
+  .pie__legales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--paso-1) var(--paso-3);
+  }
+
+  @media (max-width: 860px) {
+    .cierre__caja {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+    }
+    .cierre__boton {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .pie__bloque {
+      grid-column: span 4;
+    }
+    .pie__bloque--contacto {
+      grid-column: span 4;
+    }
+    .pie__bloque--mapa {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .pie__bloque,
+    .pie__bloque--contacto,
+    .pie__bloque--mapa {
+      grid-column: 1 / -1;
+    }
+    .pie__cabecera {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .pie__registros {
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: var(--paso-1);
+    }
+  }
+</style>

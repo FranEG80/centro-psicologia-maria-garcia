@@ -1,0 +1,328 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Portico from '../../components/Portico.astro';
+import Pie from '../../components/Pie.astro';
+import { centro, areas, resumenAreas } from '../../data/contenido.js';
+import { indiceAreas } from '../../data/paginas.js';
+
+/* El índice de las seis áreas.
+
+   No repite la sección de la portada. Allí son seis filas a sangre pensadas
+   para elegir de un vistazo mientras se baja; aquí ya se ha entrado a elegir,
+   así que cada área enseña además las tres primeras entradas de su listado
+   clínico. Quien busca «disgrafía» o «peritaje» lo ve sin abrir la página.
+
+   Contraste medido (WCAG 2.1) sobre hoja #C3D8E2:
+     carbón #1F2426     10.6:1  nombre
+     --tinta-hoja        6.2:1  nota y listado
+     --petroleo-800      5.6:1  número */
+---
+
+<Base
+  titulo={`Áreas de atención · ${centro.nombre}`}
+  descripcion={indiceAreas.entradilla}
+>
+  <Nav />
+
+  <main id="contenido">
+    <Portico
+      marca={indiceAreas.marca}
+      titulo={indiceAreas.titulo}
+      entradilla={indiceAreas.entradilla}
+      cuerpo={indiceAreas.cuerpo}
+    />
+
+    <section class="indice" aria-label="Las seis áreas">
+      <div class="indice__poro" aria-hidden="true"></div>
+
+      <ul class="envoltura indice__reticula" data-revelar-grupo>
+        {
+          areas.map((a, i) => (
+            <li class="area" data-revelar>
+              <a class="area__hoja" href={`/areas/${a.id}`}>
+                <span class="area__relleno" aria-hidden="true" />
+
+                <span class="area__numero" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+
+                <span class="area__cuerpo">
+                  <span class="caps caps--contenido area__sumario">
+                    {a.sumario}
+                  </span>
+                  <span class="area__nombre">{a.titulo}</span>
+                  <span class="area__nota">
+                    {resumenAreas[a.id] ?? a.sumario}
+                  </span>
+
+                  {/* Muestra, no listado: el completo vive en la página del
+                      área y aquí solo hace falta reconocer el propio caso. */}
+                  <span class="area__muestra">
+                    {a.puntos.slice(0, 3).map((p) => (
+                      <span class="area__punto">{p}</span>
+                    ))}
+                  </span>
+
+                  <span class="area__pie">
+                    <span class="area__ir">Ver el área</span>
+                    <span class="area__flecha" aria-hidden="true">
+                      <svg viewBox="0 0 24 10" width="24" height="10" fill="none">
+                        <path
+                          d="M0 5h22M18 1l4 4-4 4"
+                          stroke="currentColor"
+                          stroke-width="1"
+                        />
+                      </svg>
+                    </span>
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </main>
+
+  <Pie />
+</Base>
+
+<style>
+  .indice {
+    position: relative;
+    isolation: isolate;
+    background: var(--hormigon);
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-4) var(--paso-6);
+  }
+
+  .indice__poro {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.45;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  /* Dos columnas y filete entre celdas, sin gap: las áreas comparten canto,
+     como las hojas de un laminado vistas de frente. Nada de tarjetas con
+     sombra sueltas sobre el hormigón. */
+  .indice__reticula {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--filete);
+  }
+
+  .area {
+    border-bottom: 1px solid var(--filete);
+  }
+
+  .area:nth-child(odd) {
+    border-right: 1px solid var(--filete);
+  }
+
+  .area__hoja {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    gap: var(--paso-2);
+    height: 100%;
+    padding: var(--paso-3) var(--paso-3) var(--paso-3) var(--paso-2);
+    color: var(--carbon);
+    text-decoration: none;
+  }
+
+  /* El relleno sube desde abajo, el mismo gesto que .boton y que las filas de
+     la portada: una lámina que baja sobre el área, no un fondo que se enciende. */
+  .area__relleno {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--vidrio-hoja);
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path var(--dur-material) var(--ease-hoja);
+  }
+
+  .area__relleno::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: var(--canto);
+    opacity: 0;
+    transition: opacity var(--dur-ui) ease;
+  }
+
+  .area__numero {
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    line-height: 2.2;
+    color: var(--tinta-2);
+    font-variant-numeric: tabular-nums;
+    transition: color var(--dur-ui) ease;
+  }
+
+  .area__cuerpo {
+    display: block;
+    min-width: 0;
+  }
+
+  .area__sumario {
+    display: block;
+    color: var(--tinta-2);
+    transition: color var(--dur-ui) ease;
+  }
+
+  .area__nombre {
+    display: block;
+    margin-top: var(--paso-1);
+    font-size: var(--t-h3);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .area__nota {
+    display: block;
+    margin-top: var(--paso-2);
+    font-size: var(--t-lista);
+    line-height: 1.5;
+    color: var(--tinta-2);
+    text-wrap: pretty;
+    transition: color var(--dur-ui) ease;
+  }
+
+  .area__muestra {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: var(--paso-2);
+    padding-top: var(--paso-2);
+    border-top: 1px solid var(--filete);
+  }
+
+  /* Trazo de 1px en petróleo como marca de lista, igual que en el resto del
+     sitio: ningún bullet del navegador en toda la página. */
+  .area__punto {
+    position: relative;
+    display: block;
+    padding-left: 1.6em;
+    font-size: var(--t-micro-2);
+    line-height: 1.5;
+    color: var(--tinta-2);
+    text-wrap: pretty;
+    transition: color var(--dur-ui) ease;
+  }
+
+  .area__punto::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 0.8em;
+    height: 1px;
+    background: var(--acento);
+  }
+
+  .area__pie {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: var(--paso-3);
+  }
+
+  .area__ir {
+    font-size: var(--t-micro);
+    font-weight: 450;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-indent: 0.2em;
+    color: var(--acento-fuerte);
+  }
+
+  .area__flecha {
+    color: var(--acento-fuerte);
+    translate: -0.5rem 0;
+    opacity: 0;
+    transition: opacity var(--dur-ui) ease,
+      translate var(--dur-ui) var(--ease-out);
+  }
+
+  /* Ratón y teclado ven exactamente lo mismo. */
+  @media (hover: hover) and (pointer: fine) {
+    .area__hoja:hover .area__relleno {
+      clip-path: inset(0 0 0 0);
+    }
+    .area__hoja:hover .area__relleno::after {
+      opacity: 1;
+    }
+    .area__hoja:hover .area__numero,
+    .area__hoja:hover .area__sumario,
+    .area__hoja:hover .area__nota,
+    .area__hoja:hover .area__punto {
+      color: var(--tinta-hoja);
+    }
+    .area__hoja:hover .area__flecha {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  .area__hoja:focus-visible {
+    outline-offset: -3px;
+  }
+  .area__hoja:focus-visible .area__relleno {
+    clip-path: inset(0 0 0 0);
+  }
+  .area__hoja:focus-visible .area__relleno::after {
+    opacity: 1;
+  }
+  .area__hoja:focus-visible .area__numero,
+  .area__hoja:focus-visible .area__sumario,
+  .area__hoja:focus-visible .area__nota,
+  .area__hoja:focus-visible .area__punto {
+    color: var(--tinta-hoja);
+  }
+  .area__hoja:focus-visible .area__flecha {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  @media (max-width: 860px) {
+    .indice__reticula {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .area:nth-child(odd) {
+      border-right: 0;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .area__hoja {
+      grid-template-columns: 2.5rem minmax(0, 1fr);
+      padding-inline: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .area__relleno,
+    .area__relleno::after,
+    .area__numero,
+    .area__sumario,
+    .area__nota,
+    .area__punto,
+    .area__flecha {
+      transition-duration: 1ms;
+    }
+    .area__flecha {
+      translate: 0 0;
+    }
+  }
+</style>

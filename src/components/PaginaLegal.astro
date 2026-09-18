@@ -1,0 +1,203 @@
+---
+import { avisoBorrador } from '../data/paginas.js';
+
+/* El armazón de las tres páginas legales.
+
+   Van sobre crema y a una sola columna estrecha, sin fotografía y sin campo de
+   petróleo: son documentos, no una sección más de la web. Lo único que
+   conservan del sistema es el pórtico, el filete de 1px y la escala
+   tipográfica; el resto sobra y estorba a la lectura.
+
+   `borrador` pinta el aviso de que el texto no es el definitivo. Se pasa a
+   `false` cuando la asesoría entregue el suyo. Publicar un texto legal
+   redactado a ojo como si fuera el bueno es peor que no tener la página.
+*/
+
+interface Props {
+  borrador?: boolean;
+  actualizado?: string;
+}
+
+const { borrador = true, actualizado } = Astro.props;
+---
+
+<div class="legal">
+  {
+    borrador && (
+      <p class="legal__borrador" role="note">
+        <strong class="legal__borrador-marca">Pendiente de validación</strong>
+        {avisoBorrador}
+      </p>
+    )
+  }
+
+  <div class="legal__texto">
+    <slot />
+  </div>
+
+  {
+    actualizado && (
+      <p class="legal__fecha">Última actualización: {actualizado}</p>
+    )
+  }
+</div>
+
+<style>
+  .legal {
+    background: var(--fondo);
+    border-top: 1px solid var(--filete);
+    padding-block: var(--paso-4) var(--paso-6);
+    width: 100%;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* El aviso de borrador es un bloque de trabajo, no una pieza de diseño: se
+     ve, se entiende y se borra. Lino encajonado en el mismo filete de 1px que
+     el resto de la página —nada de barra de color al costado, que aquí no
+     existe ese recurso— y el rótulo en petróleo, que es lo que lo separa del
+     texto legal que tiene debajo. */
+  .legal__borrador {
+    max-width: var(--medida);
+    margin-bottom: var(--paso-4);
+    padding: var(--paso-2);
+    background: var(--fondo-lino);
+    border: 1px solid var(--filete);
+    font-size: var(--t-micro-2);
+    color: var(--tinta);
+    text-wrap: pretty;
+  }
+
+  .legal__borrador-marca {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--acento-fuerte);
+  }
+
+  /* Estilo de prosa. Los selectores de tipo van aquí y no en cada página para
+     que los tres documentos se compongan exactamente igual, y `is:global`
+     porque el contenido entra por el slot desde otro archivo y el ámbito de
+     Astro no lo alcanza. */
+  .legal__texto {
+    max-width: var(--medida);
+  }
+
+  .legal__texto :global(h2) {
+    margin-top: var(--paso-4);
+    padding-top: var(--paso-2);
+    border-top: 1px solid var(--filete);
+    font-size: var(--t-h3);
+    font-weight: 450;
+    line-height: 1.28;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+
+  .legal__texto :global(h2:first-child) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .legal__texto :global(h3) {
+    margin-top: var(--paso-3);
+    font-size: var(--t-cuerpo);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .legal__texto :global(p) {
+    margin-top: var(--paso-2);
+    font-size: var(--t-lista);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .legal__texto :global(ul) {
+    margin-top: var(--paso-2);
+    display: grid;
+    gap: var(--paso-1);
+    font-size: var(--t-lista);
+  }
+
+  /* Trazo de 1px en petróleo como marca de lista, igual que en toda la web. */
+  .legal__texto :global(li) {
+    position: relative;
+    padding-left: 1.6em;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .legal__texto :global(li)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.76em;
+    width: 0.8em;
+    height: 1px;
+    background: var(--acento);
+  }
+
+  /* Los datos de identificación: una lista de definición con filetes, no una
+     tabla con bordes. */
+  .legal__texto :global(dl) {
+    margin-top: var(--paso-2);
+    border-top: 1px solid var(--filete);
+  }
+
+  .legal__texto :global(dl > div) {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 0.35rem var(--paso-2);
+    padding-block: var(--paso-1);
+    border-bottom: 1px solid var(--filete);
+  }
+
+  .legal__texto :global(dt) {
+    font-size: var(--t-micro);
+    font-weight: 450;
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--tinta-2);
+    align-self: baseline;
+  }
+
+  .legal__texto :global(dd) {
+    margin: 0;
+    font-size: var(--t-micro-2);
+    overflow-wrap: anywhere;
+  }
+
+  /* Lo que todavía no consta se marca en el propio texto: así nadie publica
+     un aviso legal con un NIF a medias sin verlo. */
+  .legal__texto :global(.pendiente) {
+    padding: 0.1em 0.45em;
+    background: color-mix(in srgb, var(--petroleo) 14%, transparent);
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--acento-fuerte);
+    white-space: nowrap;
+  }
+
+  .legal__fecha {
+    margin-top: var(--paso-4);
+    padding-top: var(--paso-2);
+    border-top: 1px solid var(--filete);
+    max-width: var(--medida);
+    font-size: var(--t-micro);
+    color: var(--tinta-2);
+  }
+
+  @media (max-width: 560px) {
+    .legal__texto :global(dl > div) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,428 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Portico from '../../components/Portico.astro';
+import Pie from '../../components/Pie.astro';
+import { centro, galeria, ambientes } from '../../data/contenido.js';
+import { consulta } from '../../data/paginas.js';
+
+/* El centro. La página que reúne las instalaciones y de la que cuelgan las
+   dos de detalle, /instalaciones/adultos y /instalaciones/infantil.
+
+   Lo que se enseña es lo que hay: una recepción, una sala de espera, UN
+   despacho de consulta y una zona infantil aparte. De las siete fotografías,
+   dos son el mismo despacho desde ángulos distintos y dos la misma zona
+   infantil; los pies lo dicen, para que nadie cuente cuatro salas.
+
+   Falta la sección «Cómo funciona» —los cuatro pasos desde que se pide cita
+   hasta que se dan los resultados—. No se publica inventada: el dato es de la
+   clienta y las preguntas siguen abiertas en estructura-textos.md. */
+---
+
+<Base
+  titulo={`El centro · ${centro.nombre}`}
+  descripcion={`Recepción, sala de espera, despacho de consulta y una zona infantil aparte, en ${centro.direccion}, ${centro.localidad}. Así es venir al centro.`}
+>
+  <Nav />
+
+  <main id="contenido">
+    <Portico
+      marca={consulta.marca}
+      titulo={consulta.titulo}
+      entradilla={consulta.entradilla}
+      migas={[{ href: '/', texto: 'Inicio' }]}
+    />
+
+    {/* ---- La fachada, a sangre ---------------------------------------- */}
+    <figure class="fachada" data-revelar="lamina">
+      <Image
+        src={galeria[0].src}
+        widths={[760, 1200, 1800]}
+        sizes="100vw"
+        alt={galeria[0].alt}
+        loading="eager"
+        decoding="async"
+      />
+      <figcaption class="envoltura caps caps--contenido fachada__pie">
+        {galeria[0].pie}
+      </figcaption>
+    </figure>
+
+    {/* ---- El espacio -------------------------------------------------- */}
+    <section class="espacio" aria-labelledby="espacio-titulo">
+      <div class="envoltura espacio__reticula" data-revelar-grupo>
+        <h2 class="caps espacio__epigrafe" id="espacio-titulo" data-revelar>
+          {consulta.espacio.epigrafe}
+        </h2>
+        <div class="espacio__texto">
+          {
+            consulta.espacio.parrafos.map((p) => (
+              <p class="plomo espacio__parrafo" data-revelar>
+                {p}
+              </p>
+            ))
+          }
+        </div>
+      </div>
+
+      {/* Recepción y sala de espera, enfrentadas y pegadas por el canto. */}
+      <div class="espacio__tira" data-revelar-grupo>
+        {
+          galeria.slice(1, 3).map((g) => (
+            <figure class="vista" data-revelar="lamina">
+              <Image
+                src={g.src}
+                widths={[520, 780, 1040]}
+                sizes="(max-width: 860px) 100vw, 50vw"
+                alt={g.alt}
+                loading="eager"
+                fetchpriority="low"
+                decoding="async"
+              />
+              <figcaption class="caps caps--contenido vista__pie">
+                {g.pie}
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </section>
+
+    {/* ---- Los dos ambientes, con su página cada uno -------------------- */}
+    <section class="ambientes" aria-labelledby="ambientes-titulo">
+      <hr class="canto" />
+      <div class="envoltura ambientes__cabecera">
+        <p class="caps ambientes__marca">Dos espacios</p>
+        <h2 class="h2 ambientes__titulo" id="ambientes-titulo">
+          Según quién entre por la puerta
+        </h2>
+        <p class="plomo ambientes__plomo">
+          No es lo mismo sentarse a hablar que sentarse a jugar. Por eso hay un
+          despacho de consulta y una sala aparte preparada para trabajar a la
+          altura de un niño.
+        </p>
+      </div>
+
+      <ul class="ambientes__tira" data-revelar-grupo>
+        {
+          ambientes.map((a) => (
+            <li class="ambiente" data-revelar="lamina">
+              <figure class="ambiente__figura">
+                <Image
+                  src={a.src}
+                  widths={[480, 720, 960]}
+                  sizes="(max-width: 860px) 100vw, 50vw"
+                  alt={a.alt}
+                  loading="eager"
+                  fetchpriority="low"
+                  decoding="async"
+                />
+              </figure>
+              <div class="ambiente__texto">
+                <p class="caps caps--contenido ambiente__marca">{a.sumario}</p>
+                <h3 class="h3 ambiente__nombre">{a.titulo}</h3>
+                <p class="ambiente__cuerpo">{a.texto}</p>
+                <a class="boton boton--claro ambiente__boton" href={a.href}>
+                  Conocer el espacio
+                  <span class="solo-lectores">
+                    {' '}
+                    de {a.titulo.toLowerCase()}
+                  </span>
+                </a>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    {/* ---- Dónde está --------------------------------------------------- */}
+    <section class="donde" aria-labelledby="donde-titulo">
+      <div class="envoltura donde__reticula" data-revelar-grupo>
+        <div data-revelar>
+          <h2 class="caps donde__epigrafe" id="donde-titulo">Dónde está</h2>
+          <address class="donde__direccion">
+            {centro.direccion}<br />
+            {centro.cp} {centro.localidad}, {centro.provincia}
+          </address>
+          <p class="donde__nota">
+            La fachada es de granito negro y lleva la rotulación del centro: se
+            reconoce desde la acera de enfrente.
+          </p>
+        </div>
+
+        <div class="donde__acciones" data-revelar>
+          <a
+            class="boton"
+            href={centro.mapa}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Cómo llegar
+            <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
+          </a>
+          <a class="enlace donde__tel" href={`tel:${centro.telefonoTel}`}>
+            {centro.telefono}
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Pie />
+</Base>
+
+<style>
+  /* ---- Fachada --------------------------------------------------------- */
+  .fachada {
+    background: var(--hormigon);
+    border-top: 1px solid var(--canto);
+    padding-bottom: var(--paso-2);
+  }
+
+  .fachada img {
+    width: 100%;
+    height: clamp(16rem, 44vw, 34rem);
+    object-fit: cover;
+  }
+
+  .fachada__pie {
+    padding-top: var(--paso-2);
+    color: var(--tinta-2);
+  }
+
+  /* ---- El espacio ------------------------------------------------------ */
+  .espacio {
+    background: var(--vidrio-hoja);
+    color: var(--carbon);
+    border-top: 1px solid var(--canto);
+    padding-top: var(--paso-5);
+  }
+
+  /* Epígrafe a la izquierda y texto a la derecha: la misma retícula editorial
+     de dos columnas que usa el resto de páginas interiores. */
+  .espacio__reticula {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: var(--paso-2) var(--paso-4);
+    align-items: start;
+    margin-bottom: var(--paso-4);
+  }
+
+  .espacio__epigrafe {
+    color: var(--tinta-hoja);
+    padding-top: 0.35em;
+  }
+
+  .espacio__texto {
+    display: grid;
+    gap: var(--paso-2);
+  }
+
+  .espacio__parrafo {
+    max-width: 54ch;
+  }
+
+  .espacio__tira {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--filete-hoja);
+  }
+
+  .vista + .vista {
+    border-left: 1px solid var(--filete-hoja);
+  }
+
+  .vista img {
+    width: 100%;
+    height: clamp(15rem, 32vw, 26rem);
+    object-fit: cover;
+  }
+
+  .vista__pie {
+    padding: var(--paso-2) var(--paso-2) var(--paso-3);
+    color: var(--tinta-hoja);
+  }
+
+  /* ---- Ambientes ------------------------------------------------------- */
+  .ambientes {
+    background: var(--petroleo);
+    color: var(--crema);
+    padding-top: var(--paso-5);
+  }
+
+  .ambientes__cabecera {
+    margin-bottom: var(--paso-4);
+  }
+
+  .ambientes__marca {
+    color: var(--campo-tinta-2);
+  }
+
+  .ambientes__titulo {
+    margin-top: var(--paso-1);
+    color: var(--crema);
+  }
+
+  .ambientes__plomo {
+    margin-top: var(--paso-2);
+    color: var(--campo-tinta-2);
+  }
+
+  .ambientes__tira {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ambiente {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--canto-fuerte);
+  }
+
+  .ambiente + .ambiente {
+    border-left: 1px solid var(--canto-fuerte);
+  }
+
+  .ambiente__figura {
+    overflow: hidden;
+  }
+
+  .ambiente__figura img {
+    width: 100%;
+    height: clamp(17rem, 34vw, 29rem);
+    object-fit: cover;
+    transition: transform 500ms var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .ambiente:hover .ambiente__figura img {
+      transform: scale(1.04);
+    }
+  }
+
+  .ambiente__texto {
+    padding: var(--paso-3) var(--gutter) var(--paso-5);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+  }
+
+  .ambiente__marca {
+    color: var(--campo-tinta-2);
+  }
+
+  .ambiente__nombre {
+    margin-top: var(--paso-1);
+    color: var(--crema);
+  }
+
+  .ambiente__cuerpo {
+    margin-top: var(--paso-2);
+    margin-bottom: var(--paso-3);
+    max-width: 44ch;
+    color: var(--campo-tinta-2);
+    text-wrap: pretty;
+  }
+
+  .ambiente__boton {
+    margin-top: auto;
+  }
+
+  /* ---- Dónde ----------------------------------------------------------- */
+  .donde {
+    background: var(--hormigon);
+    position: relative;
+    isolation: isolate;
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-5);
+  }
+
+  .donde::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .donde__reticula {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--paso-3) var(--paso-4);
+    align-items: end;
+  }
+
+  .donde__epigrafe {
+    color: var(--tinta-2);
+  }
+
+  .donde__direccion {
+    margin-top: var(--paso-2);
+    font-style: normal;
+    font-size: var(--t-cuerpo-lg);
+    font-weight: 300;
+    line-height: 1.45;
+  }
+
+  .donde__nota {
+    margin-top: var(--paso-2);
+    max-width: 46ch;
+    color: var(--tinta-2);
+    text-wrap: pretty;
+  }
+
+  .donde__acciones {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--paso-2);
+  }
+
+  .donde__tel {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.06em;
+  }
+
+  @media (max-width: 900px) {
+    .espacio__reticula {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .espacio__epigrafe {
+      padding-top: 0;
+    }
+    .donde__reticula {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .espacio__tira,
+    .ambientes__tira {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .vista + .vista {
+      border-left: 0;
+      border-top: 1px solid var(--filete-hoja);
+    }
+    .ambiente + .ambiente {
+      border-left: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ambiente__figura img {
+      transition: none;
+    }
+    .ambiente:hover .ambiente__figura img {
+      transform: none;
+    }
+  }
+</style>

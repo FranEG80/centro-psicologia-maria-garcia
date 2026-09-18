@@ -1,0 +1,184 @@
+---
+import { centro } from '../data/contenido.js';
+
+/* Sección añadida al encargo. En una web sanitaria el dato que más pesa antes
+   de escribir es quién te va a atender: la formación, los años y el número de
+   colegiada. Sin esto, la home enseña seis áreas y dos salas pero no dice
+   quién hay detrás.
+
+   Vuelve al hormigón después de dos hojas de azul: la secuencia necesita un
+   respiro claro antes del cierre, o las tres últimas secciones se leen como
+   un solo bloque azul.
+
+   El hueco de la fotografía va vacío, con su marco y su encuadre reales. El
+   retrato que había en el repositorio no es María, así que enseñarlo en una
+   presentación al cliente es peor que no enseñar nada: se queda el sitio
+   reservado, a tamaño y proporción definitivos, para que se vea dónde entra
+   su foto cuando la haya. */
+---
+
+<section class="profesional" aria-labelledby="profesional-titulo">
+  <div class="envoltura profesional__reticula" data-revelar-grupo>
+    <figure class="profesional__figura" data-revelar="lamina">
+      <div class="profesional__hueco">
+        <span class="profesional__marco" aria-hidden="true"></span>
+        <figcaption class="caps profesional__pie">Fotografía de María</figcaption>
+      </div>
+    </figure>
+
+    <div class="profesional__texto">
+      <p class="caps profesional__marca" data-revelar>Quién atiende</p>
+
+      <h2 class="h2 profesional__titulo" id="profesional-titulo" data-revelar>
+        La misma persona, todo el recorrido
+      </h2>
+
+      <p class="plomo profesional__plomo" data-revelar>
+        {centro.profesional}. Licenciada en Psicología por la Universidad de
+        Granada, especialista en Neuropsicología, máster en Psicología Jurídica
+        y Forense y mediadora familiar. En clínica privada en {
+          centro.localidad
+        } desde {centro.desde}.
+      </p>
+
+      <p class="cuerpo cuerpo--2 profesional__cuerpo" data-revelar>
+        Quien valora es quien interviene y quien acompaña. Sin derivaciones
+        internas ni cambio de profesional a mitad del proceso.
+      </p>
+
+      <dl class="profesional__registros" data-revelar>
+        {
+          centro.credenciales.map((c) => (
+            <div class="profesional__registro">
+              <dt class="profesional__etiqueta">{c.etiqueta}</dt>
+              <dd class="profesional__valor">{c.valor}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <a class="boton profesional__boton" href="/sobre-mi" data-revelar>
+        Sobre mí
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .profesional {
+    background: var(--hormigon);
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--paso-6);
+    border-top: 1px solid var(--canto);
+  }
+
+  .profesional::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .profesional__reticula {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--paso-4) var(--paso-4);
+    align-items: start;
+  }
+
+  /* Marco y paspartú: el retrato va montado, no pegado al hormigón. El filete
+     interior de 1px marca dónde acaba la fotografía y el hueco de crema
+     alrededor hace de paspartú. */
+  .profesional__figura {
+    background: var(--crema);
+    padding: var(--paso-2);
+    box-shadow: var(--sombra-baja);
+  }
+
+  /* El encuadre reservado, a la altura que tendrá la fotografía definitiva. */
+  .profesional__hueco {
+    position: relative;
+    height: clamp(20rem, 42vw, 34rem);
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--topo) 12%, transparent);
+  }
+
+  .profesional__marco {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--filete);
+    pointer-events: none;
+  }
+
+  .profesional__pie {
+    color: var(--tinta-2);
+    text-align: center;
+  }
+
+  .profesional__marca {
+    color: var(--tinta-2);
+  }
+
+  .profesional__titulo {
+    margin-top: var(--paso-1);
+  }
+
+  .profesional__plomo {
+    margin-top: var(--paso-3);
+  }
+
+  .profesional__cuerpo {
+    margin-top: var(--paso-2);
+  }
+
+  /* Los registros, con el mismo trazo de 1px que las listas del resto de la
+     página. No son una tarjeta: son una lista con filete. */
+  .profesional__registros {
+    margin-top: var(--paso-3);
+    display: grid;
+    gap: var(--paso-1);
+    border-top: 1px solid var(--filete);
+    padding-top: var(--paso-2);
+  }
+
+  .profesional__registro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 0.9rem;
+  }
+
+  .profesional__etiqueta {
+    font-size: var(--t-micro);
+    font-weight: 450;
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+
+  .profesional__valor {
+    font-size: var(--t-lista);
+    color: var(--tinta);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .profesional__boton {
+    margin-top: var(--paso-3);
+  }
+
+  @media (max-width: 900px) {
+    .profesional__reticula {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .profesional__hueco {
+      height: clamp(16rem, 58vw, 24rem);
+    }
+  }
+</style>

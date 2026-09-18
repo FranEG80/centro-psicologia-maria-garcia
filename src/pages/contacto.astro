@@ -1,0 +1,391 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Portico from '../components/Portico.astro';
+import Pie from '../components/Pie.astro';
+import { centro, galeria } from '../data/contenido.js';
+import { contacto } from '../data/paginas.js';
+
+/* Contacto. Sin formulario, y es una decisión tomada, no un olvido: un
+   formulario en el que alguien cuenta por qué quiere venir recoge datos de
+   salud —categoría especial del art. 9 RGPD— con todo lo que eso arrastra en
+   base jurídica, conservación y encargados de tratamiento. WhatsApp y el
+   teléfono cubren el caso igual de bien.
+
+   PENDIENTE — mapa embebido. No se pone todavía por dos razones: no consta la
+   coordenada exacta del portal, y un iframe de Google Maps deja cookies de
+   terceros en una web que aún no tiene política de cookies. Mientras tanto, la
+   fotografía de la fachada y el enlace a Maps resuelven el «cómo llego».
+
+   PENDIENTE — horario de atención. No fue facilitado y no se inventa. */
+---
+
+<Base
+  titulo={`Contacto · ${centro.nombre}`}
+  descripcion={`WhatsApp y teléfono ${centro.telefono}. ${centro.direccion}, ${centro.cp} ${centro.localidad}, ${centro.provincia}.`}
+>
+  <Nav />
+
+  <main id="contenido">
+    <Portico
+      marca={contacto.marca}
+      titulo={contacto.titulo}
+      entradilla={contacto.entradilla}
+      migas={[{ href: '/', texto: 'Inicio' }]}
+    />
+
+    {/* ---- Las dos vías, en primer lugar -------------------------------- */}
+    <section class="vias" aria-labelledby="vias-titulo">
+      <h2 class="solo-lectores" id="vias-titulo">Cómo escribir o llamar</h2>
+
+      <div class="envoltura vias__reticula" data-revelar-grupo>
+        <a
+          class="via via--principal"
+          href={centro.whatsapp}
+          rel="noopener noreferrer"
+          target="_blank"
+          data-revelar
+        >
+          <span class="via__relleno" aria-hidden="true"></span>
+          <span class="caps via__marca">Lo más rápido</span>
+          <span class="via__valor">Escribir por WhatsApp</span>
+          <span class="via__nota">
+            {centro.telefono}
+            <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
+          </span>
+        </a>
+
+        <a class="via" href={`tel:${centro.telefonoTel}`} data-revelar>
+          <span class="via__relleno" aria-hidden="true"></span>
+          <span class="caps via__marca">Teléfono</span>
+          <span class="via__valor via__valor--numero">{centro.telefono}</span>
+          <span class="via__nota">El mismo número sirve para las dos cosas.</span>
+        </a>
+
+        <a class="via" href={`mailto:${centro.email}`} data-revelar>
+          <span class="via__relleno" aria-hidden="true"></span>
+          <span class="caps via__marca">Correo</span>
+          <span class="via__valor via__valor--correo">{centro.email}</span>
+          <span class="via__nota">Para documentación y encargos por escrito.</span>
+        </a>
+      </div>
+
+      {/* El ancho de lectura va en el párrafo, no en .envoltura: .envoltura
+          lleva margin-inline auto, así que bajarle el max-width centra el
+          bloque en la ventana y lo saca de la retícula. */}
+      <div class="envoltura" data-revelar>
+        <p class="vias__aviso">
+          No hay formulario de contacto a propósito: contar por escrito en una
+          web por qué se pide cita es dar un dato de salud. Por WhatsApp o por
+          teléfono lo cuentas directamente a quien te va a atender.
+        </p>
+      </div>
+    </section>
+
+    {/* ---- Dónde ------------------------------------------------------- */}
+    <section class="donde" aria-labelledby="donde-titulo">
+      <hr class="canto" />
+
+      <div class="envoltura donde__reticula">
+        <div class="donde__texto" data-revelar-grupo>
+          <h2 class="caps donde__epigrafe" id="donde-titulo" data-revelar>
+            Dónde estamos
+          </h2>
+
+          <address class="donde__direccion" data-revelar>
+            {centro.direccion}<br />
+            {centro.cp} {centro.localidad}, {centro.provincia}
+          </address>
+
+          <p class="donde__nota" data-revelar>
+            Fachada de granito negro con la rotulación del centro, en pleno
+            casco urbano de {centro.localidad}.
+          </p>
+
+          <a
+            class="boton boton--claro donde__boton"
+            href={centro.mapa}
+            rel="noopener noreferrer"
+            target="_blank"
+            data-revelar
+          >
+            Abrir en Google Maps
+            <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
+          </a>
+        </div>
+
+        <figure class="donde__figura" data-revelar="lamina">
+          <Image
+            src={galeria[0].src}
+            widths={[520, 780, 1040]}
+            sizes="(max-width: 900px) 100vw, 46vw"
+            alt={galeria[0].alt}
+            loading="eager"
+            fetchpriority="low"
+            decoding="async"
+          />
+          <figcaption class="caps caps--contenido donde__pie">
+            Así se ve desde la calle
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    {/* ---- Registros ---------------------------------------------------- */}
+    <section class="registros" aria-labelledby="registros-titulo">
+      <div class="envoltura registros__caja" data-revelar-grupo>
+        <h2 class="caps registros__epigrafe" id="registros-titulo" data-revelar>
+          Registros del centro
+        </h2>
+        <dl class="registros__lista" data-revelar>
+          {
+            centro.credenciales.map((c) => (
+              <div class="registro">
+                <dt class="registro__etiqueta">{c.etiqueta}</dt>
+                <dd class="registro__valor">{c.valor}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <Pie />
+</Base>
+
+<style>
+  /* ---- Vías ------------------------------------------------------------ */
+  .vias {
+    background: var(--vidrio-hoja);
+    color: var(--carbon);
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-4) var(--paso-5);
+  }
+
+  /* Tres columnas, sin gap y separadas por el filete: la misma regla de
+     laminado del resto del sitio. La primera pesa más porque es la vía que se
+     recomienda, y eso se dice con tamaño, no con un color de acento suelto. */
+  .vias__reticula {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 4fr);
+    border-block: 1px solid var(--filete-hoja);
+  }
+
+  .via {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    gap: var(--paso-1);
+    padding: var(--paso-3) var(--paso-2);
+    color: var(--carbon);
+    text-decoration: none;
+  }
+
+  .via + .via {
+    border-left: 1px solid var(--filete-hoja);
+  }
+
+  /* El relleno sube desde abajo, igual que .boton y que las filas de áreas. */
+  .via__relleno {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--crema);
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path var(--dur-material) var(--ease-hoja);
+  }
+
+  .via__marca {
+    color: var(--tinta-hoja);
+  }
+
+  .via__valor {
+    font-size: var(--t-h3);
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+  }
+
+  .via--principal .via__valor {
+    font-size: var(--t-h2);
+    letter-spacing: 0.04em;
+  }
+
+  .via__valor--numero {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.06em;
+  }
+
+  /* El correo es largo —31 caracteres sin un solo espacio— y en su columna no
+     cabe en una línea. Baja a la escala de versalita de contenido y se le
+     permite partir donde haga falta: una dirección de correo cortada a mitad
+     de palabra se sigue leyendo, y desbordar la columna, no. */
+  .via__valor--correo {
+    font-size: var(--t-micro-2);
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .via__nota {
+    margin-top: auto;
+    padding-top: var(--paso-2);
+    font-size: var(--t-micro-2);
+    color: var(--tinta-hoja);
+    font-variant-numeric: tabular-nums;
+    text-wrap: pretty;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .via:hover .via__relleno {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  .via:focus-visible {
+    outline-offset: -3px;
+  }
+  .via:focus-visible .via__relleno {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .vias__aviso {
+    margin-top: var(--paso-3);
+    max-width: 62ch;
+    font-size: var(--t-micro-2);
+    color: var(--tinta-hoja);
+    text-wrap: pretty;
+  }
+
+  /* ---- Dónde ----------------------------------------------------------- */
+  .donde {
+    background: var(--petroleo);
+    color: var(--crema);
+  }
+
+  .donde__reticula {
+    padding-block: var(--paso-5);
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    gap: var(--paso-4);
+    align-items: center;
+  }
+
+  .donde__epigrafe {
+    color: var(--campo-tinta-2);
+  }
+
+  .donde__direccion {
+    margin-top: var(--paso-2);
+    font-style: normal;
+    font-size: var(--t-h2);
+    font-weight: 300;
+    line-height: 1.24;
+    letter-spacing: 0.02em;
+  }
+
+  .donde__nota {
+    margin-top: var(--paso-2);
+    max-width: 40ch;
+    color: var(--campo-tinta-2);
+    text-wrap: pretty;
+  }
+
+  .donde__boton {
+    margin-top: var(--paso-3);
+  }
+
+  .donde__figura img {
+    width: 100%;
+    height: clamp(15rem, 32vw, 26rem);
+    object-fit: cover;
+  }
+
+  .donde__pie {
+    margin-top: var(--paso-2);
+    color: var(--campo-tinta-2);
+  }
+
+  /* ---- Registros ------------------------------------------------------- */
+  .registros {
+    background: var(--hormigon);
+    position: relative;
+    isolation: isolate;
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-4);
+  }
+
+  .registros::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .registros__epigrafe {
+    color: var(--tinta-2);
+  }
+
+  .registros__lista {
+    margin-top: var(--paso-2);
+    padding-top: var(--paso-2);
+    border-top: 1px solid var(--filete);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--paso-1) var(--paso-4);
+  }
+
+  .registro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .registro__etiqueta {
+    font-size: var(--t-micro);
+    font-weight: 450;
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+
+  .registro__valor {
+    font-size: var(--t-micro-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 900px) {
+    .vias__reticula {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .via + .via {
+      border-left: 0;
+      border-top: 1px solid var(--filete-hoja);
+    }
+    /* En una sola columna el acolchado lateral de la celda desalinea el texto
+       respecto al gutter de la página: apilado, la columna ES la página. */
+    .via {
+      padding-inline: 0;
+    }
+    .donde__reticula {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .via__relleno {
+      transition-duration: 1ms;
+    }
+  }
+</style>

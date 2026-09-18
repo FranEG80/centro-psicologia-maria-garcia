@@ -1,0 +1,146 @@
+---
+/* El pórtico de las páginas interiores.
+
+   La portada abre con la escena de vidrio; las interiores no pueden, porque
+   un recorrido de cámara de tres pantallas delante de un listado clínico es
+   hacerle perder el tiempo a quien ya sabe a qué venía. Lo que sí conservan es
+   el material: hormigón con su poro, el canto encendido de 1px arriba y el
+   mismo bloque de versalita, titular y entradilla de toda la página.
+
+   Contraste medido (WCAG 2.1) sobre hormigón #F4EFE4:
+     carbón #1F2426   13.0:1  titular y entradilla
+     --tinta-2        4.9:1   versalita
+
+   `migas` es opcional y solo se pone donde hay un nivel por encima: las
+   páginas de área y las de espacio cuelgan de un índice, y sin la miga el
+   visitante que llega desde una búsqueda no tiene forma de subir.
+*/
+
+interface Miga {
+  href: string;
+  texto: string;
+}
+
+interface Props {
+  marca: string;
+  titulo: string;
+  entradilla?: string;
+  cuerpo?: string;
+  migas?: Miga[];
+}
+
+const { marca, titulo, entradilla, cuerpo, migas } = Astro.props;
+---
+
+<header class="portico">
+  <div class="portico__poro" aria-hidden="true"></div>
+
+  <div class="envoltura portico__caja" data-revelar-grupo>
+    {
+      migas && migas.length > 0 && (
+        <nav class="portico__migas" aria-label="Ruta">
+          <ol>
+            {migas.map((m) => (
+              <li>
+                <a class="caps portico__miga" href={m.href}>
+                  {m.texto}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+
+    <p class="caps portico__marca" data-revelar>{marca}</p>
+    <h1 class="portico__titulo" data-revelar>{titulo}</h1>
+    {entradilla && <p class="plomo portico__entradilla" data-revelar>{entradilla}</p>}
+    {cuerpo && <p class="cuerpo cuerpo--2 portico__cuerpo" data-revelar>{cuerpo}</p>}
+    <slot />
+  </div>
+</header>
+
+<style>
+  .portico {
+    position: relative;
+    isolation: isolate;
+    background: var(--hormigon);
+    /* El primer paso es mayor que el resto: la barra fija mide 64px y el
+       titular no puede nacer pegado a ella. */
+    padding-block: var(--paso-5) var(--paso-4);
+  }
+
+  .portico__poro {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.42;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  /* -- Migas ------------------------------------------------------------- */
+  .portico__migas ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: var(--paso-2);
+  }
+
+  /* El separador se dibuja, no se escribe: una barra de texto entre enlaces
+     la anuncian los lectores de pantalla una por una. */
+  .portico__migas li + li::before {
+    content: '';
+    display: inline-block;
+    width: 0.9rem;
+    height: 1px;
+    margin-right: 0.6rem;
+    vertical-align: 0.35em;
+    background: var(--topo);
+  }
+
+  .portico__miga {
+    color: var(--tinta-2);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color var(--dur-ui) ease, border-color var(--dur-ui) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .portico__miga:hover {
+      color: var(--acento-fuerte);
+      border-bottom-color: var(--acento-fuerte);
+    }
+  }
+
+  /* -- Bloque ------------------------------------------------------------ */
+  .portico__marca {
+    color: var(--tinta-2);
+  }
+
+  /* El titular de página va en versalitas muy espaciadas, como el del primer
+     cuadro: es el mismo rango tipográfico, no un h1 genérico. */
+  .portico__titulo {
+    margin-top: var(--paso-1);
+    font-size: var(--t-h1);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-indent: 0.05em;
+    text-wrap: balance;
+    max-width: 22ch;
+  }
+
+  .portico__entradilla {
+    margin-top: var(--paso-3);
+    max-width: 52ch;
+  }
+
+  .portico__cuerpo {
+    margin-top: var(--paso-2);
+  }
+</style>

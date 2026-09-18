@@ -1,8 +1,30 @@
 ---
 import { centro, navegacion } from '../data/contenido.js';
+
+/* La firma de la portada empieza grande en mitad de pantalla y aterriza en la
+   barra. Para que no haya costura, el elemento que viaja es el mismo que se
+   queda: no hay una firma grande y otra pequeña, hay una sola con transformada.
+
+   El nombre se parte en dos, y la partición hace doble trabajo. Por encima de
+   1080px el nombre completo arranca grande en dos líneas: la de arriba es el
+   prefijo y la de abajo el núcleo, cada una con su transformada, y al aterrizar
+   las dos valen cero y quedan en la misma línea de la barra. Nada se reflúe: el
+   salto de línea es de mentira, son dos piezas colocadas.
+
+   Por debajo de 1080px el prefijo no se maqueta y queda solo «María García»,
+   que es lo que cabe en una barra de una línea. */
+const nucleo = 'María García';
+const prefijo = centro.nombre.endsWith(nucleo)
+  ? centro.nombre.slice(0, centro.nombre.length - nucleo.length).trim()
+  : '';
+const letras = [...prefijo];
+
+/* El recorrido de la firma solo existe donde existe el primer cuadro. En las
+   páginas interiores la barra es barra desde el primer pintado. */
+const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
 ---
 
-<header class="nav" data-nav>
+<header class:list={['nav', portada && 'nav--portada']} data-nav>
   <!--
     La capa de material va aparte del contenido y solo cambia de opacidad.
     Animar backdrop-filter o background-color obliga al navegador a recomponer
@@ -12,17 +34,42 @@ import { centro, navegacion } from '../data/contenido.js';
   <div class="nav__material vitrina" aria-hidden="true"></div>
 
   <div class="nav__barra">
-    <a class="nav__marca" href="#top">
-      <img
+    {/* A la portada, no a #top: con páginas interiores publicadas, un ancla
+        que no existe fuera de la home deja la marca sin destino. */}
+    <a class="nav__marca" href="/" data-nav-marca>
+      {/* El monograma va en línea y no como <img>: durante el recorrido se
+          escala 7x, y un SVG en línea se vuelve a rasterizar a la escala del
+          fotograma mientras que una imagen se estira del mapa de 26 px. */}
+      <span class="solo-lectores">{centro.nombre}</span>
+      <svg
         class="nav__monograma"
-        src="/media/logo-maria-garcia.svg"
-        alt=""
-        width="34"
-        height="27"
+        viewBox="72 24 382 305"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
         aria-hidden="true"
-      />
-      <span class="caps nav__nombre nav__nombre--largo">{centro.nombre}</span>
-      <span class="caps nav__nombre nav__nombre--corto">María García</span>
+        data-nav-monograma
+      >
+        <path
+          d="M229 60C181 62 125 91 103 137C77 190 92 247 136 282C178 315 264 327 327 309C354 301 364 282 357 259C354 249 349 240 344 233"
+          stroke-width="6.5"></path>
+        <path
+          d="M229 60C296 45 371 57 408 98C438 131 443 161 422 179C405 194 374 202 342 208C318 213 299 212 286 208"
+          stroke-width="6.5"></path>
+        <path
+          d="M188 295C208 237 215 145 231 38C219 112 216 188 222 230C226 260 236 255 244 220L258 153C260 145 263 147 264 161L268 199C270 218 277 228 286 211L302 178C307 167 311 168 314 181L318 205C321 222 329 223 336 207L345 187C349 179 354 185 356 196C359 210 368 215 382 211C397 207 412 201 426 194"
+          stroke-width="7"></path>
+      </svg>
+      <span class="caps nav__nombre" aria-hidden="true">
+        <span class="nav__prefijo" data-nav-prefijo>
+          {
+            letras.map((c, i) => (
+              <span style={`--i:${i}`}>{c === ' ' ? ' ' : c}</span>
+            ))
+          }
+        </span><span class="nav__nucleo" data-nav-nucleo>{nucleo}</span>
+      </span>
     </a>
 
     <nav class="nav__enlaces" aria-label="Secciones">
@@ -103,8 +150,16 @@ import { centro, navegacion } from '../data/contenido.js';
     transition: opacity var(--dur-material) var(--ease-hoja);
   }
 
-  :global(body.sobre-vidrio) .nav__material {
+  /* En la portada con JS el material no existe desde el primer pintado, no
+     desde que arranca el script: entre una cosa y la otra hay tiempo de
+     descargar three, y ahí se veía la barra entera antes de que la escena la
+     retirase. Vuelve cuando el script pone la bandera. */
+  html.js .nav--portada .nav__material {
     opacity: 0;
+  }
+
+  html.js :global(body.barra-montada) .nav--portada .nav__material {
+    opacity: 1;
   }
 
   /* -- La barra ---------------------------------------------------------- */
@@ -139,7 +194,11 @@ import { centro, navegacion } from '../data/contenido.js';
   .nav__monograma {
     width: 26px;
     height: auto;
+    aspect-ratio: 382 / 305;
     flex: none;
+    /* El punto fijo de la escala es el centro del trazo, no su esquina: así el
+       monograma crece sobre sí mismo y el recorrido es una sola recta. */
+    transform-origin: 50% 50%;
   }
 
   .nav__nombre {
@@ -150,11 +209,32 @@ import { centro, navegacion } from '../data/contenido.js';
     color: inherit;
   }
 
-  /* El nombre completo es largo y a 900px envolvía a dos líneas, que en una
+  .nav__nucleo {
+    display: inline-block;
+    transform-origin: 50% 50%;
+  }
+
+  /* El prefijo ocupa su ancho desde el primer pintado aunque no se vea: si
+     apareciera creando caja, el nombre ya aterrizado se desplazaría a la
+     derecha y el aterrizaje acabaría en un salto. */
+  .nav__prefijo {
+    display: inline-block;
+    white-space: pre;
+    transform-origin: 50% 50%;
+  }
+
+  .nav__prefijo span {
+    display: inline-block;
+  }
+
+  /* El nombre completo es largo y a 1080px envolvía a dos líneas, que en una
      barra de una sola línea se lee como un error. No se recorta el nombre
-     real: se cambia por la versión corta y el completo sigue en el pie. */
-  .nav__nombre--corto {
-    display: none;
+     real: por debajo de ese ancho solo queda el núcleo, y el completo sigue en
+     el pie y para lectores de pantalla. */
+  @media (max-width: 1080px) {
+    .nav__prefijo {
+      display: none;
+    }
   }
 
   .nav__enlaces {
@@ -334,23 +414,53 @@ import { centro, navegacion } from '../data/contenido.js';
   }
 
   /* -- Sobre el primer cuadro -------------------------------------------- */
-  /* La escena arranca llena de azul transmitido y acaba en hormigón claro. El
-     script conmuta la clase en el 32% del recorrido, que es cuando la pared
-     entra por la parte de arriba del cuadro. */
-  :global(body.sobre-vidrio) .nav__marca,
-  :global(body.sobre-vidrio) .nav__enlace,
-  :global(body.sobre-vidrio) .nav__telefono,
-  :global(body.sobre-vidrio) .nav__conmutador {
-    color: var(--crema);
+  /* Mientras la firma viaja por el centro de la pantalla, la barra no existe:
+     ni enlaces, ni teléfono, ni conmutador. Entran los tres a la vez que el
+     material, cuando la firma ya está en su sitio y a su tamaño. Se apagan con
+     visibility además de opacidad para que el tabulador no encuentre destinos
+     invisibles. */
+  .nav__enlaces,
+  .nav__telefono,
+  .nav__conmutador {
+    transition:
+      opacity var(--dur-material) var(--ease-hoja),
+      visibility 0s linear 0s,
+      transform var(--dur-pulsar) var(--ease-out);
   }
 
-  @media (max-width: 1080px) {
-    .nav__nombre--largo {
-      display: none;
-    }
-    .nav__nombre--corto {
-      display: inline;
-    }
+  html.js .nav--portada .nav__enlaces,
+  html.js .nav--portada .nav__telefono,
+  html.js .nav--portada .nav__conmutador {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity var(--dur-ui) var(--ease-out),
+      visibility 0s linear var(--dur-ui);
+  }
+
+  html.js :global(body.barra-montada) .nav--portada .nav__enlaces,
+  html.js :global(body.barra-montada) .nav--portada .nav__telefono,
+  html.js :global(body.barra-montada) .nav--portada .nav__conmutador {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+      opacity var(--dur-material) var(--ease-hoja),
+      visibility 0s linear 0s;
+  }
+
+  /* -- La firma en recorrido ---------------------------------------------- */
+  /* Hasta que el script no ha medido la barra no se sabe dónde cae la firma
+     grande. Pintarla antes es enseñar la marca en la esquina y arrancarla de
+     ahí de un tirón. El plazo de gracia de la plantilla retira html.js si el
+     script no llega, y entonces la marca vuelve a verse en su sitio. */
+  html.js .nav--portada .nav__marca {
+    opacity: 0;
+  }
+
+  html.js .nav--portada .nav__marca.esta-medida {
+    opacity: 1;
   }
 
   @media (max-width: 900px) {
@@ -375,6 +485,13 @@ import { centro, navegacion } from '../data/contenido.js';
     .nav__telefono::after,
     .nav__trazos i {
       transition: none;
+    }
+    /* Con movimiento reducido no hay recorrido de firma: el script la deja
+       aterrizada desde el principio, así que el prefijo se ve sin cascada. */
+    html.js .nav--portada .nav__prefijo span {
+      opacity: 1;
+      transition: none;
+      transition-delay: 0s;
     }
     .nav__panel {
       animation: none;

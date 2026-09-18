@@ -1,0 +1,172 @@
+---
+import { Image } from 'astro:assets';
+import { ambientes } from '../data/contenido.js';
+
+/* La hoja siguiente del laminado: petróleo pleno, con las fotografías a
+   sangre y pegadas entre sí, separadas solo por el canto. Medidas del comp
+   aprobado (artifacts/figma-import).
+
+   Las fotos mantienen su color: el comp que las lavaba de azul convertía las
+   tres salas en la misma sopa y perdían el material, que es justo lo que
+   viene a ver quien duda de si traer aquí a su hijo.
+
+   Contraste medido (WCAG 2.1) sobre petróleo #35617F:
+     crema #F8F4EB       6.04:1  titulares y cuerpo
+     --campo-tinta-2     4.9:1   versalitas */
+---
+
+<section class="ambientes" aria-labelledby="ambientes-titulo">
+  <div class="envoltura ambientes__cabecera">
+    <p class="caps ambientes__marca">El centro</p>
+    <h2 class="h2 ambientes__titulo" id="ambientes-titulo">
+      Dos espacios, según quién entre por la puerta
+    </h2>
+    <p class="plomo ambientes__plomo">
+      No es lo mismo sentarse a hablar que sentarse a jugar. Por eso hay un
+      despacho de consulta y un rincón preparado para trabajar a la altura de
+      un niño.
+    </p>
+  </div>
+
+  <ul class="ambientes__tira" data-revelar-grupo>
+    {
+      ambientes.map((a) => (
+        <li class="ambiente" data-revelar="lamina">
+          <figure class="ambiente__figura">
+            <Image
+              src={a.src}
+              widths={[480, 720, 960]}
+              sizes="(max-width: 860px) 100vw, 50vw"
+              alt={a.alt}
+              loading="eager"
+              fetchpriority="low"
+              decoding="async"
+            />
+          </figure>
+
+          <div class="ambiente__texto">
+            <p class="caps caps--contenido ambiente__marca">{a.sumario}</p>
+            <h3 class="h3 ambiente__nombre">{a.titulo}</h3>
+            <p class="ambiente__cuerpo">{a.texto}</p>
+            <a class="boton boton--claro ambiente__boton" href={a.href}>
+              Conocer el espacio
+              <span class="solo-lectores"> de {a.titulo.toLowerCase()}</span>
+            </a>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .ambientes {
+    background: var(--petroleo);
+    color: var(--crema);
+    border-top: 1px solid var(--canto);
+    padding-block: var(--paso-5) 0;
+  }
+
+  .ambientes__cabecera {
+    margin-bottom: var(--paso-4);
+  }
+
+  .ambientes__marca {
+    color: var(--campo-tinta-2);
+  }
+
+  .ambientes__titulo {
+    margin-top: var(--paso-1);
+    color: var(--crema);
+  }
+
+  .ambientes__plomo {
+    margin-top: var(--paso-2);
+    color: var(--campo-tinta-2);
+  }
+
+  /* La tira. Dos huecos pegados, separados por el canto y sin margen: la
+     misma regla que las filas de áreas. */
+  .ambientes__tira {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ambiente {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--canto-fuerte);
+  }
+
+  .ambiente + .ambiente {
+    border-left: 1px solid var(--canto-fuerte);
+  }
+
+  .ambiente__figura {
+    overflow: hidden;
+  }
+
+  .ambiente__figura img {
+    width: 100%;
+    height: clamp(17rem, 34vw, 29rem);
+    object-fit: cover;
+    transition: transform 500ms var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .ambiente:hover .ambiente__figura img {
+      transform: scale(1.04);
+    }
+  }
+
+  .ambiente__texto {
+    padding: var(--paso-3) var(--gutter) var(--paso-5);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+  }
+
+  .ambiente__marca {
+    color: var(--campo-tinta-2);
+  }
+
+  .ambiente__nombre {
+    margin-top: var(--paso-1);
+    color: var(--crema);
+  }
+
+  .ambiente__cuerpo {
+    margin-top: var(--paso-2);
+    /* El aire mínimo hasta el botón vive aquí, no en el botón: el margin-top
+       auto del botón se lo comería al repartir el espacio sobrante. */
+    margin-bottom: var(--paso-3);
+    max-width: 44ch;
+    color: var(--campo-tinta-2);
+    text-wrap: pretty;
+  }
+
+  /* El botón se empuja al fondo de la celda para que los dos queden alineados
+     aunque un texto ocupe una línea más que el otro. */
+  .ambiente__boton {
+    margin-top: auto;
+  }
+
+  @media (max-width: 860px) {
+    .ambientes__tira {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .ambiente + .ambiente {
+      border-left: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ambiente__figura img {
+      transition: none;
+    }
+    .ambiente:hover .ambiente__figura img {
+      transform: none;
+    }
+  }
+</style>

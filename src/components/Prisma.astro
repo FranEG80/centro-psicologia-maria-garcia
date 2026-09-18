@@ -1,0 +1,170 @@
+---
+import { prisma } from '../data/contenido.js';
+
+/* La primera hoja del laminado, resuelta como el espejo de la sección de
+   áreas: allí un haz de azul cae sobre el hormigón y el núcleo denso va abajo
+   a la derecha; aquí el campo es azul y lo que lo cruza es la luz, en crema,
+   con el núcleo abajo a la izquierda. Mismo gesto, invertido en lado y en
+   color. La una es el negativo de la otra.
+
+   Y deriva con el scroll en sentido contrario, de izquierda a derecha, para
+   que las dos secciones se lean como un par y no como dos efectos sueltos.
+
+   El núcleo del haz llega al 34% de crema, y puede porque está en la esquina
+   inferior izquierda, lejos del bloque de texto: donde caen las letras el
+   velo no pasa del 6%. Si el texto estuviera encima del núcleo habría que
+   bajarlo al 14%, que es donde el contraste toca AA.
+     crema #F8F4EB sobre petróleo #35617F      6.04:1
+     crema sobre el velo del 6% (zona de texto) 5.8:1
+     crema sobre el núcleo del 34%             3.5:1  sin texto encima */
+
+const { texto, autor } = prisma;
+---
+
+<section class="prisma">
+  <hr class="canto" />
+
+  <div class="prisma__banda">
+    <div class="prisma__haz" aria-hidden="true"></div>
+
+    <div class="envoltura prisma__caja">
+      <blockquote class="prisma__cita">
+        <p class="prisma__texto">{texto}</p>
+        {
+          autor && (
+            <footer class="prisma__autoria">
+              <cite class="prisma__autor">{autor}</cite>
+            </footer>
+          )
+        }
+      </blockquote>
+    </div>
+  </div>
+
+  <hr class="canto" />
+</section>
+
+<style>
+  .prisma {
+    background: var(--petroleo);
+    color: var(--crema);
+  }
+
+  /* clip, nunca hidden: overflow: hidden convertiría esto en contenedor de
+     scroll y la línea de tiempo de vista del haz se resolvería contra esta
+     caja en vez de contra la ventana, con lo que el degradado se quedaría
+     quieto. Es el mismo motivo que en la sección de áreas. */
+  .prisma__banda {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+  }
+
+  /* El haz. Diagonal estrecho, no viñeta: entra por arriba a la derecha y el
+     núcleo cae abajo a la izquierda, al revés que el de áreas.
+
+     Desborda un 34% por cada lado porque deriva con el scroll: sin ese margen
+     asomaría el canto del degradado y parecería un rectángulo moviéndose. */
+  .prisma__haz {
+    position: absolute;
+    inset: 0 -34%;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      212deg,
+      transparent 30%,
+      color-mix(in srgb, var(--crema) 6%, transparent) 48%,
+      color-mix(in srgb, var(--crema) 18%, transparent) 64%,
+      color-mix(in srgb, var(--crema) 34%, transparent) 80%,
+      color-mix(in srgb, var(--crema) 20%, transparent) 92%,
+      transparent 100%
+    );
+  }
+
+  /* La deriva, atada al scroll con una línea de tiempo de vista: sin
+     JavaScript y sin trabajo en el hilo principal, porque solo anima
+     translate. De izquierda a derecha, al contrario que el haz de áreas. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .prisma__haz {
+        animation: deriva-luz linear both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 100%;
+      }
+
+      @keyframes deriva-luz {
+        from {
+          translate: -24% 0;
+        }
+        to {
+          translate: 24% 0;
+        }
+      }
+    }
+  }
+
+  /* El texto se va a la derecha, contrapesando el núcleo de luz de la
+     izquierda. Dentro del bloque sigue alineado a la izquierda: una versal
+     con este interletrado, alineada a la derecha, se lee a trompicones. */
+  .prisma__caja {
+    position: relative;
+    z-index: 1;
+    padding-block: var(--paso-5);
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .prisma__cita {
+    max-width: 44rem;
+  }
+
+  /* La medida va en rem y no en ch: el ch mide el cero en caja baja, y aquí
+     el texto es versal con tracking, así que cada carácter ocupa más. */
+  .prisma__texto {
+    font-size: var(--t-h2);
+    font-weight: 300;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-indent: 0.08em;
+    text-wrap: balance;
+  }
+
+  /* La autoría rompe con todo lo anterior: caja baja, cuerpo pequeño y un
+     filete de luz delante. Si la frase es de alguien, se ve que lo es. */
+  .prisma__autoria {
+    margin-top: var(--paso-2);
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .prisma__autoria::before {
+    content: '';
+    width: 2.5rem;
+    height: 1px;
+    background: color-mix(in srgb, var(--canto) 70%, transparent);
+  }
+
+  .prisma__autor {
+    font-size: var(--t-micro-2);
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--campo-tinta-2);
+  }
+
+  @media (max-width: 900px) {
+    .prisma__caja {
+      justify-content: flex-start;
+    }
+    .prisma__cita {
+      max-width: none;
+    }
+    .prisma__texto {
+      letter-spacing: 0.06em;
+      text-indent: 0.06em;
+    }
+  }
+</style>

@@ -30,6 +30,11 @@ export const centro = {
   direccion: 'C. Rafael Alberti, 3',
   cp: '18600',
   mapa: 'https://maps.google.com/?q=C.+Rafael+Alberti+3,+18600+Motril,+Granada',
+  /* Nodo del portal en OpenStreetMap, no una aproximación al centro del
+     barrio. El mapa del pie se sirve desde OSM y no desde Google: un iframe
+     de Google Maps deja cookies de terceros antes de que nadie acepte nada,
+     y esta web todavía no tiene política de cookies. */
+  coordenadas: { lat: 36.750956, lon: -3.5215472 },
   credenciales: [
     { etiqueta: 'Nº colegiada', valor: 'AO 05323' },
     { etiqueta: 'Mediadora Familiar de la Junta de Andalucía', valor: 'nº 631' },
@@ -128,6 +133,17 @@ export const areas = [
   },
 ];
 
+/* Resumen de una línea por área, para la portada. El listado clínico completo
+   vive en la página de cada área: aquí solo hace falta lo justo para elegir. */
+export const resumenAreas = {
+  infancia: 'Desarrollo, conducta, sueño, lenguaje y emociones.',
+  escolares: 'Aprendizaje, TDAH, altas capacidades, estrés académico.',
+  adultos: 'Ansiedad, estado de ánimo, duelo, adaptación.',
+  familia: 'Mediación familiar, pareja, separación, relaciones.',
+  forense: 'Peritaje, informes y ratificación en juzgados.',
+  neuropsicologia: 'Deterioro cognitivo y estimulación cognitiva.',
+};
+
 export const formacion = [
   'Licenciada en Psicología. Universidad de Granada',
   'Especialista en Neuropsicología',
@@ -152,32 +168,37 @@ export const galeria = [
   {
     src: reception,
     alt: 'Recepción del centro, con mostrador claro y las titulaciones enmarcadas en la pared.',
-    pie: 'Recepción, con las titulaciones enmarcadas detrás',
+    pie: 'Recepción, con sala de espera',
   },
   {
     src: waitingRoom,
     alt: 'Sala de espera con asientos y las titulaciones enmarcadas.',
     pie: 'Sala de espera, con las titulaciones a la vista',
   },
+  /* El centro tiene UN despacho y una zona infantil, y de cada uno hay dos
+     tomas. officeDarkwood y officeCalm son el mismo despacho desde la puerta
+     y desde detrás de la mesa: mismo techo con moldura escalonada y misma
+     rejilla. officeFamily y childrenRoom son la zona infantil. Contar cuatro
+     salas a partir de cuatro fotografías sería inventarle espacio al centro. */
   {
     src: officeDarkwood,
-    alt: 'Despacho de María García, con mesa de madera oscura y dos butacas.',
-    pie: 'El despacho de María, mesa de madera oscura y dos butacas',
+    alt: 'El despacho de consulta, con mesa de madera oscura y dos butacas.',
+    pie: 'El despacho, mesa de madera oscura y dos butacas',
   },
   {
     src: officeCalm,
-    alt: 'Segundo despacho del centro, de tonos claros y con luz natural.',
-    pie: 'Segundo despacho, de tonos claros y luz natural',
+    alt: 'El mismo despacho desde detrás de la mesa, con la ventana al fondo.',
+    pie: 'El mismo despacho, desde el otro lado de la mesa',
   },
   {
     src: officeFamily,
-    alt: 'Tercer despacho, preparado para sesiones de familia y de pareja.',
-    pie: 'Tercer despacho, preparado para familia y pareja',
+    alt: 'Segundo despacho del centro, de tonos claros.',
+    pie: 'El segundo despacho',
   },
   {
     src: childrenRoom,
-    alt: 'Rincón infantil con mesa baja, sillas pequeñas y una pizarra.',
-    pie: 'El rincón infantil: mesa baja, sillas pequeñas y pizarra',
+    alt: 'Rincón de trabajo de la zona infantil, con mesa baja, sillas pequeñas y pizarra.',
+    pie: 'Su rincón de trabajo: mesa baja, sillas pequeñas y pizarra',
   },
 ];
 
@@ -203,9 +224,52 @@ export const materiales = [
   },
 ];
 
+/* La página del centro vive en /instalaciones porque de ella cuelgan
+   /instalaciones/adultos y /instalaciones/infantil: el menú tiene que apuntar
+   al padre real de esas dos, no a una ruta paralela. El rótulo sigue siendo
+   «Consulta», que es como lo llama la clienta. */
 export const navegacion = [
-  { href: '#areas', texto: 'Áreas' },
-  { href: '#sobre-mi', texto: 'Sobre mí' },
-  { href: '#centro', texto: 'El centro' },
-  { href: '#contacto', texto: 'Contacto' },
+  { href: '/areas', texto: 'Áreas' },
+  { href: '/instalaciones', texto: 'Consulta' },
+  { href: '/sobre-mi', texto: 'Sobre mí' },
+  { href: '/contacto', texto: 'Contacto' },
+];
+
+/* La frase de apertura. Sin autor: es la voz del centro, no una cita.
+   El componente admite `autor` por si más adelante se sustituye por una cita
+   real; atribuir una inventada sería peor que no tener ninguna.
+
+   Dice explícitamente que cambiar de cristal no cambia lo ocurrido. En una
+   web de psicología, la versión corta de esta idea —«todo depende de cómo lo
+   mires»— se lee como restarle importancia a lo que le pasa a quien la lee. */
+export const prisma = {
+  texto:
+    'Mirar lo mismo a través de otro cristal no cambia lo que pasó. Cambia lo que puedes hacer con ello.',
+  autor: null,
+};
+
+/* Los dos ambientes del centro. La clínica atiende a adultos y a niños en
+   espacios distintos, y esa es la información que busca quien duda de si
+   traer a su hijo. */
+export const ambientes = [
+  {
+    id: 'adultos',
+    titulo: 'Adultos y familia',
+    sumario: 'Los despachos',
+    texto:
+      'Dos salas de consulta tranquilas, sin ruido de fondo ni gente pasando por delante. Un sitio para sentarse a hablar con calma, ya vengas solo, en pareja o con toda la familia.',
+    src: officeDarkwood,
+    alt: 'Despacho de consulta con mesa de madera oscura y dos butacas.',
+    href: '/instalaciones/adultos',
+  },
+  {
+    id: 'infantil',
+    titulo: 'Infantil y juvenil',
+    sumario: 'La zona infantil',
+    texto:
+      'Una sala aparte, a su altura y con su propio material. Aquí se trabaja jugando, porque jugando es como un niño cuenta lo que le pasa.',
+    src: childrenRoom,
+    alt: 'Rincón infantil con mesa baja, sillas pequeñas y pizarra.',
+    href: '/instalaciones/infantil',
+  },
 ];

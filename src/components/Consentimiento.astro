@@ -1,0 +1,179 @@
+---
+/* Aviso de consentimiento.
+
+   Caja pequeña anclada abajo a la derecha, no franja de ancho completo: el
+   primer cuadro es una escena de vidrio a pantalla completa y una banda de
+   1440 px cruzándola por debajo la parte en dos. Aquí cabe porque lo que de
+   verdad protege al visitante no es el tamaño del aviso, sino que el iframe
+   de Google no exista en el documento hasta que alguien lo pida (ver
+   consentimiento.js y el marco del pie).
+
+   Además no entra hasta que el primer cuadro sale de pantalla. No es una
+   licencia: nada de terceros se carga mientras tanto, así que no hay nada
+   que consentir todavía, y la escena se ve limpia como está diseñada.
+
+   Sale en vidrio, el material de la página. Contraste medido (WCAG 2.1):
+   carbón #1F2426 sobre la lámina compuesta sobre crema 13.4:1;
+   --tinta-2 sobre la misma base 5.0:1. */
+---
+
+<aside
+  class="aviso"
+  data-consentimiento
+  hidden
+  aria-labelledby="consentimiento-titulo"
+>
+  <h2 class="caps aviso__epigrafe" id="consentimiento-titulo">Cookies</h2>
+  <p class="aviso__texto">
+    Sin analítica ni publicidad. Solo el mapa del pie es de Google y deja
+    cookies suyas al cargarse.
+    <a class="aviso__enlace" href="/cookies">Más detalle</a>
+  </p>
+
+  <div class="aviso__acciones">
+    <button class="aviso__boton" type="button" data-consentimiento-rechazar>
+      Rechazar
+    </button>
+    <button
+      class="aviso__boton aviso__boton--si"
+      type="button"
+      data-consentimiento-aceptar
+    >
+      Aceptar
+    </button>
+  </div>
+</aside>
+
+<style>
+  .aviso {
+    position: fixed;
+    right: var(--gutter);
+    bottom: var(--gutter);
+    z-index: var(--z-franja);
+    width: min(23rem, calc(100vw - var(--gutter) * 2));
+    padding: var(--paso-2);
+    color: var(--tinta);
+    background: var(--vitrina-fondo);
+    backdrop-filter: blur(var(--vitrina-blur)) saturate(1.1);
+    -webkit-backdrop-filter: blur(var(--vitrina-blur)) saturate(1.1);
+    border: 1px solid var(--vitrina-borde);
+    box-shadow: var(--vitrina-luz), var(--vitrina-espesor), var(--vitrina-sombra);
+    translate: 0 calc(100% + var(--gutter));
+    opacity: 0;
+    transition: translate var(--dur-material) var(--ease-hoja),
+      opacity var(--dur-ui) ease;
+  }
+
+  /* `display` declarado en el elemento gana al del navegador, así que el
+     atributo hidden dejaría de ocultar nada. Aquí no se declara, pero la
+     regla se escribe igual: el día que alguien ponga un flex, el aviso no se
+     quedará pegado a la pantalla. */
+  .aviso[hidden] {
+    display: none;
+  }
+
+  /* Sin respaldo opaco el texto queda sobre la escena en cuanto el navegador
+     no compone el desenfoque. */
+  @supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+    .aviso {
+      background: color-mix(in srgb, var(--crema) 96%, var(--petroleo));
+    }
+  }
+
+  .aviso.esta-visible {
+    translate: 0 0;
+    opacity: 1;
+  }
+
+  .aviso__epigrafe {
+    color: var(--tinta-2);
+  }
+
+  .aviso__texto {
+    margin-top: 0.5rem;
+    font-size: var(--t-micro);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .aviso__enlace {
+    color: var(--acento-fuerte);
+    text-decoration: none;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--acento-fuerte) 45%, transparent);
+    white-space: nowrap;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .aviso__enlace:hover {
+      border-bottom-color: currentColor;
+    }
+  }
+
+  /* Rechazar y aceptar: mismo tamaño, misma caja, uno al lado del otro. El
+     relleno del segundo es jerarquía visual, no un atajo; los dos están a un
+     clic, que es lo que exige la AEPD. Botones propios y no .boton, que mide
+     3 rem y en una caja de este tamaño pesa más que el texto. */
+  .aviso__acciones {
+    margin-top: var(--paso-2);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .aviso__boton {
+    min-height: 2.25rem;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--filete-fuerte);
+    border-radius: var(--radio);
+    background: transparent;
+    color: var(--tinta);
+    font: inherit;
+    font-size: var(--t-micro);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-indent: 0.16em;
+    cursor: pointer;
+    transition: background-color var(--dur-ui) ease,
+      color var(--dur-ui) ease, border-color var(--dur-ui) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .aviso__boton:hover {
+      background: var(--carbon);
+      border-color: var(--carbon);
+      color: var(--crema);
+    }
+  }
+
+  .aviso__boton--si {
+    background: var(--carbon);
+    border-color: var(--carbon);
+    color: var(--crema);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .aviso__boton--si:hover {
+      background: var(--acento-fuerte);
+      border-color: var(--acento-fuerte);
+    }
+  }
+
+  /* En móvil ocupa el ancho disponible, pero sigue siendo una caja anclada
+     abajo, no una banda pegada a los bordes de la pantalla. */
+  @media (max-width: 560px) {
+    .aviso {
+      left: var(--paso-2);
+      right: var(--paso-2);
+      bottom: var(--paso-2);
+      width: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aviso {
+      transition: opacity var(--dur-ui) ease;
+      translate: 0 0;
+    }
+  }
+</style>

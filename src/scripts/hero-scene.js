@@ -1,84 +1,12 @@
-/* ==========================================================================
-   Primer cuadro. Nave de hormigón pálido, suelo y pared, un haz de luz
-   diagonal, el nombre rotulado en el muro a tamaño arquitectónico, y tres
-   láminas de vidrio dicroico laminado en pie, giradas como las hojas de un
-   biombo.
-
-   ── El encuadre está medido, no interpretado ──────────────────────────────
-   Sobre la referencia de la clienta (1536 x 1024) se leen las juntas y los
-   cantos, y de ahí sale toda la geometría:
-
-     · la junta pared/suelo cae a v = 0.542 y es horizontal en todo el ancho,
-       y las verticales del hormigón no convergen: la cámara mira
-       perpendicular a la pared, sin guiñada, con una caída de 2.55°;
-     · las bases de las láminas caen a v = 0.610 / 0.620 / 0.635 y sus
-       cúspides a 0.271 / 0.217 / 0.207, lo que a 1.62 m de altura de cámara y
-       32° de campo vertical las sitúa a 15.1 / 14.4 / 13.3 m: la primera es
-       la más lejana, la tercera la más cercana;
-     · cada lámina proyecta un trapecio. La relación entre sus dos cantos
-       verticales (344/322, 413/345, 377/438) da giros de +27°, +57° y -48°:
-       es un biombo que se abre hacia la cámara;
-     · el «05» de la referencia ocupa u 0.495 a 0.892 y v 0.054 a 0.444, que
-       con la pared a 23.9 m son 8.2 x 5.3 m. Esa caja se conserva tal cual y
-       ahora la ocupa el rótulo: mismo hueco de muro, mismo peso en el
-       encuadre, pero con el nombre en lugar del dígito.
-
-   La sonda window.__hero.medir() reproyecta todos esos puntos para poder
-   comparar el resultado con los valores leídos, en lugar de a ojo.
-
-   ── El vidrio se compone, no se refracta ─────────────────────────────────
-   La transmisión de MeshPhysicalMaterial excluye del render de refracción a
-   los propios objetos transmisivos: un cristal detrás de otro cristal
-   desaparece. En la referencia las tres láminas se solapan y se ven unas a
-   través de otras, así que el vidrio aquí se construye como lo que es:
-
-     cuerpo   una malla en blending de MULTIPLICACIÓN, con un degradado
-              vertical de color transmitido. Multiplicar sí compone: dos
-              láminas superpuestas dan el producto de sus dos densidades,
-              que es exactamente la física del vidrio coloreado;
-     brillo   una segunda malla en aditivo, con color negro y reflejo de
-              entorno alto, que aporta solo el especular y el Fresnel;
-     canto    las cuatro caras estrechas de la propia caja, sombreadas por la
-              escena. Nada de líneas dibujadas encima: a 14 m el cuadro abarca
-              12.04 m sobre 1536 px, o sea 7.84 mm por píxel, así que un canto
-              de 52 mm ocupa 6.6 px, que es justo lo que mide en la referencia.
-              La geometría ya da el ancho correcto y lo único que hacía falta
-              era sombrearla bien.
-
-   Los colores de multiplicación no son inventados: son el cociente entre el
-   color observado en la referencia y el hormigón que hay detrás.
-
-   ── Todo lo demás también se mide, y se mide contra el RENDER ─────────────
-   Leer la referencia no basta. Un cociente correcto aplicado sobre un fondo
-   equivocado da un compuesto equivocado, y este cuadro estuvo varias vueltas
-   pareciendo verde porque el muro tiraba a amarillo por debajo. Así que el
-   bucle es: se leen los valores de la referencia en un punto, se leen los del
-   render EN EL MISMO punto con window.__hero.muestrear(), y se corrige canal a
-   canal por el cociente entre los dos. Converge en dos o tres vueltas.
-
-   Sobre veintitrés puntos de control (muro dentro y fuera del haz, pavimento
-   limpio, cinco alturas de cada lámina y tres distancias de cada huella) el
-   desvío medio está en el 3%.
-
-   Lo que ese bucle destapó, y que a ojo no se habría encontrado:
-
-     · el muro fuera del haz no es una rampa de izquierda a derecha, es una
-       LOMA: 0.58 en el borde izquierdo, 0.81 hacia el centro, 0.67 a la
-       derecha. Ninguna de las dos mitades se deduce de la otra;
-     · el haz no se puede SUMAR. El hormigón está a 246 de luminancia y por
-       arriba no queda recorrido. Se cubre la pared de sombra y se le abre un
-       hueco: la luz no se pinta, se destapa;
-     · las manchas del suelo tampoco se suman. Medidas, son (0.72, 0.90, 0.98)
-       contra el pavimento limpio, o sea una multiplicación; sumarlas recortaba
-       el suelo a blanco y borraba el azul que pretendían poner;
-     · el canto de las láminas es lo MÁS oscuro del cuadro, no lo más claro, y
-       su filo blanco lo pone el especular, así que se apaga solo hacia abajo.
-   ========================================================================== */
+/* Escena de vidrio laminado sobre hormigón, aproximada a /media/image.png.
+   La absorción coloreada se compone por lámina; el especular y los biseles
+   responden al entorno. El suelo calcula una huella difusa desde los planos
+   actuales del vidrio. Los mapas de iluminación conservan la dirección de
+   arte de la referencia; no representan una simulación de iluminación global. */
 
 import {
   AdditiveBlending,
   AmbientLight,
-  BoxGeometry,
   CanvasTexture,
   Color,
   DirectionalLight,
@@ -106,6 +34,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from 'three';
+import { geometriaVidrio, microHormigon, reflejosVidrio } from './hero-surfaces.js';
 
 /* -- La sala, en metros ---------------------------------------------------- */
 /* Cerrada por los cinco lados que la cámara puede alcanzar. El borde de la
@@ -133,42 +62,9 @@ const SOL_MIRA = new Vector3(1.5, 0, -13);
 const SOL_DIR = SOL_MIRA.clone().sub(SOL); // (17.5, -20, -7)
 
 /* -- Las tres láminas ------------------------------------------------------ */
-/* transmision: el color que multiplica el vidrio, medido sobre la referencia
-   como COCIENTE entre la lámina y el fondo que tiene justo al lado a esa misma
-   altura, y no contra un hormigón genérico. Es la diferencia entre medir y
-   estimar: el muro de la referencia cae de 246 a 148 de izquierda a derecha,
-   así que dividir por un valor único daba láminas cada vez más falsas cuanto
-   más a la derecha estaban.
-
-   Cada entrada es [altura, color], con altura 1 en el canto de arriba y 0 en el
-   suelo. Cinco paradas y no dos porque el degradado real no es lineal ni de
-   lejos: en la lámina central el rojo pasa de 0.62 a 0.40 entre el 92% y el 70%
-   de altura, y de 0.40 a 0.19 en todo el resto. Con dos paradas el tercio alto
-   salía denso y el bajo claro, o sea al revés.
-
-   Y el vidrio NO oscurece el azul: en el pie de la lámina tercera el cociente
-   es (0.19, 0.53, 0.69). Se come el rojo, deja pasar el azul. Los valores que
-   había aquí bajaban el azul a 0.68, y bajar el azul de un vidrio azul no lo
-   satura, lo apaga.
-
-   La tabla se ha cerrado midiendo el RENDER contra la referencia en los mismos
-   quince puntos y dividiendo canal a canal por el error. El desvío no era
-   parejo: el rojo salía entre 1.4 y 1.8 veces por encima mientras el azul ya
-   estaba en su sitio, o sea que el vidrio absorbía poco justo en el canal que
-   le da el color. Corregido el cociente del rojo, el azul aparece solo; no ha
-   hecho falta saturar nada.
-
-   suelo: la huella sobre el hormigón, medida igual, como cociente contra el
-   pavimento limpio a la misma v. Tres paradas a 0.55 m, 2.7 m y 4.7 m del
-   apoyo. Aquí había un error de partida que dejaba el suelo sin una gota de
-   azul: se daba por hecho que estas manchas tenían MÁS azul que el hormigón y
-   que hacía falta SUMAR. Medido, la mancha más cargada da #34626d sobre un
-   limpio de #dcd2c0, o sea (0.24, 0.47, 0.57): es una multiplicación. Y sumar
-   sobre un pavimento a 0.85 llevaba los tres canales por encima de 1, así que
-   la capa que tenía que poner el azul lo recortaba a BLANCO.
-
-   canto / cantoLuz: el perímetro, cian, nunca blanco. cantoLuz es el canto de
-   arriba, que mira a la ventana, y canto el de abajo, contra el hormigón. */
+/* Factores de absorción por altura, ajustados al fondo de esta escena.
+   El azul se concentra en la parte baja y conserva la textura situada detrás.
+   suelo es el tinte de la huella difusa, no una fuente de luz azul. */
 const LAMINAS = [
   {
     x: -0.23,
@@ -176,7 +72,7 @@ const LAMINAS = [
     w: 2.19,
     h: 2.94,
     rotY: 0.475,
-    inclinacion: -0.02,
+    inclinacion: 0,
     transmision: [
       [0.92, 0xdbf0ff],
       [0.7, 0xe4f8ff],
@@ -184,10 +80,9 @@ const LAMINAS = [
       [0.3, 0xe6feff],
       [0.1, 0xb8cbd6],
     ],
-    suelo: [0x4783a0, 0xe3ebed, 0xfdfeff],
+    suelo: 0x5d909d,
     canto: 0x456d76,
     cantoLuz: 0xe5f8f8,
-    cantoLuzCarga: 0.2,
     brillo: 0.5,
   },
   {
@@ -196,7 +91,7 @@ const LAMINAS = [
     w: 3.287,
     h: 3.32,
     rotY: 0.9024,
-    inclinacion: -0.014,
+    inclinacion: 0,
     transmision: [
       [0.92, 0x8ab4da],
       [0.7, 0x44a3eb],
@@ -204,10 +99,9 @@ const LAMINAS = [
       [0.3, 0x1291ef],
       [0.1, 0x287191],
     ],
-    suelo: [0x13637f, 0xa3bac4, 0xffffff],
+    suelo: 0x075b66,
     canto: 0x346673,
     cantoLuz: 0xd9fcff,
-    cantoLuzCarga: 0.26,
     brillo: 0.72,
   },
   {
@@ -216,7 +110,7 @@ const LAMINAS = [
     w: 2.419,
     h: 3.27,
     rotY: -0.974,
-    inclinacion: -0.018,
+    inclinacion: 0,
     transmision: [
       [0.92, 0x9ec2e8],
       [0.7, 0x60a8e7],
@@ -224,22 +118,14 @@ const LAMINAS = [
       [0.3, 0x1f84c7],
       [0.1, 0x186986],
     ],
-    suelo: [0x4090ac, 0x859da4, 0xeae5e2],
+    suelo: 0x285661,
     canto: 0x003447,
     cantoLuz: 0xb6e1f0,
-    cantoLuzCarga: 0.3,
     brillo: 0.86,
   },
 ];
 
-/* Dónde caen las tres paradas de la huella, en metros contados desde la línea
-   de apoyo hacia la cámara, y dónde se ha apagado del todo. Medidos sobre la
-   referencia reproyectando las v de las muestras contra el plano del suelo. */
-const HUELLA_M = [0.55, 2.7, 4.7];
-const HUELLA_LARGO = 5.4;
-
-
-const GROSOR = 0.052;
+const GROSOR = 0.064;
 const CENTRAL = LAMINAS[1];
 
 /* ── La hoja que tiene el puntero encima se gira ───────────────────────────
@@ -252,14 +138,8 @@ const CENTRAL = LAMINAS[1];
    y en una web de un centro de psicología puede sobrar. Apagado no se registra
    ningún listener ni se construye el raycaster.
 
-   ── Cuánto se puede girar ─────────────────────────────────────────────────
-   Las huellas del suelo no son geometría: son dos texturas de lienzo horneadas
-   con las láminas en su ángulo final. Cuando una hoja gira, su línea de apoyo
-   gira con ella pero la mancha y el filete se quedan donde están. En la hoja
-   central, de 3.29 m, cada grado separa los extremos de la base 2.9 cm de su
-   huella, que en el plano final son cuatro píxeles. A cinco grados son veinte,
-   y sobre un filete desenfocado siguen sin leerse como despegue; el doble ya
-   sí. Ese, y no el gusto, es el techo mientras las huellas sean pintadas.
+   El giro está limitado a cinco grados para que la respuesta sea discreta.
+   La huella del suelo sigue el ángulo de cada hoja en el mismo fotograma.
 
    ── Y solo con el biombo ya montado ───────────────────────────────────────
    A p = 0 la cámara está a 34 cm de la hoja central y el encuadre está
@@ -442,12 +322,101 @@ const MURO_LUZ = [247, 237, 224];
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const clamp = (min, max, v) => (v < min ? min : v > max ? max : v);
 const hex = (n) => `#${n.toString(16).padStart(6, '0')}`;
-const rgb = (color, a) => {
-  const c = new Color(color);
-  return `rgba(${Math.round(c.r * 255)},${Math.round(c.g * 255)},${Math.round(
-    c.b * 255
-  )},${a})`;
-};
+/* ==========================================================================
+   Desenfoque de lienzo
+   ========================================================================== */
+
+/* Aquí NO se usa ctx.filter.
+
+   WebKit no lo implementa (bug 198416 de WebKit, abierto) y descarta la
+   asignación SIN lanzar error: en Safari ninguno de los desenfoques de esta
+   escena llegaba a aplicarse nunca. El haz de la pared salía como un trapecio
+   de aristas vivas, cada huella del suelo como un cuadrilátero recortado y el
+   rótulo sin surco. El cuadro se leía como un collage de cartulina, y no había
+   nada en consola que lo dijera.
+
+   La ruta que sí existe en los cuatro motores es shadowBlur. Se dibuja la
+   figura FUERA del lienzo y se trae de vuelta solo su sombra con shadowOffsetX,
+   que por especificación no lo toca la matriz de transformación: entra el
+   borrón y se queda fuera la figura nítida que lo ha generado.
+
+   Y se usa en TODOS los navegadores, no como recambio solo para Safari. Con dos
+   rutas habría dos núcleos de desenfoque distintos, y toda esta escena está
+   calibrada contra una referencia: no puede depender del motor. Una ruta, un
+   resultado.
+
+   ALFA Y COLOR VAN POR SEPARADO. La sombra se pinta de un color plano, así que
+   del paso solo sobrevive la silueta con su alfa; el color se repone después
+   con source-in. No es un apaño: todas las formas de aquí son un degradado
+   suave dentro de un contorno duro, y lo único que hay que deshacer es el
+   contorno. Reponer el color después sale incluso mejor que desenfocarlo,
+   porque un degradado de canvas se prolonga más allá de su última parada y el
+   borde difuminado recibe color de verdad en vez de tirar hacia transparente.
+
+   LOS RADIOS NO SON EL MISMO NÚMERO en las dos API. En CSS, blur(N) toma N como
+   la sigma de la gaussiana; en canvas la sigma es shadowBlur/2. El helper
+   duplica, para no volver a tantear ni uno de los radios ya medidos.
+
+   Esto se monta una sola vez, en las tareas diferidas y ya con el primer
+   fotograma en pantalla. No hay ningún desenfoque en el bucle de render. */
+
+/* Dos lienzos reutilizados, no dos por llamada: son ocho desenfoques y los del
+   suelo van a 1024², o sea 4 MB cada uno. Asignar el tamaño reinicia el bitmap
+   entero, y con él la transformación, el recorte y el estado de sombra que
+   dejara la llamada anterior. */
+const lienzoAparte = (() => {
+  const cache = [];
+  return (i, w, h) => {
+    const g = (cache[i] ||= document.createElement('canvas').getContext('2d'));
+    g.canvas.width = w;
+    g.canvas.height = h;
+    return g;
+  };
+})();
+
+/**
+ * @param destino  contexto de llegada, con su transformación en identidad
+ * @param radio    sigma en píxeles de lienzo, la misma que llevaba blur(Npx)
+ * @param silueta  dibuja la forma. Solo se difumina su ALFA, así que el perfil
+ *                 de opacidad va aquí; casi siempre basta con un relleno opaco
+ * @param tinte    color, o función que pinta sobre la silueta ya difuminada.
+ *                 Su alfa MULTIPLICA a la de la silueta, así que va opaco salvo
+ *                 que se quiera justamente eso
+ */
+function desenfocar(destino, radio, silueta, tinte) {
+  const { width: W, height: H } = destino.canvas;
+
+  const forma = lienzoAparte(0, W, H);
+  silueta(forma);
+
+  /* El desplazamiento tiene que sacar la figura del lienzo entera (W) y dejar
+     además sitio para que su propio borrón no vuelva a entrar por la izquierda.
+     Una gaussiana de sigma r se da por acabada a las tres sigmas, así que con
+     6r de margen lo que sobra muere tres sigmas antes del píxel cero. */
+  const fuera = W + radio * 6;
+  const borron = lienzoAparte(1, W, H);
+  borron.save();
+  borron.shadowColor = '#000';
+  borron.shadowBlur = radio * 2;
+  borron.shadowOffsetX = fuera;
+  borron.drawImage(forma.canvas, -fuera, 0);
+  borron.restore();
+
+  borron.globalCompositeOperation = 'source-in';
+  if (typeof tinte === 'function') {
+    borron.save();
+    tinte(borron);
+    borron.restore();
+  } else {
+    borron.fillStyle = tinte;
+    borron.fillRect(0, 0, W, H);
+  }
+
+  /* Sin transformación propia: el borrón ya está en coordenadas del destino, y
+     hereda su globalCompositeOperation, que es como cada forma se componía
+     antes (multiply en la capa de filtro del suelo, source-over en el resto). */
+  destino.drawImage(borron.canvas, 0, 0);
+}
 
 /* ==========================================================================
    Texturas de canvas
@@ -614,20 +583,28 @@ function componerRotulo(xMuro) {
       g.fillStyle = `rgba(0,0,0,${ROTULO_CARA})`;
       glifos(g);
 
-      // Desenfoque casi del ancho del filo: el canto queda deshecho y el surco
-      // se insinúa en vez de dibujarse.
-      g.save();
-      g.filter = `blur(${(bisel * 0.4).toFixed(2)}px)`;
+      /* Desenfoque casi del ancho del filo: el canto queda deshecho y el surco
+         se insinúa en vez de dibujarse.
+
+         La banda se traza OPACA y la carga de cada filo la pone el tinte: es la
+         silueta lo que se difumina, y su alfa multiplica después a la del
+         color. Con la banda ya semitransparente saldría al cuadrado. */
       // Corrida hacia abajo-derecha: lo que queda es el filo de ARRIBA-izquierda,
       // que es el que está a contraluz.
-      banda(g, `rgba(0,0,0,${ROTULO_SOMBRA})`, bisel, bisel);
-      g.restore();
+      desenfocar(
+        g,
+        bisel * 0.4,
+        (s) => banda(s, '#000', bisel, bisel),
+        `rgba(0,0,0,${ROTULO_SOMBRA})`
+      );
 
-      gl.save();
-      gl.filter = `blur(${(bisel * 0.5).toFixed(2)}px)`;
       // Y al revés para el de abajo-derecha, que es el que recibe el rayo.
-      banda(gl, muroLocal(ROTULO_LUZ_F), -bisel, -bisel);
-      gl.restore();
+      desenfocar(
+        gl,
+        bisel * 0.5,
+        (s) => banda(s, '#000', -bisel, -bisel),
+        muroLocal(ROTULO_LUZ_F)
+      );
     } else {
       g.fillStyle = `rgba(255,254,250,${ROTULO_TINTA})`;
       glifos(g);
@@ -710,14 +687,6 @@ function texturaTransmitida(l) {
   t.colorSpace = SRGBColorSpace;
   return t;
 }
-
-/* La huella de la luz que ha pasado por cada lámina cae ALINEADA con ella y
-   hacia la cámara, no de lado. Medido: en la referencia el pavimento a la
-   izquierda de la lámina primera (u 0.42 a 0.50 sobre la junta) marca 190 y
-   183, o sea hormigón limpio, mientras que directamente bajo las láminas cae a
-   102, 77 y 64. No hay lóbulo lateral que reproducir, así que la huella
-   desplazada que había aquí sobraba: pintaba color donde la referencia no
-   tiene ninguno.
 
 /* Mapa de luz de la pared.
 
@@ -847,7 +816,7 @@ function texturaLuzPared() {
   const largo = Math.hypot(bx - ax, by - ay);
   const angulo = Math.atan2(by - ay, bx - ax);
 
-  /* El haz, como UN trapecio y en un lienzo aparte.
+  /* El haz, como UN trapecio y de una sola pieza.
 
      Antes iba en treinta y dos tramos, cada uno con su anchura, para poder
      estrecharse. Y salía a franjas: el desenfoque se aplicaba a cada fillRect
@@ -857,14 +826,8 @@ function texturaLuzPared() {
 
      Un trapecio no necesita tramos para estrecharse, el degradado a lo largo
      del eje se resuelve con un createLinearGradient en la dirección del eje, y
-     el desenfoque se aplica UNA vez sobre el conjunto ya montado. Sin lados
-     cortos que deshacer y sin solapes, no hay dónde se formen franjas. */
-  const hoja = document.createElement('canvas');
-  hoja.width = W;
-  hoja.height = H;
-  const h = hoja.getContext('2d');
-  h.translate((ax + bx) / 2, (ay + by) / 2);
-  h.rotate(angulo);
+     el desenfoque se aplica UNA vez sobre el conjunto. Sin lados cortos que
+     deshacer y sin solapes, no hay dónde se formen franjas. */
   const largoRelleno = largo + 80;
   const aA = (HAZ_ANCHO_A * esc) / 2;
   const aB = (HAZ_ANCHO_B * esc) / 2;
@@ -872,25 +835,50 @@ function texturaLuzPared() {
   // pendiente de las dos aristas.
   const dA = aA + ((aA - aB) * 40) / largo;
   const dB = aB - ((aA - aB) * 40) / largo;
-  const alo = h.createLinearGradient(-largoRelleno / 2, 0, largoRelleno / 2, 0);
-  alo.addColorStop(0, hex(HAZ_DENTRO_A));
-  alo.addColorStop(1, hex(HAZ_DENTRO_B));
-  h.fillStyle = alo;
-  h.beginPath();
-  h.moveTo(-largoRelleno / 2, -dA);
-  h.lineTo(largoRelleno / 2, -dB);
-  h.lineTo(largoRelleno / 2, dB);
-  h.lineTo(-largoRelleno / 2, dA);
-  h.closePath();
-  h.fill();
+
+  /* Mismo encuadre en los dos pasos: el degradado corre a lo largo del eje del
+     haz, así que tanto la silueta como el tinte tienen que ver el trapecio en
+     sus propias coordenadas. */
+  const encuadrar = (ctx) => {
+    ctx.translate((ax + bx) / 2, (ay + by) / 2);
+    ctx.rotate(angulo);
+  };
 
   /* Un solo desenfoque, y grande: es lo que hace de feather de las dos aristas
      largas. En la referencia el canto de la banda se resuelve en poco más de
      medio metro de muro. */
-  g.save();
-  g.filter = `blur(${(0.55 * esc).toFixed(2)}px)`;
-  g.drawImage(hoja, 0, 0);
-  g.restore();
+  desenfocar(
+    g,
+    0.55 * esc,
+    (s) => {
+      encuadrar(s);
+      s.beginPath();
+      s.moveTo(-largoRelleno / 2, -dA);
+      s.lineTo(largoRelleno / 2, -dB);
+      s.lineTo(largoRelleno / 2, dB);
+      s.lineTo(-largoRelleno / 2, dA);
+      s.closePath();
+      s.fill();
+    },
+    (s) => {
+      encuadrar(s);
+      const alo = s.createLinearGradient(
+        -largoRelleno / 2,
+        0,
+        largoRelleno / 2,
+        0
+      );
+      alo.addColorStop(0, hex(HAZ_DENTRO_A));
+      alo.addColorStop(1, hex(HAZ_DENTRO_B));
+      s.fillStyle = alo;
+      /* De borde a borde en el sistema girado: un cuadrado del tamaño de la
+         diagonal cubre el lienzo esté como esté el ángulo. Un degradado lineal
+         repite sus paradas extremas fuera de su tramo, así que pasarse no
+         inventa color ninguno. */
+      const d = Math.hypot(W, H);
+      s.fillRect(-d, -d, d * 2, d * 2);
+    }
+  );
 
   const t = new CanvasTexture(c);
   t.colorSpace = SRGBColorSpace;
@@ -898,46 +886,31 @@ function texturaLuzPared() {
   return t;
 }
 
-/* Oclusión del rincón, lado PARED. Se apoya en el suelo y se deshace hacia
-   arriba. Curva en tres tramos, no lineal: un rincón real cae rápido en los
-   primeros centímetros y se alarga después. */
-function texturaContactoPared() {
+// Sombra baja y tenue en toda la pared. La intensidad de la luz atenúa la
+// sombra hasta anularla dentro del haz. Esta máscara lee una copia del campo
+// de iluminación; no altera ni ese mapa ni la textura del hormigón.
+function texturaSombraPared(luzPared) {
   const c = document.createElement('canvas');
-  c.width = 8;
-  c.height = 512;
+  c.width = 512;
+  c.height = 768;
   const g = c.getContext('2d');
-  const v = g.createLinearGradient(0, 0, 0, 512);
-  v.addColorStop(0, 'rgba(44,40,34,0)');
-  v.addColorStop(0.55, 'rgba(44,40,34,0.035)');
-  v.addColorStop(0.84, 'rgba(44,40,34,0.1)');
-  v.addColorStop(1, 'rgba(44,40,34,0.19)');
-  g.fillStyle = v;
-  g.fillRect(0, 0, 8, 512);
-  const t = new CanvasTexture(c);
-  t.colorSpace = SRGBColorSpace;
-  return t;
-}
-
-/* Oclusión del rincón, lado SUELO. Sin esto la junta es una línea falsa: la
-   pared llega oscurecida y el suelo arranca a plena luz justo debajo, con un
-   salto que ninguna arista real tiene. Va más lejos que la de la pared porque
-   el suelo mira al muro y recibe su rebote.
-
-   El suelo se gira -90° en x, así que el +y local cae en el -z del mundo: la
-   v = 1 de la textura es el borde pegado a la pared, o sea la fila 0 del
-   canvas. */
-function texturaContactoSuelo() {
-  const c = document.createElement('canvas');
-  c.width = 8;
-  c.height = 512;
-  const g = c.getContext('2d');
-  const v = g.createLinearGradient(0, 0, 0, 512);
-  v.addColorStop(0, 'rgba(48,44,37,0.2)');
-  v.addColorStop(0.16, 'rgba(48,44,37,0.11)');
-  v.addColorStop(0.45, 'rgba(48,44,37,0.04)');
-  v.addColorStop(1, 'rgba(48,44,37,0)');
-  g.fillStyle = v;
-  g.fillRect(0, 0, 8, 512);
+  g.drawImage(luzPared.image, 0, 0, c.width, c.height);
+  const luz = g.getImageData(0, 0, c.width, c.height).data;
+  const pixels = g.createImageData(c.width, c.height);
+  for (let y = 0; y < c.height; y++) {
+    const altura = PARED_H * (1 - (y + 0.5) / c.height);
+    const vertical = Math.exp(-Math.pow(altura / 0.55, 2));
+    for (let x = 0; x < c.width; x++) {
+      const i = (y * c.width + x) * 4;
+      const intensidad = (0.2126 * luz[i] + 0.7152 * luz[i + 1] + 0.0722 * luz[i + 2]) / 255;
+      const t = clamp01((intensidad - 0.7) / 0.25);
+      const penumbra = 1 - t * t * (3 - 2 * t);
+      pixels.data[i + 3] = Math.round(
+        255 * 0.11 * penumbra * vertical
+      );
+    }
+  }
+  g.putImageData(pixels, 0, 0);
   const t = new CanvasTexture(c);
   t.colorSpace = SRGBColorSpace;
   return t;
@@ -953,53 +926,7 @@ function ejesSuelo(tam, centroZ, N) {
   };
 }
 
-function trazarQuad(g, e, a, b, c, d) {
-  g.beginPath();
-  g.moveTo(e.px(a.x), e.py(a.z));
-  g.lineTo(e.px(b.x), e.py(b.z));
-  g.lineTo(e.px(c.x), e.py(c.z));
-  g.lineTo(e.px(d.x), e.py(d.z));
-  g.closePath();
-}
-
-/* El rastro de cada lámina sobre el hormigón.
-
-   En la referencia, debajo de cada lámina y ALINEADO con ella hay un rastro
-   vertical alargado de su propio color, que se deshace al alejarse. Eso es
-   geometría de reflejo, no de sombra proyectada: una sombra se desplaza de
-   lado, un reflejo cae justo debajo. Pero el suelo es hormigón mate, así que
-   no se resuelve con un espejo, que daría un borde duro y una copia nítida.
-
-   Se pinta: el rastro se extiende desde la línea de apoyo hacia la cámara, con
-   el color transmitido de esa lámina, y se desvanece. Es a la vez lo que se ve
-   en la referencia y lo que pediste, luz de color sobre un suelo mate. */
-function rastroEnSuelo(l) {
-  const dir = new Vector3(Math.cos(l.rotY), 0, -Math.sin(l.rotY));
-  const bi = new Vector3(l.x - (dir.x * l.w) / 2, 0, l.z - (dir.z * l.w) / 2);
-  const bd = new Vector3(l.x + (dir.x * l.w) / 2, 0, l.z + (dir.z * l.w) / 2);
-  const largo = HUELLA_LARGO;
-  return {
-    bi,
-    bd,
-    si: new Vector3(bi.x, 0, bi.z + largo),
-    sd: new Vector3(bd.x, 0, bd.z + largo),
-    largo,
-  };
-}
-
-/* Los dos lienzos del suelo van a 1024 y no a 256, y todos sus desenfoques se
-   expresan en METROS y no en píxeles de lienzo.
-
-   A 256 sobre 56 m el rastro de una lámina medía trece píxeles de ancho, y
-   esos trece se estiraban a doscientos en pantalla: el resultado no era luz
-   difusa sobre hormigón, era un degradado con banding y sin borde reconocible,
-   y por eso en el render no se veía nada azul a los pies de las láminas. Con
-   los radios en metros se puede cambiar la resolución sin volver a tantear
-   ningún desenfoque. */
 const N_SUELO = 1024;
-const desenfoque = (g, e, metros) => {
-  g.filter = `blur(${(metros * e.esc).toFixed(2)}px)`;
-};
 
 /* El tono de la sombra de esta sala, para las dos capas que oscurecen.
 
@@ -1011,14 +938,8 @@ const desenfoque = (g, e, metros) => {
    diferencia. Con un gris neutro no cuadra ni un canal. */
 const SOMBRA = 'rgba(60,48,26,';
 
-/* Capa de FILTRO del suelo, en multiplicación. Blanco es identidad. Hace dos
-   cosas, y las dos son cocientes leídos sobre la referencia:
-
-     · el CAMPO de luz del pavimento, que no es plano ni de lejos. Medido en
-       luminancia sobre la referencia, el suelo va de 240 en el charco del haz
-       a 132 en el fondo por la derecha: casi el doble. El render lo tenía todo
-       a un mismo tono, y por eso el cuadro se leía como una cartulina;
-     · la HUELLA de cada lámina, con la tabla suelo[] de cada una. */
+/* Campo de iluminación del pavimento. El reflejo del vidrio se compone
+   después, en un material separado que sigue la cámara y las hojas. */
 function texturaFiltroSuelo(tam, centroZ) {
   const N = N_SUELO;
   const c = document.createElement('canvas');
@@ -1036,7 +957,12 @@ function texturaFiltroSuelo(tam, centroZ) {
   izquierda.addColorStop(0, `${SOMBRA}0.34)`);
   izquierda.addColorStop(1, `${SOMBRA}0)`);
   g.fillStyle = izquierda;
-  g.fillRect(0, 0, N, e.py(-13));
+  desenfocar(g, 1.1 * e.esc, (s) => {
+    s.fillRect(0, 0, N, e.py(-13));
+  }, (s) => {
+    s.fillStyle = izquierda;
+    s.fillRect(0, 0, N, N);
+  });
 
   /* Campo, segundo término: todo lo que queda a la derecha del biombo. Es la
      caída más fuerte del cuadro y la que asienta el peso de la composición:
@@ -1057,142 +983,15 @@ function texturaFiltroSuelo(tam, centroZ) {
   g.fillStyle = cerca;
   g.fillRect(0, e.py(-11), N, N);
 
-  /* Las tres piezas de cada lámina y las de láminas distintas se MULTIPLICAN
-     entre sí, no se tapan. Con source-over, el derrame ancho se dibujaba encima
-     de la huella nítida y, al ser opaco, borraba su núcleo: la textura salía
-     con el azul flojo y el suelo del render se quedaba casi limpio. Dos filtros
-     superpuestos dan el producto de sus densidades, que además es la física. */
-  g.globalCompositeOperation = 'multiply';
-
-  LAMINAS.forEach((l) => {
-    const r = rastroEnSuelo(l);
-    const z0 = (r.bi.z + r.bd.z) / 2;
-    const parada = (m) => m / r.largo;
-
-    /* La HUELLA. Arranca en el cociente medido a 55 cm del apoyo y se apaga a
-       los 4.7 m. Antes arrancaba en el color del vidrio a contraluz, que va
-       mucho más cargado que su propia huella, y se compensaba con una capa que
-       sumaba: entre las dos dejaban el suelo recortado a blanco. */
-    g.save();
-    desenfoque(g, e, 0.3);
-    const rampa = g.createLinearGradient(0, e.py(z0), 0, e.py(z0 + r.largo));
-    rampa.addColorStop(0, hex(l.suelo[0]));
-    rampa.addColorStop(parada(HUELLA_M[0]), hex(l.suelo[0]));
-    rampa.addColorStop(parada(HUELLA_M[1]), hex(l.suelo[1]));
-    rampa.addColorStop(parada(HUELLA_M[2]), hex(l.suelo[2]));
-    rampa.addColorStop(1, '#ffffff');
-    g.fillStyle = rampa;
-    trazarQuad(g, e, r.bi, r.bd, r.sd, r.si);
-    g.fill();
-    g.restore();
-
-    /* Derrame lateral. La huella recta solo cubre la anchura exacta de la
-       lámina y en la referencia la mancha no tiene canto: la luz que ha cruzado
-       tres metros de vidrio llega al suelo ya muy abierta. Va desenfocada más
-       de un metro y con el color de la parada intermedia, para que no compita
-       con la huella nítida que se pinta encima. */
-    g.save();
-    desenfoque(g, e, 1.2);
-    const abierto = g.createLinearGradient(
-      0,
-      e.py(z0 - 0.5),
-      0,
-      e.py(z0 + r.largo * 0.85)
-    );
-    abierto.addColorStop(0, hex(l.suelo[1]));
-    abierto.addColorStop(1, '#ffffff');
-    g.fillStyle = abierto;
-    trazarQuad(
-      g,
-      e,
-      new Vector3(r.bi.x - 0.7, 0, r.bi.z - 0.5),
-      new Vector3(r.bd.x + 0.7, 0, r.bd.z - 0.5),
-      new Vector3(r.sd.x + 1.2, 0, r.sd.z - r.largo * 0.15),
-      new Vector3(r.si.x - 1.2, 0, r.si.z - r.largo * 0.15)
-    );
-    g.fill();
-    g.restore();
-
-    /* CONTACTO. Un canto de vidrio apoyado en hormigón deja una oclusión de
-       pocos centímetros, y es lo único que distingue una lámina apoyada de una
-       lámina flotando. Va en tono tierra y no en gris: es el propio pavimento
-       recibiendo menos rebote. */
-    g.save();
-    desenfoque(g, e, 0.09);
-    const contacto = g.createLinearGradient(
-      0,
-      e.py(z0 - 0.05),
-      0,
-      e.py(z0 + 0.38)
-    );
-    contacto.addColorStop(0, '#9d9384');
-    contacto.addColorStop(0.4, '#c9c1b4');
-    contacto.addColorStop(1, '#ffffff');
-    g.fillStyle = contacto;
-    trazarQuad(
-      g,
-      e,
-      new Vector3(r.bi.x, 0, r.bi.z - 0.05),
-      new Vector3(r.bd.x, 0, r.bd.z - 0.05),
-      new Vector3(r.bd.x, 0, r.bd.z + 0.38),
-      new Vector3(r.bi.x, 0, r.bi.z + 0.38)
-    );
-    g.fill();
-    g.restore();
-  });
-
-  const t = new CanvasTexture(c);
-  t.colorSpace = SRGBColorSpace;
-  t.anisotropy = 8;
-  return t;
-}
-
-/* Capa de LUZ del suelo, en aditivo, y solo con lo que de verdad SUMA luz: el
-   charco donde el haz llega al pavimento y el filete de la línea de apoyo. El
-   azul de las huellas ya no está aquí, porque medido es un producto. */
-function texturaLuzSuelo(tam, centroZ) {
-  const N = N_SUELO;
-  const c = document.createElement('canvas');
-  c.width = N;
-  c.height = N;
-  const g = c.getContext('2d');
-  const e = ejesSuelo(tam, centroZ, N);
-  g.clearRect(0, 0, N, N);
-
-  /* El charco del haz. La posición no es de tanteo: en la referencia el máximo
-     del pavimento está en u 0.34, v 0.58, que reproyectado contra el plano del
-     suelo cae en x = -2.4, z = -18.5, y vale 240 contra los 190 del pavimento
-     de alrededor. Antes estaba puesto en x = -6.2, casi cuatro metros a la
-     izquierda, y con la mitad de carga. */
-  g.save();
-  desenfoque(g, e, 1.7);
-  g.translate(e.px(-2.4), e.py(-18.5));
-  g.rotate(-0.62);
-  const calido = g.createRadialGradient(0, 0, 2, 0, 0, 7.5 * e.esc);
-  calido.addColorStop(0, 'rgba(255,251,240,0.3)');
-  calido.addColorStop(0.45, 'rgba(255,250,238,0.19)');
-  calido.addColorStop(1, 'rgba(255,249,235,0)');
-  g.fillStyle = calido;
-  g.scale(1, 1.5);
-  g.fillRect(-9 * e.esc, -9 * e.esc, 18 * e.esc, 18 * e.esc);
-  g.restore();
-
-  LAMINAS.forEach((l) => {
-    const r = rastroEnSuelo(l);
-
-    /* Línea de apoyo: donde el canto inferior toca el hormigón hay un filete
-       encendido, justo encima de la oclusión de contacto. Es el par sombra +
-       filete lo que planta la lámina; con uno solo de los dos, flota. */
-    g.save();
-    desenfoque(g, e, 0.07);
-    g.strokeStyle = rgb(l.cantoLuz, 0.4);
-    g.lineWidth = 0.05 * e.esc;
-    g.beginPath();
-    g.moveTo(e.px(r.bi.x), e.py(r.bi.z));
-    g.lineTo(e.px(r.bd.x), e.py(r.bd.z));
-    g.stroke();
-    g.restore();
-  });
+  // El haz aclara el propio campo antes de componer el reflejo. No se suma
+  // después del vidrio: eso blanqueaba tanto la sombra como el poro del suelo.
+  const haz = g.createRadialGradient(e.px(-2.4), e.py(-19), 0,
+                                    e.px(-2.4), e.py(-19), 7 * e.esc);
+  haz.addColorStop(0, 'rgba(255,253,247,0.88)');
+  haz.addColorStop(0.35, 'rgba(255,253,247,0.58)');
+  haz.addColorStop(1, 'rgba(255,253,247,0)');
+  g.fillStyle = haz;
+  g.fillRect(0, 0, N, N);
 
   const t = new CanvasTexture(c);
   t.colorSpace = SRGBColorSpace;
@@ -1204,7 +1003,8 @@ function texturaLuzSuelo(tam, centroZ) {
    Montaje
    ========================================================================== */
 
-export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
+export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) {
+  const revisionFija = import.meta.env.DEV && new URLSearchParams(location.search).has('hero');
   const movimientoReducido = window.matchMedia(
     '(prefers-reduced-motion: reduce)'
   ).matches;
@@ -1231,7 +1031,7 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
      ese déficit es lo que hacía que ninguna capa de luz se viese: las curvas de
      sombra estaban resueltas contra un blanco de 246 que la escena no
      alcanzaba, así que al aplicarlas el resultado se iba al gris entero. */
-  renderer.toneMappingExposure = 1.295;
+  renderer.toneMappingExposure = 1.38;
 
   const scene = new Scene();
   scene.background = new Color(0xf3eee4);
@@ -1243,28 +1043,8 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
   /* -- Hormigón ---------------------------------------------------------- */
   const cargador = new TextureLoader();
 
-  /* Los dos mapas de hormigón son NEUTROS de origen, y eso no es un detalle.
-
-     Los que había multiplicaban el muro por (0.967, 0.945, 0.868): se comían un
-     13% del azul y solo un 3% del rojo. Ese sesgo era el que ponía toda la
-     escena amarilla, y como el cuerpo del vidrio multiplica lo que tiene
-     detrás, las láminas lo heredaban: por eso salían verdes en vez de azules.
-
-     Compensarlo en el color del material no llega. Para devolver el azul había
-     que pedir más de 255 en ese canal, así que el muro se quedaba un 12% corto
-     justo dentro del haz, que es donde la referencia tiene su máximo. Y
-     corregirlo en el navegador al cargar cuesta un getImageData del mapa entero
-     en el hilo principal, cada arranque, para llegar al mismo sitio.
-
-     Un mapa de hormigón es un mapa de DETALLE: aporta el grano, no el color. Así
-     que se corrigió el asset. wall.webp se ha regenerado neutro y sin costura;
-     floor.webp conserva su grano fotográfico y solo se le han igualado las
-     medias de los tres canales (x1.000 / x1.028 / x1.088). Los dos tienen ahora
-     los tres canales dentro del 0.5%.
-
-     La calidez de la sala la ponen las luces, que sin textura ya dan #f3ebdb
-     contra el #f7ede0 de la referencia. Se conserva; lo que se ha quitado es el
-     exceso. */
+  // El suelo conserva su albedo fotográfico; pared, altura y rugosidad
+  // utilizan canales independientes y una escala homogénea en metros.
   const mapa = (url, rx, ry) => {
     const t = cargador.load(url, () => pedirFotograma());
     t.colorSpace = SRGBColorSpace;
@@ -1274,21 +1054,25 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
     return t;
   };
 
-  /* repeat.y siempre 1: cualquier repeticion vertical mete una costura
-     horizontal en mitad de la pared, y la pared es UNA sola zona.
-
-     El mapa ya viene neutro de origen, así que estos
-     colores vuelven a ser lo que dicen ser: tonos de hormigón. */
-  const matPared = (color, rx, ry) =>
+  const micro = microHormigon();
+  const detalle = (textura, rx, ry) => {
+    const t = textura.clone();
+    t.repeat.set(rx, ry);
+    return t;
+  };
+  const matPared = (color) =>
     new MeshStandardMaterial({
-      map: mapa('/media/tex/wall.webp', rx, ry),
+      map: detalle(micro.albedo, 12, 4.5),
       color,
-      roughness: 0.95,
+      roughness: 0.96,
+      roughnessMap: detalle(micro.rugosidad, 24, 9),
+      bumpMap: detalle(micro.altura, 24, 9),
+      bumpScale: 0.004,
       metalness: 0,
       envMapIntensity: 0.75,
     });
 
-  const pared = new Mesh(new PlaneGeometry(PARED_W, PARED_H), matPared(0xfbfaf7, 5, 1));
+  const pared = new Mesh(new PlaneGeometry(PARED_W, PARED_H), matPared(0xfbfaf7));
   pared.position.set(0, PARED_H / 2, PARED_Z);
   scene.add(pared);
 
@@ -1298,7 +1082,7 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
   [-1, 1].forEach((s) => {
     const m = new Mesh(
       new PlaneGeometry(largoLateral, PARED_H),
-      matPared(s < 0 ? 0xf1efeb : 0xebe9e5, 3, 1)
+      matPared(s < 0 ? 0xf1efeb : 0xebe9e5)
     );
     m.position.set(s * LATERAL_X, PARED_H / 2, PARED_Z + largoLateral / 2);
     m.rotation.y = s < 0 ? Math.PI / 2 : -Math.PI / 2;
@@ -1307,7 +1091,7 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
 
   const frente = new Mesh(
     new PlaneGeometry(PARED_W, PARED_H),
-    matPared(0xefedea, 5, 1)
+    matPared(0xefedea)
   );
   frente.position.set(0, PARED_H / 2, FRENTE_Z);
   frente.rotation.y = Math.PI;
@@ -1315,15 +1099,13 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
 
   const techo = new Mesh(
     new PlaneGeometry(PARED_W, largoLateral),
-    matPared(0xfdfcfa, 5, 1)
+    matPared(0xfdfcfa)
   );
   techo.position.set(0, TECHO_Y, PARED_Z + largoLateral / 2);
   techo.rotation.x = Math.PI / 2;
   scene.add(techo);
 
-  /* Suelo. Hormigón MATE, una sola capa opaca. Nada de espejo: lo que se ve a
-     los pies de las láminas no es un reflejo, es la luz que las ha
-     atravesado, y eso se pinta en las dos capas de más abajo. */
+  // Hormigón satinado, con poro fino y reflejo difuso de las láminas.
   const suelo = new Mesh(
     new PlaneGeometry(220, 220),
     new MeshStandardMaterial({
@@ -1332,32 +1114,22 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
          pavimento la pone este color y no la textura. Salió de medir: con el
          mapa neutro el suelo daba (1.00, 0.98, 0.94) de proporción y la
          referencia pide (1.00, 0.95, 0.87). */
-      color: 0xf8e9db,
-      roughness: 0.92,
+      color: 0xf3ebde,
+      roughness: 0.86,
+      roughnessMap: detalle(micro.rugosidad, 55, 55),
+      bumpMap: detalle(micro.altura, 55, 55),
+      bumpScale: 0.003,
       metalness: 0,
-      envMapIntensity: 0.16,
+      envMapIntensity: 0.42,
     })
   );
   suelo.rotation.x = -Math.PI / 2;
   scene.add(suelo);
 
-  /* ══ Lo que NO entra en el primer fotograma ═══════════════════════════════
-     A p=0 la cámara está a 34 cm de la lámina central y el cuadro es vidrio de
-     lado a lado: el «05», los mapas de luz de la pared, las franjas de
-     contacto y las dos capas del suelo están TODOS fuera de cámara.
-
-     Construirlos antes de pintar es pagar por adelantado seis desenfoques
-     gaussianos en canvas 2D y un pase de PMREM que nadie ve. Y el desenfoque
-     de canvas es de lo más lento que existe en el hilo principal.
-
-     Así que se montan después, cada uno en su propia tarea, para que ninguna
-     bloquee un fotograma. El orden es el de aparición según retrocede la
-     cámara: primero el entorno, que afecta a lo que ya está en pantalla, y al
-     final las dos capas del suelo, que no se ven hasta bien entrado el scroll.
-     ══════════════════════════════════════════════════════════════════════════ */
+  // El entorno y los mapas de iluminación se montan en tareas diferidas.
   const TAM_SUELO = 56;
   const CENTRO_SUELO = -14;
-  const desechables = [];
+  const desechables = [micro.albedo, micro.altura, micro.rugosidad];
 
   const planoLuz = (geo, mapa, extra = {}) =>
     new Mesh(
@@ -1367,6 +1139,9 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
         transparent: true,
         depthWrite: false,
         toneMapped: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -1,
+        polygonOffsetUnits: -2,
         ...extra,
       })
     );
@@ -1408,60 +1183,51 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
       }
     },
 
-    // 4. Haz de la pared y las dos franjas de contacto del rincón.
+    // 4. Haz y sombra ambiental independientes. Sin trazo en la unión.
     () => {
+      // Geometría y posición idénticas a la pared: no adelantar este plano.
+      // El sesgo de profundidad de planoLuz evita z-fighting sin desplazar
+      // su silueta sobre el suelo. El material y el mapa de luz son propios.
       const luzPared = planoLuz(
-        new PlaneGeometry(PARED_W, PARED_H),
+        pared.geometry,
         texturaLuzPared(),
         { blending: MultiplyBlending, premultipliedAlpha: true }
       );
-      luzPared.position.set(0, PARED_H / 2, PARED_Z + 0.2);
+      luzPared.name = 'Iluminación de pared — capa independiente';
+      luzPared.position.copy(pared.position);
       scene.add(luzPared);
 
-      const contactoPared = planoLuz(
-        new PlaneGeometry(PARED_W, 2.6),
-        texturaContactoPared()
-      );
-      contactoPared.position.set(0, 1.3, PARED_Z + 0.3);
-      scene.add(contactoPared);
-
-      const contactoSuelo = planoLuz(
-        new PlaneGeometry(PARED_W, 4.2),
-        texturaContactoSuelo()
-      );
-      contactoSuelo.rotation.x = -Math.PI / 2;
-      contactoSuelo.position.set(0, 0.004, PARED_Z + 2.1);
-      contactoSuelo.renderOrder = 3;
-      scene.add(contactoSuelo);
+      const sombraPared = planoLuz(pared.geometry, texturaSombraPared(luzPared.material.map));
+      sombraPared.name = 'Sombra suave de pared — capa independiente';
+      sombraPared.position.copy(pared.position);
+      sombraPared.renderOrder = 2;
+      scene.add(sombraPared);
     },
 
-    // 5. Filtro del suelo: multiplica y quita el rojo del hormigón dentro de la
-    //    huella de cada lámina. Es la sombra de color.
+    // 5. Campo de luz del suelo, antes de la huella de vidrio.
     () => {
+      // La capa termina físicamente en la pared. Si se prolonga detrás, el
+      // sesgo de profundidad la hace asomar sobre la última fila del muro.
+      const frente = CENTRO_SUELO + TAM_SUELO / 2;
+      const largo = frente - PARED_Z;
+      const geometriaLuzSuelo = new PlaneGeometry(TAM_SUELO, largo);
+      const uv = geometriaLuzSuelo.attributes.uv;
+      for (let i = 0; i < uv.count; i++) {
+        uv.setY(i, uv.getY(i) * largo / TAM_SUELO);
+      }
       const filtroSuelo = planoLuz(
-        new PlaneGeometry(TAM_SUELO, TAM_SUELO),
+        geometriaLuzSuelo,
         texturaFiltroSuelo(TAM_SUELO, CENTRO_SUELO),
         { blending: MultiplyBlending, premultipliedAlpha: true }
       );
+      filtroSuelo.name = 'Iluminación de suelo — capa independiente';
       filtroSuelo.rotation.x = -Math.PI / 2;
-      filtroSuelo.position.set(0, 0.008, CENTRO_SUELO);
+      filtroSuelo.position.set(0, 0, (frente + PARED_Z) / 2);
       filtroSuelo.renderOrder = 4;
       scene.add(filtroSuelo);
     },
 
-    // 6. Luz del suelo: suma el azul que el vidrio concentra. Multiplicar solo
-    //    no llega, porque esas manchas tienen más azul que el hormigón limpio.
-    () => {
-      const luzSuelo = planoLuz(
-        new PlaneGeometry(TAM_SUELO, TAM_SUELO),
-        texturaLuzSuelo(TAM_SUELO, CENTRO_SUELO),
-        { blending: AdditiveBlending, opacity: 0.66 }
-      );
-      luzSuelo.rotation.x = -Math.PI / 2;
-      luzSuelo.position.set(0, 0.012, CENTRO_SUELO);
-      luzSuelo.renderOrder = 5;
-      scene.add(luzSuelo);
-    },
+
   ];
 
   /* El rótulo va en su propio grupo porque se rehace entero cuando llega la
@@ -1567,7 +1333,10 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
      un fotograma, para que el scroll no se atasque mientras se montan. */
   function montarDiferidas() {
     const tarea = diferidas.shift();
-    if (!tarea) return;
+    if (!tarea) {
+      alEscenaLista?.();
+      return;
+    }
     tarea();
     pedirFotograma();
     const cola =
@@ -1593,6 +1362,9 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
   scene.add(sol.target);
   scene.add(sol);
 
+  const reflejos = reflejosVidrio(LAMINAS, SOL_DIR);
+  scene.add(reflejos.malla);
+
   /* -- Las láminas ------------------------------------------------------- */
   const suciedad = cargador.load('/media/tex/glass-smudge.webp', () =>
     pedirFotograma()
@@ -1609,12 +1381,12 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
   const hojas = [];
 
   LAMINAS.forEach((l, i) => {
-    const geo = new BoxGeometry(l.w, l.h, GROSOR);
+    const geo = geometriaVidrio(l.w, l.h, GROSOR);
     const transmitida = texturaTransmitida(l);
     desechables.push(transmitida);
 
     const colocar = (m) => {
-      m.position.set(l.x, l.h / 2 - 0.001, l.z);
+      m.position.set(l.x, l.h / 2, l.z);
       m.rotation.set(l.inclinacion, l.rotY, 0);
       return m;
     };
@@ -1633,90 +1405,73 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
     });
     desechables.push(cuerpo);
 
-    /* CANTO. Son las cuatro caras estrechas de la lámina, y se sombrean solas.
-
-       Barrido el borde derecho de la lámina segunda en la referencia, la fila
-       de píxeles da: vidrio #547d7f, #5f909b, #346673, #66919e, #d9fcff,
-       #abbfbf, muro. O sea NÚCLEO OSCURO y FILO BLANCO, alternando, en unos
-       nueve píxeles. Las dos bandas claras son las dos caras del vidrio
-       devolviendo la ventana; la oscura es el canto visto de través, donde el
-       rayo recorre el ancho de la lámina en vez de su espesor.
-
-       Así que el color base es el núcleo (#003447 en la tercera lámina, casi
-       negro azulado) y el filo lo pone el especular, no una emisión: con el
-       entorno alto y la rugosidad muy baja, la mancha de la ventana se refleja
-       en la cara de canto que la mira y deja el filo encendido, mientras la
-       opuesta se queda en el tono base. Pintarlo con emissive lo encendía por
-       igual en las cuatro caras, que es lo que hacía que pareciese rotulado. */
+    // Canto dieléctrico con bisel de 3 mm: la cara estrecha absorbe, el bisel
+    // devuelve la ventana. Sin barniz adicional que duplique el especular.
     const canto = new MeshPhysicalMaterial({
       color: new Color(l.canto),
-      roughness: 0.045,
+      roughness: 0.12,
       metalness: 0,
-      clearcoat: 1,
-      clearcoatRoughness: 0.02,
+      ior: 1.5,
+      clearcoat: 0,
       specularIntensity: 1,
-      specularColor: new Color(l.cantoLuz),
-      envMapIntensity: 1.8,
-      /* Nada de emisión. El filo de la referencia NO es continuo: en el
-         recorte se ve encendido en el tramo alto, donde la cara de canto mira
-         a la ventana, y apagándose hacia abajo a la vez que el vidrio gana
-         densidad. Eso lo hace solo un especular, que depende de hacia dónde
-         mire cada punto; una emisión enciende las cuatro caras por igual de
-         arriba abajo y es exactamente lo que hacía que pareciese rotulado. */
-      emissive: new Color(0x000000),
-      emissiveIntensity: 0,
-      // DoubleSide obligatorio: con FrontSide se descartan las caras de canto
-      // cuya normal se aleja de la cámara, que en una lámina girada 52° son
-      // precisamente el canto izquierdo y el inferior.
-      side: DoubleSide,
+      envMapIntensity: 0.85,
+      side: FrontSide,
     });
     desechables.push(canto);
 
-    // Orden de las caras de BoxGeometry: +x, -x, +y, -y, +z, -z. Las cuatro
-    // primeras son el canto; las dos últimas, el cuerpo del vidrio.
-    const malla = colocar(
-      new Mesh(geo, [canto, canto, canto, canto, cuerpo, cuerpo])
-    );
-    malla.renderOrder = 6 + i;
+    const bisel = canto.clone();
+    // El bisel transmite el fondo; su brillo procede del Fresnel, no de una
+    // cara de color blanco que iluminaría el perímetro por igual.
+    bisel.color.set(0xffffff);
+    bisel.transmission = 1;
+    bisel.thickness = GROSOR;
+    bisel.attenuationColor.set(l.canto);
+    bisel.attenuationDistance = 0.12;
+    bisel.roughness = 0.09;
+    bisel.envMapIntensity = 0.25;
+    desechables.push(bisel);
+    const malla = colocar(new Mesh(geo, [cuerpo, canto, bisel]));
+    malla.renderOrder = 6 + i * 2;
     vidrios.add(malla);
 
-    /* BRILLO. Plano del tamaño de la cara, en aditivo y con color negro: solo
-       aporta el especular. Va en un plano aparte y no en la caja para no pisar
-       el canto, que ya tiene su propia luz.
-
-       Muy bajo a propósito. Una cara de vidrio a incidencia normal refleja un
-       4%, y en la referencia las caras casi no reflejan: lo que se ve es
-       transmisión, y lo único brillante son los cantos. Con el entorno alto la
-       lámina se cubre de un velo blanquecino y deja de parecer cristal. Por eso
-       el reflejo de entorno se queda en un residuo y el brillo lo pone el sol,
-       que da un destello acotado en vez de un velo. */
+    // Reflexión de la cara, con una contribución pequeña sobre la absorción.
     const brillo = colocar(
       new Mesh(
         new PlaneGeometry(l.w, l.h),
         new MeshPhysicalMaterial({
           color: 0x000000,
-          roughness: 0.11,
-          roughnessMap: suciedad, // polvo y huellas: el vidrio tiene superficie
+          roughness: 0.16,
+          // El mapa oscuro original multiplicaba 0.11 por ~0.09 y dejaba
+          // rugosidad 0.01. Variación acotada mediante un mínimo en el shader.
           metalness: 0,
-          /* Muy bajo, y ahora aún más. Medido, en el tercio bajo de la lámina
-             central el rojo del render se quedaba un 23% por encima de la
-             referencia por mucho que se cargase la multiplicación, y no podía
-             bajar: multiplicar no resta, y este plano SUMA por debajo un
-             residuo constante en las tres bandas. En las zonas claras no se
-             nota; en las densas es justo lo que impide que el azul llegue. */
-          specularIntensity: 0.3,
-          envMapIntensity: 0.02 * l.brillo,
+          specularIntensity: 1,
+          envMapIntensity: 0.3 * l.brillo,
           iridescence: 0,
           iridescenceIOR: 1.32,
           iridescenceThicknessRange: [140, 460],
           transparent: true,
+          toneMapped: false,
           blending: AdditiveBlending,
           depthWrite: false,
           side: DoubleSide,
         })
       )
     );
-    brillo.renderOrder = 10 + i;
+    brillo.material.roughnessMap = suciedad;
+    brillo.material.forceSinglePass = true;
+    brillo.material.onBeforeCompile = (shader) => {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <roughnessmap_fragment>',
+        `#include <roughnessmap_fragment>
+         roughnessFactor = 0.13 + roughnessFactor * 1.8;`
+      );
+      // Esta malla aporta luz a un framebuffer ya convertido a sRGB. Convertir
+      // su negro especular por separado elevaba un reflejo pequeño a un velo
+      // blanco. Mantener la contribución lineal limita ese error de composición.
+      shader.fragmentShader = shader.fragmentShader.replace('#include <colorspace_fragment>', '');
+    };
+    brillo.material.customProgramCacheKey = () => 'vidrio-especular-lineal-v2';
+    brillo.renderOrder = 7 + i * 2;
     vidrios.add(brillo);
 
     hojas.push({ l, malla, mallas: [malla, brillo], actual: 0, objetivo: 0 });
@@ -1783,13 +1538,14 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
 
     // Aproximación exponencial: el mismo gesto en cualquier refresco.
     const k = 1 - Math.exp(-dt / HOVER_TAU);
-    hojas.forEach((h) => {
+    hojas.forEach((h, i) => {
       // Hacia la cámara siempre: se le RESTA ángulo, sea cual sea su signo.
       h.objetivo = h.malla === tocada ? -Math.sign(h.l.rotY) * amplitud : 0;
       h.actual += (h.objetivo - h.actual) * k;
       if (Math.abs(h.objetivo - h.actual) < 1e-5) h.actual = h.objetivo;
       const y = h.l.rotY + h.actual;
       h.mallas.forEach((m) => (m.rotation.y = y));
+      reflejos.actualizar(i, y);
     });
   }
 
@@ -1971,7 +1727,7 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma }) {
     punto.lerpVectors(ARRANQUE, finalPos, tt);
     camera.position.copy(punto);
 
-    if (!movimientoReducido) {
+    if (!movimientoReducido && !revisionFija) {
       // Deriva de reposo. Arranca casi a cero porque a 0.8 m de la lámina el
       // cuadro abarca medio metro y cualquier amplitud se nota.
       const amp = lerp(0.0015, 0.05, tt * tt);

@@ -1,0 +1,142 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Portico from '../components/Portico.astro';
+import PaginaLegal from '../components/PaginaLegal.astro';
+import Pie from '../components/Pie.astro';
+import { centro } from '../data/contenido.js';
+import { identificacion } from '../data/paginas.js';
+
+/* AVISO LEGAL — BORRADOR.
+
+   Existe un aviso legal redactado por PROTECTION REPORT que, según el brief,
+   debe publicarse tal cual. Ese documento no está en el repositorio, así que
+   esto es el armazón con la estructura que exige el art. 10 de la LSSI-CE y
+   los datos del centro que sí están verificados. Se sustituye entero por el
+   texto del proveedor antes de publicar.
+
+   Bloqueantes reales: sin NIF y sin nombre de dominio, este documento no
+   cumple. Los dos huecos van marcados con .pendiente en el propio texto. */
+---
+
+<Base
+  titulo={`Aviso legal · ${centro.nombre}`}
+  descripcion={`Datos identificativos y condiciones de uso del sitio web del ${centro.nombre}, en ${centro.localidad}, ${centro.provincia}.`}
+>
+  <Nav />
+
+  <main id="contenido">
+    <Portico
+      marca="Información legal"
+      titulo="Aviso legal"
+      entradilla="Quién es responsable de este sitio web y en qué condiciones se usa."
+      migas={[{ href: '/', texto: 'Inicio' }]}
+    />
+
+    <PaginaLegal>
+      <h2>Datos identificativos</h2>
+      <p>
+        En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de
+        servicios de la sociedad de la información y de comercio electrónico
+        (LSSI-CE), se hacen constar los siguientes datos:
+      </p>
+      <dl>
+        {
+          identificacion.map((d) => (
+            <div>
+              <dt>{d.etiqueta}</dt>
+              <dd>
+                {d.valor === 'PENDIENTE' ? (
+                  <span class="pendiente">Pendiente</span>
+                ) : (
+                  d.valor
+                )}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <h2>Objeto</h2>
+      <p>
+        Este sitio web tiene una finalidad informativa: dar a conocer los
+        servicios de psicología y mediación familiar que se prestan en el
+        centro, sus áreas de atención, sus instalaciones y las vías de
+        contacto. No se prestan servicios sanitarios a través del sitio ni se
+        realizan valoraciones, diagnósticos o intervenciones en línea.
+      </p>
+      <p>
+        La información publicada no sustituye en ningún caso a una consulta
+        profesional. Si atraviesas una urgencia sanitaria o una situación de
+        riesgo, llama al 112 o acude al servicio de urgencias más cercano.
+      </p>
+
+      <h2>Condiciones de uso</h2>
+      <p>
+        El acceso al sitio es libre y gratuito, y supone aceptar estas
+        condiciones. Quien navega se compromete a hacer un uso conforme a la
+        ley, a la buena fe y al orden público, y a no emplear los contenidos
+        con fines lesivos ni de forma que pueda dañar, inutilizar o sobrecargar
+        el sitio o impedir su uso normal.
+      </p>
+
+      <h2>Propiedad intelectual e industrial</h2>
+      <p>
+        Los textos, las fotografías del centro, la identidad visual y el código
+        de este sitio son titularidad de {centro.profesional} o se utilizan con
+        la autorización correspondiente, y están protegidos por la normativa de
+        propiedad intelectual e industrial.
+      </p>
+      <p>
+        Queda prohibida su reproducción, distribución, comunicación pública o
+        transformación total o parcial sin autorización expresa y por escrito,
+        salvo los usos permitidos por la ley.
+      </p>
+
+      <h2>Responsabilidad</h2>
+      <p>
+        Se pone el cuidado razonable en que la información publicada sea exacta
+        y esté actualizada, pero no se garantiza la ausencia de errores ni la
+        disponibilidad ininterrumpida del sitio. Tampoco se responde de los
+        daños derivados del uso de la información por parte de quien la
+        consulta, ni de los contenidos de sitios de terceros a los que se pueda
+        acceder mediante enlaces.
+      </p>
+
+      <h2>Enlaces a terceros</h2>
+      <p>
+        Este sitio enlaza a servicios externos —entre ellos WhatsApp, para
+        escribir al centro, y Google Maps, para localizarlo—. Esos servicios se
+        rigen por sus propias condiciones y políticas de privacidad, ajenas a
+        este sitio y sobre las que no se ejerce control alguno.
+      </p>
+
+      <h2>Protección de datos</h2>
+      <p>
+        El tratamiento de los datos personales se describe en la{' '}
+        <a class="enlace" href="/privacidad">política de privacidad</a>, y el
+        uso de cookies y tecnologías similares, en la{' '}
+        <a class="enlace" href="/cookies">política de cookies</a>.
+      </p>
+
+      <h2>Secreto profesional</h2>
+      <p>
+        La actividad profesional está sujeta al secreto profesional del Código
+        Deontológico del Consejo General de la Psicología de España y a la
+        normativa sanitaria aplicable. Ese deber alcanza a toda la información
+        conocida en el ejercicio de la profesión y se mantiene una vez
+        finalizada la relación profesional.
+      </p>
+
+      <h2>Legislación aplicable y jurisdicción</h2>
+      <p>
+        Estas condiciones se rigen por la legislación española. Para cualquier
+        controversia serán competentes los juzgados y tribunales que determine
+        la normativa aplicable, y cuando la persona usuaria tenga la condición
+        de consumidora, los de su domicilio.
+      </p>
+    </PaginaLegal>
+  </main>
+
+  <Pie />
+</Base>

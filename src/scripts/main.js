@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { consentimiento } from './consentimiento.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +21,13 @@ async function scrollSuave() {
     smoothWheel: true,
     syncTouch: false, // el scroll táctil nativo se respeta
   });
-  lenis.on('scroll', ScrollTrigger.update);
+  // Lenis mueve el documento de verdad, pero el evento «scroll» nativo no
+  // llega de forma fiable mientras él manda: lo que dependa del scroll se
+  // engancha aquí, no a window.
+  lenis.on('scroll', () => {
+    ScrollTrigger.update();
+    avisarScroll();
+  });
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
 
@@ -57,6 +64,163 @@ function hayWebGL() {
   }
 }
 
+/* El recorrido de la firma. Empieza grande en mitad de la pantalla, con el
+   nombre debajo, y aterriza en la barra a su tamaño definitivo en el primer
+   30% del recorrido de cámara. Viaja el mismo elemento que se queda, así que
+   no hay traspaso de una copia grande a una pequeña: no hay costura que ver.
+
+   Las medidas se toman del sitio final, no se inventan. Se mide dónde cae el
+   monograma en la barra, se calcula dónde tiene que caer grande, y lo que se
+   escribe cada fotograma es la resta de las dos. El aterrizaje es, por
+   construcción, transformada cero. */
+const ATERRIZAJE = 0.3;
+
+function marcaPortada() {
+  const marca = document.querySelector('[data-nav-marca]');
+  const monograma = marca?.querySelector('[data-nav-monograma]');
+  const prefijo = marca?.querySelector('[data-nav-prefijo]');
+  const nucleo = marca?.querySelector('[data-nav-nucleo]');
+  // La flecha cuelga del grupo, no del borde de la pantalla: pegada al canto
+  // inferior quedaba sola y muy abajo; bajo el nombre se lee como parte de la
+  // misma pieza y se ve mucho antes.
+  const flecha = document.querySelector('[data-hero-flecha]');
+  if (!marca || !monograma || !nucleo) return null;
+
+  const suavizar = gsap.parseEase('power2.inOut');
+  let plan = null;
+
+  const medir = () => {
+    plan = null;
+    monograma.style.transform = '';
+    if (prefijo) prefijo.style.transform = '';
+    nucleo.style.transform = '';
+
+    const anchoVista = window.innerWidth;
+    const altoVista = window.innerHeight;
+    const rLogo = monograma.getBoundingClientRect();
+    const rPrefijo = prefijo?.getBoundingClientRect();
+    const rNombre = nucleo.getBoundingClientRect();
+    if (!rLogo.width || !rNombre.width) return;
+
+    // El monograma grande se limita por los dos lados de la pantalla: en móvil
+    // manda el ancho, en portátil apaisado manda el alto.
+    const anchoGrande = gsap.utils.clamp(
+      84,
+      190,
+      Math.min(anchoVista * 0.3, altoVista * 0.24)
+    );
+    const escalaLogo = anchoGrande / rLogo.width;
+
+    const cuerpo = parseFloat(getComputedStyle(nucleo).fontSize) || 14;
+    const cuerpoGrande = gsap.utils.clamp(
+      15,
+      27,
+      Math.min(anchoVista * 0.034, altoVista * 0.028)
+    );
+    const escalaNombre = cuerpoGrande / cuerpo;
+
+    const altoLogo = rLogo.height * escalaLogo;
+    const altoPrefijo = rPrefijo?.width ? rPrefijo.height * escalaNombre : 0;
+    const altoNombre = rNombre.height * escalaNombre;
+    const hueco = altoLogo * 0.32;
+    const huecoTexto = altoPrefijo ? altoNombre * 0.24 : 0;
+    const altoTexto = altoPrefijo + huecoTexto + altoNombre;
+    // El bloque se centra un punto por encima de la mitad: ópticamente, un
+    // grupo centrado geométricamente se lee bajo.
+    const arriba = altoVista * 0.47 - (altoLogo + hueco + altoTexto) / 2;
+    const eje = anchoVista / 2;
+
+    plan = {
+      logo: {
+        dx: eje - (rLogo.left + rLogo.width / 2),
+        dy: arriba + altoLogo / 2 - (rLogo.top + rLogo.height / 2),
+        escala: escalaLogo,
+      },
+      nombre: {
+        dx: eje - (rNombre.left + rNombre.width / 2),
+        dy:
+          arriba +
+          altoLogo +
+          hueco +
+          altoPrefijo +
+          huecoTexto +
+          altoNombre / 2 -
+          (rNombre.top + rNombre.height / 2),
+        escala: escalaNombre,
+      },
+      prefijo: rPrefijo?.width
+        ? {
+            dx: eje - (rPrefijo.left + rPrefijo.width / 2),
+            dy:
+              arriba +
+              altoLogo +
+              hueco +
+              altoPrefijo / 2 -
+              (rPrefijo.top + rPrefijo.height / 2),
+            escala: escalaNombre,
+          }
+        : null,
+    };
+
+    if (flecha) {
+      flecha.style.top = `${(arriba + altoLogo + hueco + altoTexto + altoLogo * 0.36).toFixed(1)}px`;
+      flecha.style.bottom = 'auto';
+    }
+  };
+
+  const escribir = (el, paso, k) => {
+    el.style.transform = `translate3d(${(paso.dx * k).toFixed(2)}px, ${(
+      paso.dy * k
+    ).toFixed(2)}px, 0) scale(${(1 + (paso.escala - 1) * k).toFixed(4)})`;
+  };
+
+  const aplicar = (p) => {
+    if (!plan) medir();
+    marca.classList.add('esta-medida');
+    if (!plan) return;
+    const q = suavizar(gsap.utils.clamp(0, 1, p / ATERRIZAJE));
+    const k = 1 - q;
+    escribir(monograma, plan.logo, k);
+    if (prefijo && plan.prefijo) escribir(prefijo, plan.prefijo, k);
+    escribir(nucleo, plan.nombre, k);
+    marca.classList.toggle('ha-aterrizado', q >= 1);
+  };
+
+  // Estado final sin recorrido: sin WebGL, con movimiento reducido o si la
+  // escena no llega a montarse, la marca es barra desde el primer momento.
+  const rematar = () => {
+    plan = null;
+    monograma.style.transform = '';
+    if (prefijo) prefijo.style.transform = '';
+    nucleo.style.transform = '';
+    marca.classList.add('esta-medida', 'ha-aterrizado');
+    // Sin recorrido no hay grupo del que colgar: la flecha vuelve al pie de la
+    // pantalla, que es donde la deja el CSS.
+    if (flecha) {
+      flecha.style.top = '';
+      flecha.style.bottom = '';
+    }
+  };
+
+  return { aplicar, medir, rematar };
+}
+
+/* La flecha del arranque. Se retira al primer gesto de scroll y vuelve si se
+   regresa arriba del todo: es una indicación, no un adorno permanente.
+
+   El aviso vive fuera de la función porque hay dos fuentes de scroll: Lenis
+   cuando el visitante acepta movimiento, y el scroll nativo cuando no. */
+let avisarScroll = () => {};
+
+function flechaArranque() {
+  const flecha = document.querySelector('[data-hero-flecha]');
+  if (!flecha) return;
+  avisarScroll = () =>
+    flecha.classList.toggle('esta-oculta', window.scrollY > 12);
+  avisarScroll();
+  window.addEventListener('scroll', avisarScroll, { passive: true });
+}
+
 async function primerCuadro() {
   const seccion = document.querySelector('[data-hero]');
   if (!seccion) return;
@@ -66,6 +230,7 @@ async function primerCuadro() {
   const ambiente = seccion.querySelector('[data-hero-ambiente]');
   const copia = seccion.querySelector('[data-hero-copia]');
   const cuerpo = document.body;
+  const marca = marcaPortada();
 
   const aplicarCopia = (v) => {
     // 0 = fuera, 1 = dentro. El texto solo entra cuando el suelo de hormigón
@@ -75,8 +240,13 @@ async function primerCuadro() {
     copia.setAttribute('aria-hidden', v < 0.05 ? 'true' : 'false');
   };
 
+  // La bandera es positiva a propósito. Si la clase fuera «estoy sobre el
+  // vidrio», el estado de partida —barra montada— sería el que se pinta antes
+  // de que corra una sola línea de script, y en la portada eso son unos cuantos
+  // fotogramas de barra completa antes de que la escena la retire.
   const aplicarNav = (sobreVidrio) => {
     cuerpo.classList.toggle('sobre-vidrio', sobreVidrio);
+    cuerpo.classList.toggle('barra-montada', !sobreVidrio);
   };
 
   // Desenfoque del arranque: 16 px pegados al vidrio, cero al 26% del
@@ -86,6 +256,11 @@ async function primerCuadro() {
   const aplicarEsmerilado = (p) => {
     const px = gsap.utils.clamp(0, 16, esmeriladoDe(p));
     canvas.classList.toggle('esta-esmerilado', px > 0.3);
+    // El filtro puede extenderse hasta ~3 radios fuera de la caja. El zoom
+    // cubre esa expansión sin dejar que el fondo claro se cuele por el borde.
+    const ladoCorto = Math.max(1, Math.min(window.innerWidth, window.innerHeight));
+    const zoom = 1 + (px * 6) / ladoCorto;
+    canvas.style.setProperty('--hero-esmerilado-zoom', zoom.toFixed(4));
     if (px > 0.3) canvas.style.setProperty('--hero-esmerilado', `${px.toFixed(2)}px`);
   };
 
@@ -95,11 +270,16 @@ async function primerCuadro() {
     // que el texto del cuadro se lea, y no se descarga three.
     aplicarCopia(1);
     aplicarNav(false);
+    marca?.rematar();
     if (!hayWebGL()) {
       ambiente?.classList.add('es-hormigon');
       return;
     }
   }
+
+  // La firma se coloca antes de pedir three: si la descarga tarda, el visitante
+  // ve el cuadro que le corresponde y no la marca esperando en la esquina.
+  if (!movimientoReducido) marca?.aplicar(0);
 
   /* Dinámica, no estática.
      Se probó estática para que three.js bajase en paralelo desde el primer
@@ -113,13 +293,29 @@ async function primerCuadro() {
      usable. La latencia de los dos viajes extra se compensa de sobra con lo
      que sí está en nuestra mano: mapas de luz diferidos, lienzos a un cuarto
      de resolución, entorno diferido y texturas de 384 K a 39 K. */
-  const { crearEscenaVidrio } = await import('./hero-scene.js');
+  let crearEscenaVidrio;
+  try {
+    ({ crearEscenaVidrio } = await import('./hero-scene.js'));
+  } catch {
+    // Si three no llega, esto sigue siendo una página que hay que poder usar:
+    // hormigón detrás, texto del cuadro visible y barra montada en su sitio.
+    ambiente?.classList.add('es-hormigon');
+    aplicarCopia(1);
+    aplicarNav(false);
+    marca?.rematar();
+    return;
+  }
+
   const escena = crearEscenaVidrio({
     canvas,
     alPrimerFotograma() {
       canvas.classList.add('esta-listo');
-      // El sustituto se apaga en cuanto el lienzo pinta. Como el gradiente es
-      // el mismo color del primer fotograma, el cambio no se ve.
+      // El azul sigue por encima mientras terminan las tareas diferidas de la
+      // escena. Se retira en alEscenaLista, no en este primer render parcial.
+    },
+    alEscenaLista() {
+      // El fondo de carga se retira solo cuando el canvas ya tiene montadas
+      // sus capas diferidas; la transición sigue siendo únicamente opacity.
       ambiente?.classList.add('esta-oculto');
     },
   });
@@ -131,6 +327,7 @@ async function primerCuadro() {
   if (movimientoReducido) {
     escena.setProgreso(1);
     aplicarEsmerilado(1);
+    marca?.rematar();
     return;
   }
 
@@ -155,17 +352,28 @@ async function primerCuadro() {
       escena.setProgreso(p);
       aplicarEsmerilado(p);
       aplicarCopia(gsap.utils.clamp(0, 1, progresoCopia(p)));
-      aplicarNav(p < 0.32);
+      marca?.aplicar(p);
+      // El material y los enlaces entran cuando la firma ya está puesta: el
+      // umbral es el mismo número, no dos parecidos.
+      aplicarNav(p < ATERRIZAJE);
     },
     onRefreshInit() {
       aplicarCopia(0);
       aplicarNav(true);
+    },
+    // Las medidas de la barra cambian con el ancho y con las fuentes: el plan
+    // de la firma se rehace en cada refresco y se vuelve a escribir el
+    // fotograma que toca, para que un cambio de tamaño no dé un salto.
+    onRefresh(self) {
+      marca?.medir();
+      marca?.aplicar(self.progress);
     },
   });
 
   aplicarCopia(0);
   aplicarNav(true);
   aplicarEsmerilado(0);
+  marca?.aplicar(0);
 
   // En desarrollo se puede matar el pin para fijar el progreso a mano y
   // comparar el plano final con la referencia sin que el scroll lo pise.
@@ -177,8 +385,14 @@ async function primerCuadro() {
       escena.setProgreso(p);
       aplicarEsmerilado(p);
       aplicarCopia(p > 0.5 ? 1 : 0);
-      aplicarNav(p < 0.32);
+      marca?.aplicar(p);
+      aplicarNav(p < ATERRIZAJE);
     };
+    // Encuadre reproducible para comparar materiales con la referencia.
+    const revision = new URLSearchParams(location.search).get('hero');
+    if (revision !== null && Number.isFinite(Number(revision))) {
+      window.__heroFijar(gsap.utils.clamp(0, 1, Number(revision)));
+    }
   }
 }
 
@@ -306,7 +520,9 @@ function menu() {
    Arranque
    ========================================================================== */
 menu();
+consentimiento();
 scrollSuave();
+flechaArranque();
 primerCuadro();
 revelados();
 areas();

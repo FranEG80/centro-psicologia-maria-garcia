@@ -1,0 +1,199 @@
+---
+import { areas } from '../data/contenido.js';
+
+/* Las seis áreas como campos de luz sobre el hormigón: cero contenedores, ni
+   tarjetas ni filetes. La jerarquía es la luminancia, y el haz y la rampa van
+   en el mismo sentido —el núcleo denso abajo a la derecha— para que ninguna
+   línea quede en azul pálido sobre el tramo oscuro del haz.
+
+   El degradado es el del comp aprobado (artifacts/figma-import), 148deg.
+
+   La rampa del comp arrancaba en #8FA9B9, que sobre el hormigón #F4EFE4 da
+   2,13:1: por debajo del 3:1 que pide un texto grande, así que las dos
+   primeras áreas no se leían. Esta arranca más abajo y todos los escalones
+   pasan AA para texto grande. El gesto es el mismo; la diferencia es que
+   ahora se lee.
+
+   Contraste medido (WCAG 2.1) sobre hormigón #F4EFE4:
+     #5F87A0  3.4:1   #4E7691  4.1:1   #416883  4.9:1
+     #35617F  5.7:1   #2A4B62  8.0:1   #1B2E43  12.1:1 */
+
+/* El ancla es un prop: ver la nota de AreasLaminas. */
+const { id = 'areas' } = Astro.props;
+
+const rampa = [
+  '#5F87A0',
+  '#4E7691',
+  '#416883',
+  '#35617F',
+  '#2A4B62',
+  '#1B2E43',
+];
+---
+
+<section class="muro" id={id} aria-labelledby={`${id}-titulo`}>
+  <div class="muro__haz" aria-hidden="true"></div>
+
+  <div class="envoltura muro__caja" data-revelar-grupo>
+    <p class="caps muro__marca" data-revelar>Seis áreas</p>
+    <h2 class="solo-lectores" id={`${id}-titulo`}>
+      Áreas de valoración e intervención
+    </h2>
+
+    <ul class="muro__lineas">
+      {
+        areas.map((a, i) => (
+          <li class="muro__linea" data-revelar>
+            <a
+              class="rotulo"
+              href={`/areas/${a.id}`}
+              style={`--rotulo-tinta:${rampa[i]}`}
+            >
+              {a.titulo}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* clip, nunca hidden. overflow: hidden convierte este bloque en contenedor
+     de scroll, y entonces la línea de tiempo de vista del haz se resuelve
+     contra ESTA caja en vez de contra la ventana: el degradado se queda
+     quieto. overflow: clip recorta igual y no crea scroller. */
+  .muro {
+    position: relative;
+    isolation: isolate;
+    background: var(--hormigon);
+    overflow: clip;
+  }
+
+  /* El haz. Diagonal estrecho, no viñeta: el núcleo denso cae en el cuadrante
+     inferior derecho y se apaga en los cuatro extremos.
+
+     Desborda un 34% por cada lado porque deriva de derecha a izquierda con el
+     scroll: sin ese margen, al desplazarse dejaría ver el canto del degradado
+     y parecería un rectángulo moviéndose, no luz. */
+  .muro__haz {
+    position: absolute;
+    inset: 0 -34%;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+      148deg,
+      color-mix(in srgb, var(--petroleo) 0%, transparent) 34%,
+      color-mix(in srgb, var(--petroleo) 10%, transparent) 52%,
+      color-mix(in srgb, var(--petroleo) 34%, transparent) 68%,
+      color-mix(in srgb, var(--petroleo-800) 50%, transparent) 80%,
+      color-mix(in srgb, #1b2e43 16%, transparent) 92%,
+      transparent 100%
+    );
+  }
+
+  /* La deriva. El haz cruza de derecha a izquierda mientras la sección pasa
+     por la ventana, atado al scroll con una línea de tiempo de vista: sin
+     JavaScript, sin escuchar el scroll y sin trabajo en el hilo principal,
+     porque solo anima translate, que resuelve el compositor.
+
+     Va dentro de @supports: donde no exista, el haz se queda quieto y la
+     sección sigue funcionando igual. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .muro__haz {
+        animation: deriva-haz linear both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 100%;
+      }
+
+      @keyframes deriva-haz {
+        from {
+          translate: 26% 0;
+        }
+        to {
+          translate: -26% 0;
+        }
+      }
+    }
+  }
+
+  /* El poro del hormigón, por debajo del haz: la luz tiñe el grano, no lo
+     tapa. */
+  .muro::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.45;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .muro__caja {
+    padding-block: var(--paso-6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .muro__marca {
+    color: var(--tinta-2);
+  }
+
+  .muro__lineas {
+    margin-top: var(--paso-4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* El rótulo. Cada línea entra a una densidad distinta de azul: esa rampa
+     ES la jerarquía, no hay ningún otro marcador. */
+  .rotulo {
+    display: block;
+    color: var(--rotulo-tinta);
+    font-size: clamp(1.75rem, 1rem + 3.1vw, 3.375rem);
+    line-height: 1.34;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    text-indent: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-wrap: balance;
+    transition: color var(--dur-ui) ease;
+  }
+
+  /* Al pasar, la línea baja a carbón: se acerca, en vez de encenderse. */
+  @media (hover: hover) and (pointer: fine) {
+    .rotulo:hover {
+      color: var(--carbon);
+    }
+  }
+
+  .rotulo:focus-visible {
+    color: var(--carbon);
+    outline-offset: 6px;
+  }
+
+  @media (max-width: 640px) {
+    .rotulo {
+      letter-spacing: 0.02em;
+      text-indent: 0.02em;
+      line-height: 1.24;
+    }
+    .muro__lineas {
+      gap: var(--paso-1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rotulo {
+      transition: none;
+    }
+  }
+</style>

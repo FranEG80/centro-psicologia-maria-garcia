@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Consentimiento from '../components/Consentimiento.astro';
 import { centro } from '../data/contenido.js';
 
 interface Props {
@@ -120,5 +121,8 @@ const jsonLd = {
     -->
     <a class="salto-contenido" href="#contenido">Saltar al contenido</a>
     <slot />
+    {/* Al final del documento: la franja es lo último que se anuncia y lo
+        último que se tabula, no un obstáculo antes del contenido. */}
+    <Consentimiento />
   </body>
 </html>

@@ -1,0 +1,369 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Pie from '../../components/Pie.astro';
+import { centro, ambientes } from '../../data/contenido.js';
+
+import officeDarkwood from '../../assets/photo/office-darkwood.webp';
+import officeCalm from '../../assets/photo/office-calm.webp';
+import officeFamily from '../../assets/photo/office-family.webp';
+import childrenRoom from '../../assets/photo/children-room.webp';
+import gameForms from '../../assets/photo/game-forms.webp';
+import gameRings from '../../assets/photo/game-rings.webp';
+import reception from '../../assets/photo/reception.webp';
+import waitingRoom from '../../assets/photo/waiting-room.webp';
+
+/* Las dos páginas de detalle que abren los botones de la sección de
+   ambientes. Existen para que esos botones no apunten a un 404.
+
+   Las fotografías van sin pie. Un pie que describe lo que ya se ve —«desde la
+   puerta», «mesa de madera oscura»— no añade nada y suena a inventario de
+   inmobiliaria. Lo que se cuenta al lado es para qué sirve el espacio, que es
+   lo que no se ve en la foto. */
+
+export function getStaticPaths() {
+  return [
+    {
+      params: { espacio: 'adultos' },
+      props: {
+        titulo: 'Los despachos',
+        sumario: 'Adultos, pareja y familia',
+        entradilla:
+          'Dos salas de consulta tranquilas, sin ruido de fondo ni gente pasando por delante. Un sitio para sentarse a hablar con calma, ya vengas solo, en pareja o con toda la familia.',
+        vistas: [officeDarkwood, officeCalm, officeFamily],
+        alts: [
+          'Despacho de consulta del Centro de Psicología María García.',
+          'El mismo despacho, con la ventana y la luz natural al fondo.',
+          'Segundo despacho del centro, de tonos claros.',
+        ],
+        /* Para qué sirve, no qué se ve. Nada de superficie, insonorización ni
+           equipamiento: no consta y no se inventa. */
+        notas: [
+          'Sesiones individuales, de pareja y de familia.',
+          'Valoración, intervención y seguimiento en el mismo espacio y con la misma persona.',
+          'Dos despachos, así que una cita no depende de que el otro esté libre.',
+        ],
+      },
+    },
+    {
+      params: { espacio: 'infantil' },
+      props: {
+        titulo: 'La zona infantil',
+        sumario: 'Niños y adolescentes',
+        entradilla:
+          'Una sala aparte, a su altura y con su propio material. Aquí se trabaja jugando, porque jugando es como un niño cuenta lo que le pasa.',
+        vistas: [childrenRoom],
+        alts: ['Zona infantil del centro, con mesa baja, sillas pequeñas y pizarra.'],
+        notas: [
+          'Valoración e intervención con niños y adolescentes.',
+          'Pruebas y material de trabajo pensados para su edad.',
+          'Un espacio suyo, separado de la consulta de adultos.',
+        ],
+        material: [
+          {
+            src: gameForms,
+            alt: 'Cubos de diseño de bloques, en rojo y blanco, sobre una superficie clara.',
+            titulo: 'Diseño de bloques',
+            nota: 'Organización visoespacial y razonamiento no verbal.',
+          },
+          {
+            src: gameRings,
+            alt: 'Torre de Hanoi de madera con anillas de colores.',
+            titulo: 'Torre de Hanoi',
+            nota: 'Planificación, memoria de trabajo y control de impulsos.',
+          },
+        ],
+      },
+    },
+  ];
+}
+
+const { titulo, sumario, entradilla, vistas, alts, notas, material } =
+  Astro.props;
+
+/* El otro espacio, para el enlace cruzado del final. */
+const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
+---
+
+<Base titulo={`${titulo} · ${centro.nombre}`} descripcion={entradilla}>
+  <Nav />
+
+  <main id="contenido">
+    <article class="espacio">
+      <header class="envoltura espacio__portico" data-revelar-grupo>
+        <p class="caps espacio__marca" data-revelar>{sumario}</p>
+        <h1 class="espacio__titulo" data-revelar>{titulo}</h1>
+        <p class="plomo espacio__entradilla" data-revelar>{entradilla}</p>
+      </header>
+
+      <div
+        class="espacio__tira"
+        data-revelar-grupo
+        style={`--vistas:${vistas.length}`}
+      >
+        {
+          vistas.map((v, i) => (
+            <figure class="vista" data-revelar="lamina">
+              <Image
+                src={v}
+                widths={[520, 780, 1040]}
+                sizes={vistas.length > 1 ? '(max-width: 860px) 100vw, 33vw' : '100vw'}
+                alt={alts[i]}
+                loading="eager"
+                decoding="async"
+              />
+            </figure>
+          ))
+        }
+      </div>
+
+      <div class="envoltura espacio__cierre">
+        <ul class="espacio__notas" data-revelar-grupo>
+          {
+            notas.map((n) => (
+              <li class="espacio__nota" data-revelar>
+                {n}
+              </li>
+            ))
+          }
+        </ul>
+
+        <aside class="espacio__resto">
+          <h2 class="caps espacio__epigrafe">El resto del centro</h2>
+          <div class="espacio__miniaturas">
+            <figure class="mini">
+              <Image
+                src={reception}
+                widths={[280, 420]}
+                sizes="(max-width: 640px) 45vw, 220px"
+                alt="Recepción del centro."
+                loading="eager"
+                fetchpriority="low"
+                decoding="async"
+              />
+              <figcaption class="mini__pie">Recepción</figcaption>
+            </figure>
+            <figure class="mini">
+              <Image
+                src={waitingRoom}
+                widths={[280, 420]}
+                sizes="(max-width: 640px) 45vw, 220px"
+                alt="Sala de espera del centro."
+                loading="eager"
+                fetchpriority="low"
+                decoding="async"
+              />
+              <figcaption class="mini__pie">Sala de espera</figcaption>
+            </figure>
+          </div>
+
+          <a class="boton espacio__boton" href={otro.href}>
+            Ver {otro.titulo.toLowerCase()}
+          </a>
+        </aside>
+      </div>
+
+      {
+        material && (
+          <div class="envoltura espacio__material" data-revelar-grupo>
+            <h2 class="caps espacio__epigrafe" data-revelar>
+              Con qué se trabaja
+            </h2>
+            <ul class="material">
+              {material.map((m) => (
+                <li class="material__pieza" data-revelar>
+                  <figure class="material__figura">
+                    <Image
+                      src={m.src}
+                      widths={[320, 480, 640]}
+                      sizes="(max-width: 720px) 100vw, 40vw"
+                      alt={m.alt}
+                      loading="eager"
+                      fetchpriority="low"
+                      decoding="async"
+                    />
+                  </figure>
+                  <h3 class="h3 material__titulo">{m.titulo}</h3>
+                  <p class="material__nota">{m.nota}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </article>
+  </main>
+
+  <Pie />
+</Base>
+
+<style>
+  .espacio {
+    background: var(--hormigon);
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--paso-5) var(--paso-6);
+  }
+
+  .espacio::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.42;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .espacio__portico {
+    margin-bottom: var(--paso-4);
+  }
+
+  .espacio__marca {
+    color: var(--tinta-2);
+  }
+
+  .espacio__titulo {
+    margin-top: var(--paso-1);
+    font-size: var(--t-h1);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-indent: 0.05em;
+  }
+
+  .espacio__entradilla {
+    margin-top: var(--paso-3);
+  }
+
+  /* Las tomas, pegadas y separadas solo por el filete. Sin pie: lo que hay que
+     contar del espacio va en la columna de notas, no debajo de cada foto. */
+  .espacio__tira {
+    display: grid;
+    grid-template-columns: repeat(var(--vistas, 2), minmax(0, 1fr));
+    border-block: 1px solid var(--filete);
+  }
+
+  .vista + .vista {
+    border-left: 1px solid var(--filete);
+  }
+
+  .vista img {
+    width: 100%;
+    height: clamp(18rem, 34vw, 30rem);
+    object-fit: cover;
+  }
+
+  .espacio__cierre {
+    margin-top: var(--paso-5);
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--paso-4);
+    align-items: start;
+  }
+
+  .espacio__notas {
+    display: grid;
+    gap: var(--paso-2);
+    font-size: var(--t-lista);
+    max-width: 52ch;
+  }
+
+  /* Marca de lista: un trazo de 1px en petróleo, como en el resto del sitio. */
+  .espacio__nota {
+    position: relative;
+    padding-left: 1.6em;
+    text-wrap: pretty;
+  }
+
+  .espacio__nota::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.74em;
+    width: 0.8em;
+    height: 1px;
+    background: var(--acento);
+  }
+
+  .espacio__epigrafe {
+    color: var(--tinta-2);
+    margin-bottom: var(--paso-2);
+  }
+
+  .espacio__miniaturas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--paso-2);
+  }
+
+  .mini img {
+    width: 100%;
+    height: clamp(7rem, 14vw, 10rem);
+    object-fit: cover;
+  }
+
+  .mini__pie {
+    margin-top: 0.5rem;
+    font-size: var(--t-micro);
+    color: var(--tinta-2);
+  }
+
+  .espacio__boton {
+    margin-top: var(--paso-3);
+  }
+
+  /* ---- Material de trabajo, solo en la zona infantil ------------------- */
+  .espacio__material {
+    margin-top: var(--paso-5);
+    padding-top: var(--paso-4);
+    border-top: 1px solid var(--filete);
+  }
+
+  .material {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--paso-4);
+  }
+
+  .material__figura {
+    overflow: hidden;
+    margin-bottom: var(--paso-2);
+  }
+
+  .material__figura img {
+    width: 100%;
+    height: clamp(12rem, 22vw, 18rem);
+    object-fit: cover;
+  }
+
+  .material__nota {
+    margin-top: var(--paso-1);
+    color: var(--tinta-2);
+    max-width: 40ch;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 860px) {
+    .espacio__tira {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .vista + .vista {
+      border-left: 0;
+      border-top: 1px solid var(--filete);
+    }
+    .espacio__cierre {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .material {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

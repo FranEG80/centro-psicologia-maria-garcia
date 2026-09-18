@@ -58,6 +58,23 @@
   --canto: #cdeaf5;
   --canto-fuerte: #a9dcef;
 
+  /* -- Hoja pálida del laminado -----------------------------------------
+     La primera hoja de la secuencia: la que se atraviesa antes que ninguna.
+     Sale del comp aprobado y no es --vidrio-1 sobre crema, porque aquí el
+     azul es el fondo, no un tinte por delante.
+       carbón #1F2426 sobre la hoja   10.6:1  texto corrido
+       --tinta-hoja sobre la hoja      6.2:1  texto secundario
+       --petroleo-800 sobre la hoja    5.6:1  números y versalitas
+     El filete va en el azul medio y no en el canto: sobre una hoja tan clara
+     el #CDEAF5 no tiene salto suficiente para leerse como línea. */
+  --vidrio-hoja: #c3d8e2;
+  --tinta-hoja: #284a60;
+  --filete-hoja: color-mix(in srgb, #5d8ca8 55%, transparent);
+
+  /* Hormigón templado. El poro es gris neutro: sobre --crema deja la sección
+     fría y se ve la costura contra el primer cuadro, que es cálido. */
+  --hormigon: #f4efe4;
+
   /* Campo pleno de petróleo. crema sobre este campo = 7.0:1 */
   --campo: #2f5670;
   --campo-tinta: var(--crema);
@@ -130,6 +147,7 @@
   --z-lienzo: 0;
   --z-contenido: 1;
   --z-nav: 40;
+  --z-franja: 50; /* consentimiento: por encima del menú, bajo el salto */
   --z-salto: 60;
 
   --sombra-baja: 0 1px 2px color-mix(in srgb, var(--piedra) 22%, transparent),

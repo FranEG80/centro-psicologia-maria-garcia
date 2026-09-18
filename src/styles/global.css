@@ -214,6 +214,17 @@ html {
   }
 }
 
+/* Cuando la acción no navega a ningún sitio —abrir las preferencias de
+   cookies— el elemento correcto es un botón, pero dentro de un párrafo tiene
+   que leerse como una palabra más. */
+button.enlace {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
 /* ==========================================================================
    Retícula
    ========================================================================== */
@@ -550,14 +561,24 @@ html.js [data-revelar].es-visible {
 }
 
 /* Las imágenes se revelan con clip-path desde abajo: material que aparece,
-   no un objeto que surge de la nada. */
+   no un objeto que surge de la nada.
+
+   El recorte va en los HIJOS, no en el elemento observado. Recortando el
+   propio elemento su área visible es cero, y un IntersectionObserver informa
+   entonces de intersectionRatio 0 aunque la caja esté dentro de la ventana:
+   nunca recibe .es-visible, nunca se le retira el recorte y la imagen no
+   aparece jamás. Con el recorte un nivel más abajo, el observado conserva su
+   área, entra en lectura y dispara el revelado. */
 html.js [data-revelar='lamina'] {
   opacity: 1;
   transform: none;
+}
+
+html.js [data-revelar='lamina'] > * {
   clip-path: inset(0 0 100% 0);
 }
 
-html.js [data-revelar='lamina'].es-visible {
+html.js [data-revelar='lamina'].es-visible > * {
   clip-path: inset(0 0 0 0);
   transition: clip-path 900ms var(--ease-out);
   transition-delay: var(--revelar-retardo, 0ms);
@@ -570,11 +591,13 @@ html.js [data-revelar='lamina'].es-visible {
     transform: none;
     clip-path: none;
   }
+  html.js [data-revelar='lamina'] > *,
+  html.js [data-revelar='lamina'].es-visible > * {
+    clip-path: none;
+    transition: none;
+  }
   html.js [data-revelar].es-visible {
     transition: opacity 200ms ease;
-  }
-  html.js [data-revelar='lamina'].es-visible {
-    transition: none;
   }
 }
 

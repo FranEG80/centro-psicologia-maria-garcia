@@ -1,0 +1,216 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Portico from '../components/Portico.astro';
+import PaginaLegal from '../components/PaginaLegal.astro';
+import Pie from '../components/Pie.astro';
+import { centro } from '../data/contenido.js';
+
+/* POLÍTICA DE PRIVACIDAD — BORRADOR.
+
+   No existe documento previo: el que pasó la clienta es un aviso legal y no
+   cubre nada de esto. Este borrador está escrito sobre lo que sí consta
+   —quién es la responsable, cómo se contacta, que no hay formulario— y deja
+   marcado con .pendiente todo lo que exige una decisión de la clienta o de su
+   asesoría: plazos de conservación, proveedores que tratan datos por su
+   cuenta, y el alojamiento.
+
+   Lo importante de esta página, y lo que el aviso legal no dice: aquí se
+   tratan datos de salud, categoría especial del art. 9 RGPD. La base jurídica
+   no es el consentimiento genérico sino el art. 9.2.h —asistencia sanitaria
+   por profesional sujeto a secreto— junto con la Ley 41/2002. Eso tiene que
+   validarlo la asesoría, no salir publicado tal cual. */
+---
+
+<Base
+  titulo={`Política de privacidad · ${centro.nombre}`}
+  descripcion={`Cómo se tratan los datos personales y de salud en el ${centro.nombre}: finalidades, base jurídica, conservación y derechos.`}
+>
+  <Nav />
+
+  <main id="contenido">
+    <Portico
+      marca="Información legal"
+      titulo="Política de privacidad"
+      entradilla="Qué datos se tratan, para qué, durante cuánto tiempo y qué puedes hacer con ellos en cualquier momento."
+      migas={[{ href: '/', texto: 'Inicio' }]}
+    />
+
+    <PaginaLegal>
+      <h2>Responsable del tratamiento</h2>
+      <dl>
+        <div>
+          <dt>Responsable</dt>
+          <dd>{centro.profesional}</dd>
+        </div>
+        <div>
+          <dt>NIF</dt>
+          <dd><span class="pendiente">Pendiente</span></dd>
+        </div>
+        <div>
+          <dt>Domicilio</dt>
+          <dd>
+            {centro.direccion} · {centro.cp} {centro.localidad}, {
+              centro.provincia
+            }
+          </dd>
+        </div>
+        <div>
+          <dt>Teléfono</dt>
+          <dd>{centro.telefono}</dd>
+        </div>
+        <div>
+          <dt>Correo</dt>
+          <dd>{centro.email}</dd>
+        </div>
+        <div>
+          <dt>Nº colegiada</dt>
+          <dd>AO 05323</dd>
+        </div>
+        <div>
+          <dt>NICA</dt>
+          <dd>67672</dd>
+        </div>
+      </dl>
+
+      <h2>Este sitio web no recoge datos</h2>
+      <p>
+        No hay formulario de contacto, ni suscripción, ni área privada, ni
+        registro de usuarios. Navegar por este sitio no requiere facilitar
+        ningún dato personal y no se recoge ninguno por esa vía.
+      </p>
+      <p>
+        La decisión es deliberada: un formulario en el que alguien explica por
+        qué quiere pedir cita recoge datos relativos a la salud, y esos datos
+        merecen un canal con más garantías que un campo de texto en una página
+        web.
+      </p>
+      <p>
+        El alojamiento del sitio registra, como cualquier servidor, los datos
+        técnicos imprescindibles para prestar el servicio y mantenerlo seguro
+        (dirección IP, fecha y hora de la petición, navegador). Proveedor de
+        alojamiento y plazo de conservación de esos registros:{' '}
+        <span class="pendiente">Pendiente</span>.
+      </p>
+
+      <h2>Cuando escribes o llamas</h2>
+      <h3>Qué datos</h3>
+      <ul>
+        <li>
+          Datos identificativos y de contacto: nombre, teléfono, dirección de
+          correo.
+        </li>
+        <li>
+          Los datos que decidas contar al pedir cita o al explicar el motivo de
+          la consulta, que pueden incluir datos relativos a la salud, propios o
+          de un familiar a tu cargo.
+        </li>
+      </ul>
+
+      <h3>Para qué</h3>
+      <ul>
+        <li>Atender tu consulta y gestionar la cita.</li>
+        <li>
+          Mantener la comunicación necesaria antes, durante y después del
+          proceso.
+        </li>
+      </ul>
+
+      <h3>Con qué base jurídica</h3>
+      <ul>
+        <li>
+          Para responder y citar: la aplicación de medidas precontractuales a
+          petición de la persona interesada (art. 6.1.b RGPD).
+        </li>
+        <li>
+          Para los datos de salud: la asistencia sanitaria prestada por una
+          profesional sujeta a secreto profesional (art. 9.2.h RGPD), en
+          relación con la Ley 41/2002, de autonomía del paciente.
+        </li>
+      </ul>
+
+      <h3>Una advertencia sobre WhatsApp</h3>
+      <p>
+        Si escribes por WhatsApp, el mensaje viaja por la infraestructura de
+        WhatsApp Ireland Limited y se rige además por sus propias condiciones,
+        ajenas a este centro. El contenido va cifrado de extremo a extremo,
+        pero el hecho mismo de la comunicación y los metadatos asociados los
+        trata esa empresa. Si prefieres no usarlo, el teléfono y el correo
+        cubren exactamente lo mismo.
+      </p>
+
+      <h2>Cuando eres paciente del centro</h2>
+      <p>
+        La atención psicológica genera una historia clínica: los datos de
+        identificación, los antecedentes relevantes, los resultados de las
+        pruebas de evaluación, la evolución y los informes que se emitan.
+      </p>
+      <p>
+        Esa información se trata para prestar la asistencia y cumplir las
+        obligaciones legales que la acompañan, y está amparada por el secreto
+        profesional. La conservación se ajusta a los plazos de la Ley 41/2002 y
+        de la normativa sanitaria de la Junta de Andalucía. Plazo concreto
+        aplicado por el centro: <span class="pendiente">Pendiente</span>.
+      </p>
+      <p>
+        En los encargos de psicología jurídica y forense, el informe pericial
+        se elabora para aportarse a un procedimiento, y su entrega a juzgados,
+        tribunales o a la parte que lo encarga forma parte de la finalidad del
+        propio encargo.
+      </p>
+
+      <h2>Menores de edad</h2>
+      <p>
+        La atención a menores se solicita y se autoriza por quien ostenta la
+        patria potestad o la tutela, que es también quien ejerce los derechos
+        sobre sus datos, sin perjuicio del derecho del menor a ser oído según su
+        edad y madurez.
+      </p>
+
+      <h2>A quién se comunican los datos</h2>
+      <p>
+        No se ceden datos a terceros salvo obligación legal. Sí acceden a ellos,
+        en calidad de encargados del tratamiento y con el contrato del art. 28
+        RGPD, los proveedores necesarios para el funcionamiento del centro.
+        Relación de encargados: <span class="pendiente">Pendiente</span>.
+      </p>
+      <p>
+        Cuando un informe se emite para un procedimiento judicial, se entrega a
+        su destinatario según lo acordado en el encargo.
+      </p>
+
+      <h2>Tus derechos</h2>
+      <p>
+        Puedes ejercer en cualquier momento los derechos de acceso,
+        rectificación, supresión, limitación del tratamiento, oposición y
+        portabilidad, escribiendo a {centro.email} o a {centro.direccion}, {
+          centro.cp
+        } {centro.localidad}, con una copia de tu documento de identidad.
+      </p>
+      <p>
+        La supresión de la historia clínica tiene el límite de los plazos
+        legales de conservación: mientras la ley obligue a guardarla, no puede
+        borrarse.
+      </p>
+      <p>
+        Si consideras que el tratamiento no se ajusta a la normativa, puedes
+        reclamar ante la Agencia Española de Protección de Datos
+        (<a
+          class="enlace"
+          href="https://www.aepd.es"
+          rel="noopener noreferrer"
+          target="_blank">www.aepd.es</a
+        >).
+      </p>
+
+      <h2>Cambios en esta política</h2>
+      <p>
+        Esta política puede actualizarse cuando cambien los tratamientos o la
+        normativa aplicable. La versión vigente es siempre la publicada en esta
+        página.
+      </p>
+    </PaginaLegal>
+  </main>
+
+  <Pie />
+</Base>

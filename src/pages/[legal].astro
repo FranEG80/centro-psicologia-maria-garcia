@@ -1,0 +1,258 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Pie from '../components/Pie.astro';
+import { centro } from '../data/contenido.js';
+
+/* Las tres páginas legales. Existen porque el pie las enlaza, y un enlace roto
+   en el pie de una web sanitaria es peor que no tener el enlace.
+
+   IMPORTANTE, antes de publicar:
+
+   - El aviso legal SÍ existe: lo redactó PROTECTION REPORT S, S.L. con fecha
+     23-06-2026. Aquí están solo los datos identificativos del artículo 10 de
+     la LSSI, que son los verificados. El texto completo hay que pegarlo desde
+     ese documento.
+   - La política de privacidad y la de cookies NO existen. Lo que hay aquí es
+     un aviso honesto de que faltan, no una plantilla: con datos de salud de
+     por medio, publicar una privacidad copiada es peor que no publicarla.
+     Hay que pedírselas a la misma asesoría.
+
+   El mapa del pie se sirve desde OpenStreetMap justamente para no depender de
+   una política de cookies que todavía no está. */
+
+export function getStaticPaths() {
+  return [
+    { params: { legal: 'aviso-legal' }, props: { tipo: 'aviso' } },
+    { params: { legal: 'privacidad' }, props: { tipo: 'privacidad' } },
+    { params: { legal: 'cookies' }, props: { tipo: 'cookies' } },
+  ];
+}
+
+const { tipo } = Astro.props;
+
+const paginas = {
+  aviso: {
+    titulo: 'Aviso legal',
+    sumario: 'Información general',
+  },
+  privacidad: {
+    titulo: 'Protección de datos',
+    sumario: 'Tratamiento de datos personales',
+  },
+  cookies: {
+    titulo: 'Política de cookies',
+    sumario: 'Uso de cookies en este sitio',
+  },
+};
+
+const { titulo, sumario } = paginas[tipo];
+
+/* Datos identificativos verificados en el documento de la asesoría. */
+const identificacion = [
+  ['Denominación', centro.profesional],
+  ['NIF', '23808826P'],
+  ['Domicilio', `${centro.direccion}, ${centro.cp} ${centro.localidad} (${centro.provincia})`],
+  ['Teléfono', centro.telefono],
+  ['Correo electrónico', centro.email],
+  ['Actividad', 'Psicología sanitaria y mediación familiar'],
+];
+---
+
+<Base
+  titulo={`${titulo} · ${centro.nombre}`}
+  descripcion={`${titulo} del Centro de Psicología María García, en ${centro.localidad}.`}
+>
+  <Nav />
+
+  <main id="contenido">
+    <article class="legal">
+      <header class="envoltura legal__portico">
+        <p class="caps legal__marca">{sumario}</p>
+        <h1 class="legal__titulo">{titulo}</h1>
+      </header>
+
+      <div class="envoltura legal__cuerpo">
+        {
+          tipo === 'aviso' && (
+            <>
+              <p class="plomo">
+                En cumplimiento del artículo 10 de la Ley 34/2002, de Servicios
+                de la Sociedad de la Información y Comercio Electrónico, se
+                hacen constar los datos identificativos de la titular de este
+                sitio web.
+              </p>
+
+              <dl class="datos">
+                {identificacion.map(([k, v]) => (
+                  <div class="datos__fila">
+                    <dt class="datos__clave">{k}</dt>
+                    <dd class="datos__valor">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <dl class="datos">
+                {centro.credenciales.map((c) => (
+                  <div class="datos__fila">
+                    <dt class="datos__clave">{c.etiqueta}</dt>
+                    <dd class="datos__valor">{c.valor}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <p class="aviso-borrador">
+                Pendiente de completar con el texto íntegro del aviso legal
+                redactado por la asesoría, con fecha de 23 de junio de 2026.
+              </p>
+            </>
+          )
+        }
+
+        {
+          tipo === 'privacidad' && (
+            <>
+              <p class="plomo">
+                Esta página está pendiente de redacción por la asesoría en
+                protección de datos del centro.
+              </p>
+              <p class="cuerpo">
+                Mientras tanto, para cualquier consulta sobre tus datos
+                personales o para ejercer tus derechos de acceso,
+                rectificación, supresión, oposición, limitación o
+                portabilidad, puedes escribir a{' '}
+                <a class="enlace" href={`mailto:${centro.email}`}>
+                  {centro.email}
+                </a>{' '}
+                o llamar al{' '}
+                <a class="enlace" href={`tel:${centro.telefonoTel}`}>
+                  {centro.telefono}
+                </a>
+                .
+              </p>
+              <p class="aviso-borrador">
+                No publicar el sitio sin esta política. Un centro de psicología
+                trata datos de salud, que son categoría especial del artículo 9
+                del Reglamento General de Protección de Datos y exigen
+                información y base jurídica reforzadas.
+              </p>
+            </>
+          )
+        }
+
+        {
+          tipo === 'cookies' && (
+            <>
+              <p class="plomo">
+                Este sitio no utiliza cookies propias de analítica, de
+                publicidad ni de seguimiento.
+              </p>
+              <p class="cuerpo">
+                Sí incorpora un mapa de Google Maps en el pie de página. Al
+                cargarlo, Google puede instalar cookies en tu navegador y
+                tratar datos como tu dirección IP, conforme a sus propias
+                políticas, sobre las que este centro no tiene control.
+              </p>
+              <p class="aviso-borrador">
+                Pendiente antes de publicar: redactar esta política con el
+                detalle que exige el artículo 22.2 de la LSSI y montar un
+                banner de consentimiento. El mapa de Google no debe cargarse
+                hasta que la persona acepte; hoy carga con la página. Es la
+                contrapartida de usar Google en vez de OpenStreetMap, que no
+                dejaba cookies.
+              </p>
+            </>
+          )
+        }
+      </div>
+    </article>
+  </main>
+
+  <Pie />
+</Base>
+
+<style>
+  .legal {
+    background: var(--hormigon);
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--paso-5) var(--paso-6);
+  }
+
+  .legal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/media/tex/wall.webp');
+    background-size: 900px auto;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .legal__marca {
+    color: var(--tinta-2);
+  }
+
+  .legal__titulo {
+    margin-top: var(--paso-1);
+    font-size: var(--t-h1);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-indent: 0.05em;
+  }
+
+  .legal__cuerpo {
+    margin-top: var(--paso-4);
+    max-width: 62ch;
+    display: grid;
+    gap: var(--paso-3);
+  }
+
+  .datos {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--filete);
+  }
+
+  .datos__fila {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--paso-2);
+    padding-block: var(--paso-2);
+    border-bottom: 1px solid var(--filete);
+  }
+
+  .datos__clave {
+    font-size: var(--t-micro);
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--tinta-2);
+  }
+
+  .datos__valor {
+    margin: 0;
+    font-size: var(--t-lista);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Aviso de borrador. Visible a propósito: mientras esté, la página no está
+     lista para publicarse. */
+  .aviso-borrador {
+    padding: var(--paso-2);
+    border-left: 2px solid var(--acento);
+    background: color-mix(in srgb, var(--petroleo) 7%, transparent);
+    font-size: var(--t-micro-2);
+    color: var(--tinta-2);
+  }
+
+  @media (max-width: 560px) {
+    .datos__fila {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.2rem;
+    }
+  }
+</style>
