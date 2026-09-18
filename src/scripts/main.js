@@ -64,6 +64,13 @@ function hayWebGL() {
   }
 }
 
+/* Empieza a pedir el módulo pesado en paralelo con el montaje de la interfaz.
+   Sigue siendo una importación dinámica: si WebGL no existe, three no baja. */
+const webglDisponible = !!document.querySelector('[data-hero]') && hayWebGL();
+const escenaVidrioEnCarga = webglDisponible
+  ? import('./hero-scene.js')
+  : null;
+
 /* El recorrido de la firma. Empieza grande en mitad de la pantalla, con el
    nombre debajo, y aterriza en la barra a su tamaño definitivo en el primer
    30% del recorrido de cámara. Viaja el mismo elemento que se queda, así que
@@ -264,14 +271,14 @@ async function primerCuadro() {
     if (px > 0.3) canvas.style.setProperty('--hero-esmerilado', `${px.toFixed(2)}px`);
   };
 
-  if (!hayWebGL() || movimientoReducido) {
+  if (!webglDisponible || movimientoReducido) {
     // Con movimiento reducido la escena se monta, pero fija en el plano final
     // y sin scrub. Sin WebGL no hay escena: el ambiente vuelve a hormigón para
     // que el texto del cuadro se lea, y no se descarga three.
     aplicarCopia(1);
     aplicarNav(false);
     marca?.rematar();
-    if (!hayWebGL()) {
+    if (!webglDisponible) {
       ambiente?.classList.add('es-hormigon');
       return;
     }
@@ -295,7 +302,7 @@ async function primerCuadro() {
      de resolución, entorno diferido y texturas de 384 K a 39 K. */
   let crearEscenaVidrio;
   try {
-    ({ crearEscenaVidrio } = await import('./hero-scene.js'));
+    ({ crearEscenaVidrio } = await escenaVidrioEnCarga);
   } catch {
     // Si three no llega, esto sigue siendo una página que hay que poder usar:
     // hormigón detrás, texto del cuadro visible y barra montada en su sitio.

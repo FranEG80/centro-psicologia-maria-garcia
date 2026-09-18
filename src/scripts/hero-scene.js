@@ -1328,20 +1328,17 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
     });
   }
 
-  /* Una tarea por hueco de inactividad. requestIdleCallback si existe, y si no
-     un setTimeout corto: lo que importa es que entre dos tareas haya al menos
-     un fotograma, para que el scroll no se atasque mientras se montan. */
+  /* El velo sigue opaco durante esta fase. Las tareas se montan en el mismo
+     orden y después se pide un único fotograma completo para presentarlas. */
+  let escenaListaPendiente = false;
   function montarDiferidas() {
-    const tarea = diferidas.shift();
-    if (!tarea) {
-      alEscenaLista?.();
-      return;
+    while (diferidas.length) {
+      diferidas.shift()();
     }
-    tarea();
+    // El velo no se retira hasta que el renderer haya presentado un fotograma
+    // que contenga todas las capas recién montadas.
+    escenaListaPendiente = true;
     pedirFotograma();
-    const cola =
-      window.requestIdleCallback || ((f) => setTimeout(f, 24));
-    cola(montarDiferidas, { timeout: 500 });
   }
 
   /* -- Luces ------------------------------------------------------------- */
@@ -1712,6 +1709,7 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
   let visible = true;
   let vivo = true;
   let primero = true;
+  let escenaPreparada = false;
 
   function colocarCamara(p, t) {
     // El primer tramo de scroll mueve más, para que cualquier gesto mínimo
@@ -1766,11 +1764,19 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
     if (!vivo) return;
     requestAnimationFrame(fotograma);
     if (!visible) return;
-    if (!pendiente && movimientoReducido) return;
+    // Mientras el velo está opaco no se repiten renders intermedios que nadie
+    // puede ver. La cola pide uno final cuando todas sus capas están montadas.
+    if (!pendiente && (movimientoReducido || !escenaPreparada)) return;
 
     colocarCamara(progreso, t);
     renderer.render(scene, camera);
     pendiente = false;
+
+    if (escenaListaPendiente) {
+      escenaListaPendiente = false;
+      escenaPreparada = true;
+      alEscenaLista?.();
+    }
 
     if (primero) {
       primero = false;

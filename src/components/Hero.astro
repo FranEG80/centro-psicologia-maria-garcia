@@ -113,7 +113,10 @@ const registros = [
      del muro, pero el corte contra el lienzo se veía igual y un campo plano no
      tiene costura que enseñar. */
   html.js .hero__ambiente {
-    background: #176b92;
+    /* El primer render concentra el azul en la franja baja de las láminas
+       (#287191 / #186986). Este tono intermedio cose el velo con esa zona
+       oscura, en vez de arrancar demasiado luminoso y verdoso. */
+    background: #1d617d;
   }
 
   /* Sin WebGL vuelve a hormigón: el texto tiene que poder leerse. */
