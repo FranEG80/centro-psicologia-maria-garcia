@@ -53,6 +53,13 @@ const jsonLd = {
     <meta property="og:url" content={canonica} />
     <meta property="og:image" content={new URL('/media/og.jpg', Astro.site).href} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+    <meta name="twitter:image" content={new URL('/media/og.jpg', Astro.site).href} />
+    <meta property="og:image:alt" content={titulo} />
+    <meta name="twitter:image:alt" content={titulo} />
+
+    <meta name="robots" content="noindex, nofollow" />
 
     <link
       rel="preload"
