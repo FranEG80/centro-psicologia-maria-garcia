@@ -1,45 +1,20 @@
 ---
 import { centro, navegacion } from '../data/contenido.js';
 
-/* La firma de la portada empieza grande en mitad de pantalla y aterriza en la
-   barra. Para que no haya costura, el elemento que viaja es el mismo que se
-   queda: no hay una firma grande y otra pequeña, hay una sola con transformada.
-
-   El nombre se parte en dos, y la partición hace doble trabajo. Por encima de
-   1080px el nombre completo arranca grande en dos líneas: la de arriba es el
-   prefijo y la de abajo el núcleo, cada una con su transformada, y al aterrizar
-   las dos valen cero y quedan en la misma línea de la barra. Nada se reflúe: el
-   salto de línea es de mentira, son dos piezas colocadas.
-
-   Por debajo de 1080px el prefijo no se maqueta y queda solo «María García»,
-   que es lo que cabe en una barra de una línea. */
 const nucleo = 'María García';
 const prefijo = centro.nombre.endsWith(nucleo)
   ? centro.nombre.slice(0, centro.nombre.length - nucleo.length).trim()
   : '';
 const letras = [...prefijo];
 
-/* El recorrido de la firma solo existe donde existe el primer cuadro. En las
-   páginas interiores la barra es barra desde el primer pintado. */
 const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
 ---
 
 <header class:list={['nav', portada && 'nav--portada']} data-nav>
-  <!--
-    La capa de material va aparte del contenido y solo cambia de opacidad.
-    Animar backdrop-filter o background-color obliga al navegador a recomponer
-    en cada fotograma; una capa que solo cruza de 0 a 1 de opacidad se compone
-    en GPU y no cuesta nada.
-  -->
   <div class="nav__material vitrina" aria-hidden="true"></div>
 
   <div class="nav__barra">
-    {/* A la portada, no a #top: con páginas interiores publicadas, un ancla
-        que no existe fuera de la home deja la marca sin destino. */}
     <a class="nav__marca" href="/" data-nav-marca>
-      {/* El monograma va en línea y no como <img>: durante el recorrido se
-          escala 7x, y un SVG en línea se vuelve a rasterizar a la escala del
-          fotograma mientras que una imagen se estira del mapa de 26 px. */}
       <span class="solo-lectores">{centro.nombre}</span>
       <svg
         class="nav__monograma"
@@ -87,12 +62,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     </nav>
 
     <div class="nav__derecha">
-      <!--
-        Aquí va el teléfono y no el WhatsApp. El rótulo "WhatsApp"
-        ya vive en el primer cuadro y en el cierre; una tercera aparición sería
-        la misma intención repetida. Llamar es otra cosa, y en una consulta es
-        el gesto de más valor.
-      -->
       <a class="nav__telefono" href={`tel:${centro.telefonoTel}`}>
         {centro.telefono}
       </a>
@@ -138,10 +107,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     isolation: isolate;
   }
 
-  /* -- El material ------------------------------------------------------- */
-  /* Sobre el primer cuadro no hay barra: el hormigón de la escena ya es el
-     fondo, y meter un cristal delante de otro cristal es ruido. Al salir del
-     cuadro la barra aparece como material. */
   .nav__material {
     position: absolute;
     inset: 0;
@@ -150,10 +115,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     transition: opacity var(--dur-material) var(--ease-hoja);
   }
 
-  /* En la portada con JS el material no existe desde el primer pintado, no
-     desde que arranca el script: entre una cosa y la otra hay tiempo de
-     descargar three, y ahí se veía la barra entera antes de que la escena la
-     retirase. Vuelve cuando el script pone la bandera. */
   html.js .nav--portada .nav__material {
     opacity: 0;
   }
@@ -162,7 +123,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     opacity: 1;
   }
 
-  /* -- La barra ---------------------------------------------------------- */
   .nav__barra {
     height: 64px;
     max-width: var(--maxw);
@@ -179,8 +139,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     align-items: center;
     gap: 0.7rem;
     min-width: 0;
-    /* El texto mide 21 px de alto: sin esto el objetivo de pulsado se queda a
-       menos de la mitad de los 44 px que pide WCAG 2.5.5. */
     min-height: 44px;
     text-decoration: none;
     color: var(--tinta);
@@ -196,8 +154,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     height: auto;
     aspect-ratio: 382 / 305;
     flex: none;
-    /* El punto fijo de la escala es el centro del trazo, no su esquina: así el
-       monograma crece sobre sí mismo y el recorrido es una sola recta. */
     transform-origin: 50% 50%;
   }
 
@@ -214,9 +170,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     transform-origin: 50% 50%;
   }
 
-  /* El prefijo ocupa su ancho desde el primer pintado aunque no se vea: si
-     apareciera creando caja, el nombre ya aterrizado se desplazaría a la
-     derecha y el aterrizaje acabaría en un salto. */
   .nav__prefijo {
     display: inline-block;
     white-space: pre;
@@ -227,10 +180,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     display: inline-block;
   }
 
-  /* El nombre completo es largo y a 1080px envolvía a dos líneas, que en una
-     barra de una sola línea se lee como un error. No se recorta el nombre
-     real: por debajo de ese ancho solo queda el núcleo, y el completo sigue en
-     el pie y para lectores de pantalla. */
   @media (max-width: 1080px) {
     .nav__prefijo {
       display: none;
@@ -260,8 +209,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     text-decoration: none;
   }
 
-  /* El subrayado se dibuja de izquierda a derecha, el mismo gesto de enlace de
-     toda la página. */
   .nav__enlace::after {
     content: '';
     position: absolute;
@@ -325,7 +272,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     clip-path: inset(0 0 0 0);
   }
 
-  /* -- Conmutador -------------------------------------------------------- */
   .nav__conmutador {
     display: none;
     width: 44px;
@@ -360,7 +306,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     transform: translateY(-3px);
   }
 
-  /* -- Panel ------------------------------------------------------------- */
   .nav__panel {
     padding: var(--paso-2) var(--gutter) var(--paso-3);
     display: grid;
@@ -370,7 +315,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     animation: nav-hoja var(--dur-material) var(--ease-hoja) both;
   }
 
-  /* Nada entra desde scale(0): un panel que sale de la nada no tiene masa. */
   @keyframes nav-hoja {
     from {
       opacity: 0;
@@ -413,12 +357,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     align-items: center;
   }
 
-  /* -- Sobre el primer cuadro -------------------------------------------- */
-  /* Mientras la firma viaja por el centro de la pantalla, la barra no existe:
-     ni enlaces, ni teléfono, ni conmutador. Entran los tres a la vez que el
-     material, cuando la firma ya está en su sitio y a su tamaño. Se apagan con
-     visibility además de opacidad para que el tabulador no encuentre destinos
-     invisibles. */
   .nav__enlaces,
   .nav__telefono,
   .nav__conmutador {
@@ -450,11 +388,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
       visibility 0s linear 0s;
   }
 
-  /* -- La firma en recorrido ---------------------------------------------- */
-  /* Hasta que el script no ha medido la barra no se sabe dónde cae la firma
-     grande. Pintarla antes es enseñar la marca en la esquina y arrancarla de
-     ahí de un tirón. El plazo de gracia de la plantilla retira html.js si el
-     script no llega, y entonces la marca vuelve a verse en su sitio. */
   html.js .nav--portada .nav__marca {
     opacity: 0;
   }
@@ -486,8 +419,6 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     .nav__trazos i {
       transition: none;
     }
-    /* Con movimiento reducido no hay recorrido de firma: el script la deja
-       aterrizada desde el principio, así que el prefijo se ve sin cascada. */
     html.js .nav--portada .nav__prefijo span {
       opacity: 1;
       transition: none;

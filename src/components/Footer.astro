@@ -4,15 +4,10 @@ const anio = new Date().getFullYear();
 ---
 
 <footer class="pie">
-  {/* El corte de sección. A sangre, de lado a lado, y el único de la parte
-      alta del pie. Justo debajo, el campo de petróleo del cierre baja a
-      carbón en 200px: el mismo material con menos luz. */}
   <hr class="canto pie__canto" />
 
   <div class="envoltura pie__reticula">
     <div class="pie__marca">
-      {/* Monograma decorativo: el nombre del centro va justo debajo como
-          texto, así que un alt aquí solo duplicaría el anuncio del lector. */}
       <img
         class="pie__monograma"
         src="/media/logo-maria-garcia-crema.svg"
@@ -37,7 +32,6 @@ const anio = new Date().getFullYear();
       </ul>
     </nav>
 
-    {/* Registros verificados. Van literales, tal como están en contenido.js. */}
     <dl class="pie__registros">
       {
         centro.credenciales.map((c) => (
@@ -54,36 +48,12 @@ const anio = new Date().getFullYear();
     <p class="pie__legal">
       © {anio} {centro.profesional}. {centro.direccion}, {centro.cp}{' '}
       {centro.localidad}, {centro.provincia}.
-      <!--
-        PENDIENTE: aviso legal y política de privacidad. No se enlazan hasta
-        que existan las páginas: un enlace roto en el pie de una web sanitaria
-        es peor que la ausencia del enlace.
-      -->
     </p>
   </div>
 </footer>
 
 <style>
-  /* Carbón es color de la paleta, no una inversión de tema: el pie cierra la
-     página como el canto oscuro del material.
-
-     Contraste medido (WCAG 2.1) sobre carbón #1F2426:
-       crema  #F8F4EB                       14.29:1
-       lino   #EDE6D8                       12.63:1
-       lino al 74% + carbón (#B7B4AA)        7.56:1  suelo del pie
-       petróleo #35617F                      2.37:1  PROHIBIDO como tinta
-
-     Y sobre la franja de transición, donde el fondo aún tiene petróleo. El
-     contenido arranca a var(--paso-6) del borde, o sea nunca antes del 48%
-     del degradado, así que el peor caso real es ese punto:
-       crema  s/ #273E4C                    10.18:1
-       lino al 74% s/ #273E4C                5.39:1  cumple AA a 14px
-     Calculado, no estimado a ojo. */
   .pie {
-    /* Un solo degradado, corto, y ningún otro material: arranca exactamente
-       en el color del campo del cierre para que no haya costura, y aterriza en
-       carbón a los 200px. Es el gesto de la sección y el único que hay: aquí
-       nada se mueve, y eso es deliberado. */
     background-color: var(--carbon);
     background-image: linear-gradient(
       to bottom,
@@ -100,12 +70,9 @@ const anio = new Date().getFullYear();
     column-gap: var(--paso-2);
     row-gap: var(--paso-2);
     align-items: start;
-    /* Más aire arriba que abajo, y el aire de arriba es también el que deja
-       que el texto caiga ya en la parte oscura del degradado. */
     padding-block: var(--paso-6) var(--paso-4);
   }
 
-  /* -- Marca ------------------------------------------------------------- */
   .pie__marca {
     grid-column: 1 / span 4;
     display: grid;
@@ -124,14 +91,12 @@ const anio = new Date().getFullYear();
     line-height: 1.7;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    /* La última letra arrastra su tracking: se compensa a la izquierda. */
     text-indent: 0.2em;
     text-wrap: pretty;
     max-width: 22ch;
     color: var(--lino);
   }
 
-  /* -- Navegación -------------------------------------------------------- */
   .pie__nav {
     grid-column: 6 / span 3;
   }
@@ -145,7 +110,6 @@ const anio = new Date().getFullYear();
     color: var(--lino);
     text-decoration: 1px solid underline transparent;
     text-underline-offset: 0.22em;
-    /* Sin movimiento: lo único que cambia es la tinta. */
     transition: color var(--dur-ui) ease, text-decoration-color var(--dur-ui) ease;
   }
 
@@ -161,13 +125,10 @@ const anio = new Date().getFullYear();
     outline-color: var(--lino);
   }
 
-  /* Realimentación de pulsación, no un gesto: sin transición, aparece y se va
-     con el dedo. */
   .pie__nav a:active {
     transform: scale(0.97);
   }
 
-  /* -- Registros --------------------------------------------------------- */
   .pie__registros {
     grid-column: 9 / span 4;
     display: grid;
@@ -188,9 +149,6 @@ const anio = new Date().getFullYear();
     text-wrap: pretty;
     overflow-wrap: break-word;
     max-width: 28ch;
-    /* lino al 84% da 8.9:1 sobre carbón y 4.55:1 sobre el petróleo del
-       gradiente de entrada, así que la etiqueta pasa AA en los dos extremos de
-       la transición y no depende de dónde caiga la primera fila. */
     color: color-mix(in srgb, var(--lino) 84%, var(--carbon));
   }
 
@@ -202,11 +160,9 @@ const anio = new Date().getFullYear();
     color: var(--crema);
   }
 
-  /* -- Cierre ------------------------------------------------------------ */
   .pie__cierre {
     grid-column: 1 / -1;
     margin-top: var(--paso-5);
-    /* El corte de arriba es el que resuelve la sección: este solo cierra. */
     opacity: 0.34;
   }
 
@@ -218,12 +174,9 @@ const anio = new Date().getFullYear();
     font-variant-numeric: tabular-nums;
     text-wrap: pretty;
     max-width: 60ch;
-    /* Aquí el fondo ya es carbón pleno: 8.9:1 */
     color: color-mix(in srgb, var(--lino) 84%, var(--carbon));
   }
 
-  /* Por debajo de 900px las tres columnas se apilan en el orden de lectura:
-     marca, navegación, registros. */
   @media (max-width: 900px) {
     .pie__reticula {
       row-gap: var(--paso-3);

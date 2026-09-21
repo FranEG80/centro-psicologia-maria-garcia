@@ -7,17 +7,6 @@ import Pie from '../../components/Pie.astro';
 import { centro, galeria, ambientes } from '../../data/contenido.js';
 import { consulta } from '../../data/paginas.js';
 
-/* El centro. La página que reúne las instalaciones y de la que cuelgan las
-   dos de detalle, /instalaciones/adultos y /instalaciones/infantil.
-
-   Lo que se enseña es lo que hay: una recepción, una sala de espera, UN
-   despacho de consulta y una zona infantil aparte. De las siete fotografías,
-   dos son el mismo despacho desde ángulos distintos y dos la misma zona
-   infantil; los pies lo dicen, para que nadie cuente cuatro salas.
-
-   Falta la sección «Cómo funciona» —los cuatro pasos desde que se pide cita
-   hasta que se dan los resultados—. No se publica inventada: el dato es de la
-   clienta y las preguntas siguen abiertas en estructura-textos.md. */
 ---
 
 <Base
@@ -34,7 +23,6 @@ import { consulta } from '../../data/paginas.js';
       migas={[{ href: '/', texto: 'Inicio' }]}
     />
 
-    {/* ---- La fachada, a sangre ---------------------------------------- */}
     <figure class="fachada" data-revelar="lamina">
       <Image
         src={galeria[0].src}
@@ -49,7 +37,6 @@ import { consulta } from '../../data/paginas.js';
       </figcaption>
     </figure>
 
-    {/* ---- El espacio -------------------------------------------------- */}
     <section class="espacio" aria-labelledby="espacio-titulo">
       <div class="envoltura espacio__reticula" data-revelar-grupo>
         <h2 class="caps espacio__epigrafe" id="espacio-titulo" data-revelar>
@@ -66,7 +53,6 @@ import { consulta } from '../../data/paginas.js';
         </div>
       </div>
 
-      {/* Recepción y sala de espera, enfrentadas y pegadas por el canto. */}
       <div class="espacio__tira" data-revelar-grupo>
         {
           galeria.slice(1, 3).map((g) => (
@@ -89,7 +75,6 @@ import { consulta } from '../../data/paginas.js';
       </div>
     </section>
 
-    {/* ---- Los dos ambientes, con su página cada uno -------------------- */}
     <section class="ambientes" aria-labelledby="ambientes-titulo">
       <hr class="canto" />
       <div class="envoltura ambientes__cabecera">
@@ -137,7 +122,6 @@ import { consulta } from '../../data/paginas.js';
       </ul>
     </section>
 
-    {/* ---- Dónde está --------------------------------------------------- */}
     <section class="donde" aria-labelledby="donde-titulo">
       <div class="envoltura donde__reticula" data-revelar-grupo>
         <div data-revelar>
@@ -173,7 +157,6 @@ import { consulta } from '../../data/paginas.js';
 </Base>
 
 <style>
-  /* ---- Fachada --------------------------------------------------------- */
   .fachada {
     background: var(--hormigon);
     border-top: 1px solid var(--canto);
@@ -191,7 +174,6 @@ import { consulta } from '../../data/paginas.js';
     color: var(--tinta-2);
   }
 
-  /* ---- El espacio ------------------------------------------------------ */
   .espacio {
     background: var(--vidrio-hoja);
     color: var(--carbon);
@@ -199,8 +181,6 @@ import { consulta } from '../../data/paginas.js';
     padding-top: var(--paso-5);
   }
 
-  /* Epígrafe a la izquierda y texto a la derecha: la misma retícula editorial
-     de dos columnas que usa el resto de páginas interiores. */
   .espacio__reticula {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
@@ -244,7 +224,6 @@ import { consulta } from '../../data/paginas.js';
     color: var(--tinta-hoja);
   }
 
-  /* ---- Ambientes ------------------------------------------------------- */
   .ambientes {
     background: var(--petroleo);
     color: var(--crema);
@@ -330,7 +309,6 @@ import { consulta } from '../../data/paginas.js';
     margin-top: auto;
   }
 
-  /* ---- Dónde ----------------------------------------------------------- */
   .donde {
     background: var(--hormigon);
     position: relative;

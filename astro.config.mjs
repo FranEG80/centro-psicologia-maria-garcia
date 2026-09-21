@@ -5,8 +5,7 @@ export default defineConfig({
   build: { inlineStylesheets: 'auto' },
   vite: {
     build: {
-      // three.js is the single heavy chunk; keep it isolated so the rest of the
-      // page (and the LCP poster) is never blocked behind it.
+
       rollupOptions: {
         output: {
           manualChunks(id) {

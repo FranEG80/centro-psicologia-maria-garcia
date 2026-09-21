@@ -1,24 +1,6 @@
 ---
 import { areas } from '../data/contenido.js';
 
-/* Las seis áreas como campos de luz sobre el hormigón: cero contenedores, ni
-   tarjetas ni filetes. La jerarquía es la luminancia, y el haz y la rampa van
-   en el mismo sentido —el núcleo denso abajo a la derecha— para que ninguna
-   línea quede en azul pálido sobre el tramo oscuro del haz.
-
-   El degradado es el del comp aprobado (artifacts/figma-import), 148deg.
-
-   La rampa del comp arrancaba en #8FA9B9, que sobre el hormigón #F4EFE4 da
-   2,13:1: por debajo del 3:1 que pide un texto grande, así que las dos
-   primeras áreas no se leían. Esta arranca más abajo y todos los escalones
-   pasan AA para texto grande. El gesto es el mismo; la diferencia es que
-   ahora se lee.
-
-   Contraste medido (WCAG 2.1) sobre hormigón #F4EFE4:
-     #5F87A0  3.4:1   #4E7691  4.1:1   #416883  4.9:1
-     #35617F  5.7:1   #2A4B62  8.0:1   #1B2E43  12.1:1 */
-
-/* El ancla es un prop: ver la nota de AreasLaminas. */
 const { id = 'areas' } = Astro.props;
 
 const rampa = [
@@ -59,10 +41,6 @@ const rampa = [
 </section>
 
 <style>
-  /* clip, nunca hidden. overflow: hidden convierte este bloque en contenedor
-     de scroll, y entonces la línea de tiempo de vista del haz se resuelve
-     contra ESTA caja en vez de contra la ventana: el degradado se queda
-     quieto. overflow: clip recorta igual y no crea scroller. */
   .muro {
     position: relative;
     isolation: isolate;
@@ -70,12 +48,6 @@ const rampa = [
     overflow: clip;
   }
 
-  /* El haz. Diagonal estrecho, no viñeta: el núcleo denso cae en el cuadrante
-     inferior derecho y se apaga en los cuatro extremos.
-
-     Desborda un 34% por cada lado porque deriva de derecha a izquierda con el
-     scroll: sin ese margen, al desplazarse dejaría ver el canto del degradado
-     y parecería un rectángulo moviéndose, no luz. */
   .muro__haz {
     position: absolute;
     inset: 0 -34%;
@@ -92,13 +64,6 @@ const rampa = [
     );
   }
 
-  /* La deriva. El haz cruza de derecha a izquierda mientras la sección pasa
-     por la ventana, atado al scroll con una línea de tiempo de vista: sin
-     JavaScript, sin escuchar el scroll y sin trabajo en el hilo principal,
-     porque solo anima translate, que resuelve el compositor.
-
-     Va dentro de @supports: donde no exista, el haz se queda quieto y la
-     sección sigue funcionando igual. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       .muro__haz {
@@ -118,8 +83,6 @@ const rampa = [
     }
   }
 
-  /* El poro del hormigón, por debajo del haz: la luz tiñe el grano, no lo
-     tapa. */
   .muro::before {
     content: '';
     position: absolute;
@@ -152,8 +115,6 @@ const rampa = [
     gap: 4px;
   }
 
-  /* El rótulo. Cada línea entra a una densidad distinta de azul: esa rampa
-     ES la jerarquía, no hay ningún otro marcador. */
   .rotulo {
     display: block;
     color: var(--rotulo-tinta);
@@ -168,7 +129,6 @@ const rampa = [
     transition: color var(--dur-ui) ease;
   }
 
-  /* Al pasar, la línea baja a carbón: se acerca, en vez de encenderse. */
   @media (hover: hover) and (pointer: fine) {
     .rotulo:hover {
       color: var(--carbon);

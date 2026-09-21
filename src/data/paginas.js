@@ -1,15 +1,3 @@
-/* ==========================================================================
-   Copia de las páginas interiores.
-
-   Vive aparte de contenido.js a propósito: contenido.js es el inventario del
-   centro (datos verificados, listados clínicos, fotografía) y lo tocan varias
-   manos. Esto es solo el texto redactado de cada página, tal y como quedó en
-   estructura-textos.md, pendiente todavía del visto bueno de la clienta.
-
-   Regla de siempre: nada de precios, horarios, duración de sesión,
-   testimonios ni plazos. No fueron facilitados y no se inventan. Donde falta
-   el dato hay un PENDIENTE, no una suposición.
-   ========================================================================== */
 
 import artInkblot from '../assets/photo/art-inkblot.webp';
 import childrenRoom from '../assets/photo/children-room.webp';
@@ -19,15 +7,6 @@ import officeCalm from '../assets/photo/office-calm.webp';
 import officeDarkwood from '../assets/photo/office-darkwood.webp';
 import reception from '../assets/photo/reception.webp';
 
-/* --------------------------------------------------------------------------
-   Las seis áreas. Cada entrada completa el registro de `areas` en
-   contenido.js, del que salen el título, el sumario y el listado clínico.
-
-   `cierre` cambia de epígrafe según el área: en las cinco clínicas la
-   pregunta real del visitante es cuándo pedir cita; en la forense no —ahí el
-   encargo suele venir de un abogado o de un particular con un procedimiento
-   abierto—, así que la pregunta es quién lo encarga.
-   -------------------------------------------------------------------------- */
 export const detallesAreas = {
   infancia: {
     entradilla:
@@ -85,8 +64,6 @@ export const detallesAreas = {
       'En una familia el problema rara vez está en una sola persona: está en cómo se hablan, en lo que se da por sabido y en lo que nadie dice.',
     cuerpo:
       'Aquí se trabaja con el vínculo, no con un culpable. Y cuando hay una separación de por medio, se puede trabajar además desde la mediación: llegar a acuerdos sin convertirlo en una batalla, sobre todo si hay hijos.',
-    /* La acreditación de mediación se repite aquí además de en el pie a
-       propósito: en esta página es justo el dato que se viene a comprobar. */
     acreditacion: {
       epigrafe: 'Mediación familiar',
       texto: 'Mediadora Familiar de la Junta de Andalucía, nº de registro 631.',
@@ -130,8 +107,6 @@ export const detallesAreas = {
       texto:
         'Cuando aparecen olvidos que empiezan a interferir en el día a día. Cuando un familiar mayor se desorienta o pierde el hilo con frecuencia. Tras una lesión cerebral, para saber qué funciones han quedado afectadas. O cuando hace falta una valoración cognitiva completa que oriente un diagnóstico.',
     },
-    /* Solo esta área enseña el material: es la única en la que el instrumento
-       de evaluación explica de verdad en qué consiste el trabajo. */
     muestraMateriales: true,
     imagen: {
       src: gameRings,
@@ -141,8 +116,6 @@ export const detallesAreas = {
   },
 };
 
-/* Resumen SEO de cada área. La descripción del <head> no puede ser la
-   entradilla literal: empieza con una escena y no con lo que se atiende. */
 export const metaAreas = {
   infancia:
     'Valoración e intervención en infancia y adolescencia en Motril: desarrollo, conducta, sueño, lenguaje, emociones y adaptación.',
@@ -158,9 +131,6 @@ export const metaAreas = {
     'Valoración neuropsicológica y programas de estimulación cognitiva para adultos, niños y adolescentes, en Motril.',
 };
 
-/* --------------------------------------------------------------------------
-   Índice de áreas
-   -------------------------------------------------------------------------- */
 export const indiceAreas = {
   marca: 'Áreas',
   titulo: 'Valoración e intervención',
@@ -170,9 +140,6 @@ export const indiceAreas = {
     'Varias áreas, un mismo modo de trabajar: primero se mira con calma y se pone nombre a lo que pasa; después se decide qué hacer.',
 };
 
-/* --------------------------------------------------------------------------
-   El centro
-   -------------------------------------------------------------------------- */
 export const consulta = {
   marca: 'La consulta',
   titulo: 'De la mano en todo momento',
@@ -185,17 +152,8 @@ export const consulta = {
       'Y una sala de espera con las titulaciones a la vista, que es donde deben estar.',
     ],
   },
-  /* PENDIENTE — «Cómo funciona», los cuatro pasos del proceso, no se publica
-     todavía porque el dato es de la clienta y no consta. Preguntas abiertas en
-     estructura-textos.md: vía preferida para pedir cita, duración y contenido
-     de la primera sesión, cadencia de las siguientes, precios, sesiones
-     online, presencia de los padres, encargo y plazos de un peritaje, horario,
-     política de cancelaciones y aseguradoras. */
 };
 
-/* --------------------------------------------------------------------------
-   Sobre mí
-   -------------------------------------------------------------------------- */
 export const sobreMi = {
   marca: 'Sobre mí',
   titulo: 'María García Molina',
@@ -206,55 +164,21 @@ export const sobreMi = {
     'Esa combinación es poco habitual y explica el alcance del centro: el mismo despacho puede valorar a un niño con dificultades de aprendizaje, mediar en una separación y elaborar un informe pericial.',
 };
 
-/* --------------------------------------------------------------------------
-   Contacto
-   -------------------------------------------------------------------------- */
 export const contacto = {
   marca: 'Contacto',
   titulo: 'Escríbeme y lo vemos',
   entradilla:
     'Lo más rápido es WhatsApp. Si prefieres llamar, el mismo número funciona para las dos cosas.',
-  /* Sin formulario, y es una decisión, no un olvido: un formulario en el que
-     alguien cuenta por qué quiere venir recoge datos de salud, categoría
-     especial del art. 9 RGPD, con todo el papeleo que eso arrastra. WhatsApp y
-     el teléfono ya cubren el caso. */
 };
 
-/* --------------------------------------------------------------------------
-   Material de evaluación, tal y como se describe en la página de
-   neuropsicología. Las fotografías y los pies ya están en contenido.js; aquí
-   solo va la lámina, que no forma parte de aquel listado.
-   -------------------------------------------------------------------------- */
 export const laminaRorschach = {
   src: artInkblot,
   alt: 'Lámina simétrica de manchas de tinta, del tipo empleado en la prueba de Rorschach.',
 };
 
-/* --------------------------------------------------------------------------
-   Páginas legales.
-
-   ESTADO REAL, y conviene que quede escrito aquí:
-
-   · Aviso legal. Existe un documento redactado por PROTECTION REPORT que debe
-     publicarse tal cual. Ese documento NO está en el repositorio, así que lo
-     que hay abajo es el armazón con los datos verificados del centro y los
-     huecos marcados. Se sustituye por el texto del proveedor antes de
-     publicar.
-   · Política de privacidad. No existe. El documento que pasó la clienta es un
-     aviso legal: no dice para qué se usan los datos, cuánto se conservan ni
-     cómo ejercer los derechos, y no menciona los datos de salud, que aquí son
-     los que importan.
-   · Política de cookies. No existe, o falta confirmación por escrito de que no
-     hace falta.
-
-   Las tres páginas se publican con un aviso visible de borrador. Publicar un
-   texto legal inventado como si fuera definitivo es peor que no tener página.
-   -------------------------------------------------------------------------- */
 export const avisoBorrador =
   'Borrador. El texto definitivo lo entrega la asesoría que redactó el aviso legal del centro; este bloque se sustituye íntegro antes de publicar.';
 
-/* Datos de identificación que sí están verificados. El NIF y el dominio
-   faltan, y sin ellos el aviso legal no cumple el art. 10 de la LSSI-CE. */
 export const identificacion = [
   { etiqueta: 'Titular', valor: 'María García Molina' },
   { etiqueta: 'Actividad', valor: 'Psicóloga sanitaria y mediadora familiar' },

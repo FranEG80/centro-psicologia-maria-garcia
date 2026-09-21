@@ -14,14 +14,6 @@ import gameRings from '../../assets/photo/game-rings.webp';
 import reception from '../../assets/photo/reception.webp';
 import waitingRoom from '../../assets/photo/waiting-room.webp';
 
-/* Las dos páginas de detalle que abren los botones de la sección de
-   ambientes. Existen para que esos botones no apunten a un 404.
-
-   Las fotografías van sin pie. Un pie que describe lo que ya se ve —«desde la
-   puerta», «mesa de madera oscura»— no añade nada y suena a inventario de
-   inmobiliaria. Lo que se cuenta al lado es para qué sirve el espacio, que es
-   lo que no se ve en la foto. */
-
 export function getStaticPaths() {
   return [
     {
@@ -37,8 +29,6 @@ export function getStaticPaths() {
           'El mismo despacho, con la ventana y la luz natural al fondo.',
           'Segundo despacho del centro, de tonos claros.',
         ],
-        /* Para qué sirve, no qué se ve. Nada de superficie, insonorización ni
-           equipamiento: no consta y no se inventa. */
         notas: [
           'Sesiones individuales, de pareja y de familia.',
           'Valoración, intervención y seguimiento en el mismo espacio y con la misma persona.',
@@ -82,7 +72,6 @@ export function getStaticPaths() {
 const { titulo, sumario, entradilla, vistas, alts, notas, material } =
   Astro.props;
 
-/* El otro espacio, para el enlace cruzado del final. */
 const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
 ---
 
@@ -240,8 +229,6 @@ const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
     margin-top: var(--paso-3);
   }
 
-  /* Las tomas, pegadas y separadas solo por el filete. Sin pie: lo que hay que
-     contar del espacio va en la columna de notas, no debajo de cada foto. */
   .espacio__tira {
     display: grid;
     grid-template-columns: repeat(var(--vistas, 2), minmax(0, 1fr));
@@ -273,7 +260,6 @@ const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
     max-width: 52ch;
   }
 
-  /* Marca de lista: un trazo de 1px en petróleo, como en el resto del sitio. */
   .espacio__nota {
     position: relative;
     padding-left: 1.6em;
@@ -317,7 +303,6 @@ const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
     margin-top: var(--paso-3);
   }
 
-  /* ---- Material de trabajo, solo en la zona infantil ------------------- */
   .espacio__material {
     margin-top: var(--paso-5);
     padding-top: var(--paso-4);

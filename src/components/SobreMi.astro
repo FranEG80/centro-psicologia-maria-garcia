@@ -17,16 +17,7 @@ import retrato from '../assets/retrato.webp';
   <div class="envoltura">
     <div class="sobre__reticula">
       <figure class="sobre__retrato" data-revelar>
-        {/*
-          PENDIENTE: sustituir src/assets/retrato.webp por la fotografía real
-          de María García en cuanto la envíe el estudio, y ajustar el pie de la
-          figura, que hoy avisa de que la imagen es provisional.
-          La imagen actual es GENERADA: no es una fotografía de la
-          profesional y no puede publicarse como si lo fuera.
-        */}
         <div class="sobre__marco">
-          {/* 5 de 12 columnas sobre --maxw (84rem) ≈ 540px; por debajo de
-              900px la retícula colapsa a una columna y ocupa el ancho útil. */}
           <Image
             src={retrato}
             widths={[400, 640, 800, 1024]}
@@ -87,9 +78,6 @@ import retrato from '../assets/retrato.webp';
 </section>
 
 <style>
-  /* El corte de la sección, a sangre: fuera de la envoltura, del ancho de la
-     ventana. Es el único filete de la sección junto al que separa formación de
-     trayectoria. */
   .sobre__canto {
     margin-bottom: var(--paso-4);
   }
@@ -102,11 +90,7 @@ import retrato from '../assets/retrato.webp';
     align-items: start;
   }
 
-  /* -- Retrato. Columnas 1 a 5 ------------------------------------------- */
   .sobre__retrato {
-    /* Recorrido del paralaje. El marco recorta y la imagen mide justo esto
-       más que el marco, así que el desplazamiento nunca deja hueco.
-       El script lee este mismo valor: no se duplica el número. */
     --sobre-desliz: 64px;
     grid-column: 1 / span 5;
     margin: 0;
@@ -135,7 +119,6 @@ import retrato from '../assets/retrato.webp';
     text-wrap: pretty;
   }
 
-  /* -- Texto. Columnas 7 a 12 -------------------------------------------- */
   .sobre__texto {
     grid-column: 7 / -1;
     display: grid;
@@ -181,7 +164,6 @@ import retrato from '../assets/retrato.webp';
     overflow-wrap: break-word;
   }
 
-  /* -- Registros colegiales. Fila de datos, sin filetes ------------------- */
   .sobre__registros {
     margin: var(--paso-2) 0 0;
     display: grid;
@@ -190,8 +172,6 @@ import retrato from '../assets/retrato.webp';
     column-gap: var(--paso-2);
   }
 
-  /* Subrejilla para que los tres valores queden a la misma altura aunque una
-     etiqueta ocupe tres líneas. */
   .sobre__registro {
     display: grid;
     grid-row: span 2;
@@ -219,7 +199,6 @@ import retrato from '../assets/retrato.webp';
     color: var(--tinta);
   }
 
-  /* -- Colapso ----------------------------------------------------------- */
   @media (max-width: 900px) {
     .sobre__reticula {
       grid-template-columns: minmax(0, 1fr);
@@ -243,8 +222,6 @@ import retrato from '../assets/retrato.webp';
     }
   }
 
-  /* Sin movimiento no hay paralaje, y el marco recorta 64px de imagen que ya
-     no se van a recorrer: se devuelve la altura exacta del marco. */
   @media (prefers-reduced-motion: reduce) {
     .sobre__retrato {
       --sobre-desliz: 0px;
@@ -267,8 +244,6 @@ import retrato from '../assets/retrato.webp';
 
   let contexto = null;
 
-  /* Paralaje mínimo del retrato: el único gesto de la sección. La imagen
-     recorre dentro de su marco lo que sobra de alto, y ni un píxel más. */
   function crear() {
     if (!seccion || !retrato || contexto || menosMovimiento.matches) return;
 

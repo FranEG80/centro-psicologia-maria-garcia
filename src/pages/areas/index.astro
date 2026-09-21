@@ -6,17 +6,6 @@ import Pie from '../../components/Pie.astro';
 import { centro, areas, resumenAreas } from '../../data/contenido.js';
 import { indiceAreas } from '../../data/paginas.js';
 
-/* El índice de las seis áreas.
-
-   No repite la sección de la portada. Allí son seis filas a sangre pensadas
-   para elegir de un vistazo mientras se baja; aquí ya se ha entrado a elegir,
-   así que cada área enseña además las tres primeras entradas de su listado
-   clínico. Quien busca «disgrafía» o «peritaje» lo ve sin abrir la página.
-
-   Contraste medido (WCAG 2.1) sobre hoja #C3D8E2:
-     carbón #1F2426     10.6:1  nombre
-     --tinta-hoja        6.2:1  nota y listado
-     --petroleo-800      5.6:1  número */
 ---
 
 <Base
@@ -56,8 +45,6 @@ import { indiceAreas } from '../../data/paginas.js';
                     {resumenAreas[a.id] ?? a.sumario}
                   </span>
 
-                  {/* Muestra, no listado: el completo vive en la página del
-                      área y aquí solo hace falta reconocer el propio caso. */}
                   <span class="area__muestra">
                     {a.puntos.slice(0, 3).map((p) => (
                       <span class="area__punto">{p}</span>
@@ -108,9 +95,6 @@ import { indiceAreas } from '../../data/paginas.js';
     pointer-events: none;
   }
 
-  /* Dos columnas y filete entre celdas, sin gap: las áreas comparten canto,
-     como las hojas de un laminado vistas de frente. Nada de tarjetas con
-     sombra sueltas sobre el hormigón. */
   .indice__reticula {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -137,8 +121,6 @@ import { indiceAreas } from '../../data/paginas.js';
     text-decoration: none;
   }
 
-  /* El relleno sube desde abajo, el mismo gesto que .boton y que las filas de
-     la portada: una lámina que baja sobre el área, no un fondo que se enciende. */
   .area__relleno {
     position: absolute;
     inset: 0;
@@ -208,8 +190,6 @@ import { indiceAreas } from '../../data/paginas.js';
     border-top: 1px solid var(--filete);
   }
 
-  /* Trazo de 1px en petróleo como marca de lista, igual que en el resto del
-     sitio: ningún bullet del navegador en toda la página. */
   .area__punto {
     position: relative;
     display: block;
@@ -255,7 +235,6 @@ import { indiceAreas } from '../../data/paginas.js';
       translate var(--dur-ui) var(--ease-out);
   }
 
-  /* Ratón y teclado ven exactamente lo mismo. */
   @media (hover: hover) and (pointer: fine) {
     .area__hoja:hover .area__relleno {
       clip-path: inset(0 0 0 0);

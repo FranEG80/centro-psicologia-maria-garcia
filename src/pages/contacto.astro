@@ -7,18 +7,6 @@ import Pie from '../components/Pie.astro';
 import { centro, galeria } from '../data/contenido.js';
 import { contacto } from '../data/paginas.js';
 
-/* Contacto. Sin formulario, y es una decisión tomada, no un olvido: un
-   formulario en el que alguien cuenta por qué quiere venir recoge datos de
-   salud —categoría especial del art. 9 RGPD— con todo lo que eso arrastra en
-   base jurídica, conservación y encargados de tratamiento. WhatsApp y el
-   teléfono cubren el caso igual de bien.
-
-   PENDIENTE — mapa embebido. No se pone todavía por dos razones: no consta la
-   coordenada exacta del portal, y un iframe de Google Maps deja cookies de
-   terceros en una web que aún no tiene política de cookies. Mientras tanto, la
-   fotografía de la fachada y el enlace a Maps resuelven el «cómo llego».
-
-   PENDIENTE — horario de atención. No fue facilitado y no se inventa. */
 ---
 
 <Base
@@ -35,7 +23,6 @@ import { contacto } from '../data/paginas.js';
       migas={[{ href: '/', texto: 'Inicio' }]}
     />
 
-    {/* ---- Las dos vías, en primer lugar -------------------------------- */}
     <section class="vias" aria-labelledby="vias-titulo">
       <h2 class="solo-lectores" id="vias-titulo">Cómo escribir o llamar</h2>
 
@@ -71,9 +58,6 @@ import { contacto } from '../data/paginas.js';
         </a>
       </div>
 
-      {/* El ancho de lectura va en el párrafo, no en .envoltura: .envoltura
-          lleva margin-inline auto, así que bajarle el max-width centra el
-          bloque en la ventana y lo saca de la retícula. */}
       <div class="envoltura" data-revelar>
         <p class="vias__aviso">
           Escoge la vía que te resulte más cómoda y cuéntame qué necesitas; estaré encantada de atenderte, resolver tus dudas y ayudarte a encontrar la información que buscas.
@@ -81,7 +65,6 @@ import { contacto } from '../data/paginas.js';
       </div>
     </section>
 
-    {/* ---- Dónde ------------------------------------------------------- */}
     <section class="donde" aria-labelledby="donde-titulo">
       <hr class="canto" />
 
@@ -129,7 +112,6 @@ import { contacto } from '../data/paginas.js';
       </div>
     </section>
 
-    {/* ---- Registros ---------------------------------------------------- */}
     <section class="registros" aria-labelledby="registros-titulo">
       <div class="envoltura registros__caja" data-revelar-grupo>
         <h2 class="caps registros__epigrafe" id="registros-titulo" data-revelar>
@@ -153,7 +135,6 @@ import { contacto } from '../data/paginas.js';
 </Base>
 
 <style>
-  /* ---- Vías ------------------------------------------------------------ */
   .vias {
     background: var(--vidrio-hoja);
     color: var(--carbon);
@@ -161,9 +142,6 @@ import { contacto } from '../data/paginas.js';
     padding-block: var(--paso-4) var(--paso-5);
   }
 
-  /* Tres columnas, sin gap y separadas por el filete: la misma regla de
-     laminado del resto del sitio. La primera pesa más porque es la vía que se
-     recomienda, y eso se dice con tamaño, no con un color de acento suelto. */
   .vias__reticula {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 4fr);
@@ -185,7 +163,6 @@ import { contacto } from '../data/paginas.js';
     border-left: 1px solid var(--filete-hoja);
   }
 
-  /* El relleno sube desde abajo, igual que .boton y que las filas de áreas. */
   .via__relleno {
     position: absolute;
     inset: 0;
@@ -217,10 +194,6 @@ import { contacto } from '../data/paginas.js';
     letter-spacing: 0.06em;
   }
 
-  /* El correo es largo —31 caracteres sin un solo espacio— y en su columna no
-     cabe en una línea. Baja a la escala de versalita de contenido y se le
-     permite partir donde haga falta: una dirección de correo cortada a mitad
-     de palabra se sigue leyendo, y desbordar la columna, no. */
   .via__valor--correo {
     font-size: var(--t-micro-2);
     letter-spacing: 0.01em;
@@ -258,7 +231,6 @@ import { contacto } from '../data/paginas.js';
     text-wrap: pretty;
   }
 
-  /* ---- Dónde ----------------------------------------------------------- */
   .donde {
     background: var(--petroleo);
     color: var(--crema);
@@ -307,7 +279,6 @@ import { contacto } from '../data/paginas.js';
     color: var(--campo-tinta-2);
   }
 
-  /* ---- Registros ------------------------------------------------------- */
   .registros {
     background: var(--hormigon);
     position: relative;
@@ -369,8 +340,6 @@ import { contacto } from '../data/paginas.js';
       border-left: 0;
       border-top: 1px solid var(--filete-hoja);
     }
-    /* En una sola columna el acolchado lateral de la celda desalinea el texto
-       respecto al gutter de la página: apilado, la columna ES la página. */
     .via {
       padding-inline: 0;
     }

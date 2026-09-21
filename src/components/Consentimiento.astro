@@ -1,20 +1,4 @@
 ---
-/* Aviso de consentimiento.
-
-   Caja pequeña anclada abajo a la derecha, no franja de ancho completo: el
-   primer cuadro es una escena de vidrio a pantalla completa y una banda de
-   1440 px cruzándola por debajo la parte en dos. Aquí cabe porque lo que de
-   verdad protege al visitante no es el tamaño del aviso, sino que el iframe
-   de Google no exista en el documento hasta que alguien lo pida (ver
-   consentimiento.js y el marco del pie).
-
-   Además no entra hasta que el primer cuadro sale de pantalla. No es una
-   licencia: nada de terceros se carga mientras tanto, así que no hay nada
-   que consentir todavía, y la escena se ve limpia como está diseñada.
-
-   Sale en vidrio, el material de la página. Contraste medido (WCAG 2.1):
-   carbón #1F2426 sobre la lámina compuesta sobre crema 13.4:1;
-   --tinta-2 sobre la misma base 5.0:1. */
 ---
 
 <aside
@@ -64,16 +48,10 @@
       opacity var(--dur-ui) ease;
   }
 
-  /* `display` declarado en el elemento gana al del navegador, así que el
-     atributo hidden dejaría de ocultar nada. Aquí no se declara, pero la
-     regla se escribe igual: el día que alguien ponga un flex, el aviso no se
-     quedará pegado a la pantalla. */
   .aviso[hidden] {
     display: none;
   }
 
-  /* Sin respaldo opaco el texto queda sobre la escena en cuanto el navegador
-     no compone el desenfoque. */
   @supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
     .aviso {
       background: color-mix(in srgb, var(--crema) 96%, var(--petroleo));
@@ -110,10 +88,6 @@
     }
   }
 
-  /* Rechazar y aceptar: mismo tamaño, misma caja, uno al lado del otro. El
-     relleno del segundo es jerarquía visual, no un atajo; los dos están a un
-     clic, que es lo que exige la AEPD. Botones propios y no .boton, que mide
-     3 rem y en una caja de este tamaño pesa más que el texto. */
   .aviso__acciones {
     margin-top: var(--paso-2);
     display: grid;
@@ -159,8 +133,6 @@
     }
   }
 
-  /* En móvil ocupa el ancho disponible, pero sigue siendo una caja anclada
-     abajo, no una banda pegada a los bordes de la pantalla. */
   @media (max-width: 560px) {
     .aviso {
       left: var(--paso-2);

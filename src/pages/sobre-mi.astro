@@ -8,17 +8,6 @@ import { centro, formacion, trayectoria } from '../data/contenido.js';
 import { sobreMi } from '../data/paginas.js';
 import retrato from '../assets/retrato.webp';
 
-/* Sobre mí. Formación, trayectoria y registros, y nada más: no hay texto en
-   primera persona porque la clienta todavía no lo ha escrito, y una biografía
-   inventada en una web sanitaria es exactamente lo que no puede haber aquí.
-
-   PENDIENTE: confirmar que el retrato es el definitivo y que se autoriza su
-   uso. Sin él la página funciona igual —la columna de imagen desaparece y el
-   texto ocupa el ancho—, pero pierde lo que más conecta.
-
-   Contraste medido (WCAG 2.1) sobre hoja #C3D8E2:
-     carbón #1F2426   10.6:1  listados
-     --tinta-hoja      6.2:1  epígrafes */
 ---
 
 <Base
@@ -35,12 +24,9 @@ import retrato from '../assets/retrato.webp';
       cuerpo={sobreMi.cuerpo}
       migas={[{ href: '/', texto: 'Inicio' }]}
     >
-      {/* Dentro del grupo de revelado del pórtico: sin data-revelar entraría
-          antes que el titular que tiene encima. */}
       <p class="caps portico__oficio" data-revelar>{sobreMi.sumario}</p>
     </Portico>
 
-    {/* ---- Retrato y registros ----------------------------------------- */}
     <section class="quien" aria-labelledby="quien-titulo">
       <h2 class="solo-lectores" id="quien-titulo">Quién atiende</h2>
 
@@ -83,7 +69,6 @@ import retrato from '../assets/retrato.webp';
       </div>
     </section>
 
-    {/* ---- Formación y trayectoria ------------------------------------- */}
     <section class="curriculo" aria-labelledby="curriculo-titulo">
       <h2 class="solo-lectores" id="curriculo-titulo">
         Formación y trayectoria
@@ -106,7 +91,6 @@ import retrato from '../assets/retrato.webp';
       </div>
     </section>
 
-    {/* ---- Lo que hace distinto al centro ------------------------------ */}
     <section class="alcance" aria-labelledby="alcance-titulo">
       <hr class="canto" />
       <div class="envoltura alcance__caja">
@@ -130,14 +114,11 @@ import retrato from '../assets/retrato.webp';
 </Base>
 
 <style>
-  /* El oficio va dentro del pórtico, justo debajo del nombre: es la línea que
-     dice qué es, antes que la que dice qué hace. */
   .portico__oficio {
     margin-top: var(--paso-2);
     color: var(--acento-fuerte);
   }
 
-  /* ---- Quién ----------------------------------------------------------- */
   .quien {
     background: var(--vidrio-hoja);
     color: var(--carbon);
@@ -152,8 +133,6 @@ import retrato from '../assets/retrato.webp';
     align-items: center;
   }
 
-  /* Marco y paspartú, como en la portada: el retrato va montado sobre crema,
-     no pegado al fondo. */
   .quien__figura {
     position: relative;
     background: var(--crema);
@@ -205,7 +184,6 @@ import retrato from '../assets/retrato.webp';
     font-variant-numeric: tabular-nums;
   }
 
-  /* ---- Currículo ------------------------------------------------------- */
   .curriculo {
     background: var(--hormigon);
     position: relative;
@@ -263,7 +241,6 @@ import retrato from '../assets/retrato.webp';
     background: var(--acento);
   }
 
-  /* ---- Alcance --------------------------------------------------------- */
   .alcance {
     background: var(--petroleo);
     color: var(--crema);

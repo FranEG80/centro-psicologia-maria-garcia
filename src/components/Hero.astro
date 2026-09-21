@@ -1,8 +1,6 @@
 ---
 import { areasHero, centro } from '../data/contenido.js';
 
-/* Los rótulos del primer cuadro son los cortos de la referencia. Los completos
-   viven en «Sobre mí» y en el pie, donde hay sitio para leerlos. */
 const registros = [
   `Nº colegiada ${centro.credenciales[0].valor}`,
   `Mediadora familiar ${centro.credenciales[1].valor.replace('nº ', '')}`,
@@ -13,23 +11,10 @@ const registros = [
 
 <section class="hero" id="top" data-hero>
   <div class="hero__escenario" data-hero-escenario>
-    <!--
-      Sustituto del primer fotograma. Antes había aquí un póster de 94 K con la
-      escena renderizada, pero mostraba el plano final abierto mientras el
-      lienzo arranca en un macro azul: el cambio saltaba de plano general a
-      primer plano. Y además competía por el ancho de banda con three.js.
-
-      A p=0 el cuadro es un campo de azul transmitido homogéneo, así que un
-      gradiente lo imita exacto por 0 bytes. Los tres tonos son el compuesto
-      medido: crema del muro iluminado por el factor de multiplicación de la
-      lámina central a la altura de la cámara.
-    -->
     <div class="hero__ambiente" data-hero-ambiente aria-hidden="true"></div>
 
     <canvas class="hero__lienzo" data-hero-canvas aria-hidden="true"></canvas>
 
-    <!-- Seguro de contraste sobre el tercio inferior. Invisible sobre el
-         hormigón; garantiza el 4.5:1 si el fotograma se oscurece. -->
     <div class="hero__velo" aria-hidden="true"></div>
 
     <div class="hero__copia" data-hero-copia>
@@ -58,11 +43,6 @@ const registros = [
     </div>
   </div>
 
-  <!--
-    Fuera del escenario a propósito: el escenario lo ancla ScrollTrigger y pasa
-    a tener transformada propia. La flecha va fija al hueco de la pantalla y se
-    retira al primer gesto de scroll, que es justo cuando deja de hacer falta.
-  -->
   <div class="hero__flecha" data-hero-flecha aria-hidden="true">
     <svg viewBox="0 0 22 30" fill="none" stroke="currentColor" stroke-width="1.4">
       <path d="M11 1V27" stroke-linecap="round"></path>
@@ -83,8 +63,6 @@ const registros = [
     min-height: 34rem;
     overflow: hidden;
     background: var(--crema);
-    /* El brief fija el reparto: vidrio y hormigón en el 65% superior,
-       todo el texto en el 35% inferior. */
     display: grid;
     grid-template-rows: 65fr 35fr;
   }
@@ -97,29 +75,17 @@ const registros = [
     height: 100%;
   }
 
-  /* Por defecto, hormigón: es el fondo seguro. Si el script no arranca o no
-     hay WebGL, el texto del cuadro queda sobre crema y el contraste se
-     mantiene en 14.29:1. */
   .hero__ambiente {
-    /* Velo de carga: siempre por encima del render, nunca mezclado con él. */
     z-index: 3;
     background: var(--crema);
     opacity: 1;
     transition: opacity 460ms var(--ease-out);
   }
 
-  /* Solo cuando hay JS que va a montar la escena se pinta el azul del primer
-     fotograma. Plano, no en degradado: el gradiente imitaba el compuesto medido
-     del muro, pero el corte contra el lienzo se veía igual y un campo plano no
-     tiene costura que enseñar. */
   html.js .hero__ambiente {
-    /* El primer render concentra el azul en la franja baja de las láminas
-       (#287191 / #186986). Este tono intermedio cose el velo con esa zona
-       oscura, en vez de arrancar demasiado luminoso y verdoso. */
     background: #1d617d;
   }
 
-  /* Sin WebGL vuelve a hormigón: el texto tiene que poder leerse. */
   html.js .hero__ambiente.es-hormigon {
     background: var(--crema);
   }
@@ -134,24 +100,11 @@ const registros = [
     transform: scale(var(--hero-esmerilado-zoom, 1));
   }
 
-  /* Esmerilado de arranque.
-     Con la cámara a 34 cm de la lámina central, el cuadro se llena de azul
-     transmitido, pero la pared está 23 m detrás y se lee nítida a través del
-     vidrio: se distinguen la junta con el suelo y el «05», y el arranque deja
-     de ser una masa homogénea de color.
-
-     Eso no es lo que hace un vidrio laminado de verdad. Pegado a él, el fondo
-     lejano está fuera de foco y además lo difunde la lámina intermedia del
-     laminado. Así que el primer tramo del recorrido lleva el desenfoque que le
-     corresponde, y se retira a medida que la cámara se aleja: al 26% del
-     recorrido ya es cero y el filtro se quita del todo, para no dejar una
-     capa compuesta activa durante el resto del scroll. */
   .hero__lienzo.esta-esmerilado {
     filter: blur(var(--hero-esmerilado, 0px)) saturate(1.05);
     will-change: filter;
   }
 
-  /* -- Flecha de arranque ------------------------------------------------- */
   .hero__flecha {
     position: fixed;
     left: 50%;
@@ -172,9 +125,6 @@ const registros = [
     display: block;
     width: 100%;
     height: auto;
-    /* El rebote no sale de cero y vuelve a cero: arranca ya desplazado hacia
-       arriba, así el reposo del ciclo está en el punto alto y el gesto empuja
-       hacia abajo, que es lo que se está pidiendo. */
     animation: hero-rebote 2s var(--ease-in-out) infinite;
   }
 
@@ -191,12 +141,6 @@ const registros = [
   .hero__velo {
     position: absolute;
     inset: auto 0 0;
-    /* Seguro de contraste sobre la franja de texto.
-       Sobre el hormigón, que ya es crema, este velo es literalmente invisible:
-       crema sobre crema no cambia nada. Su trabajo aparece cuando una lámina
-       cruza por detrás del texto, que es lo que pasa en pantallas bajas y a
-       mitad del retroceso. Llega al 62% porque el antetítulo es la línea más
-       alta del bloque y es la que se cruza con el vidrio. */
     height: 62%;
     z-index: 2;
     background: linear-gradient(
@@ -207,12 +151,6 @@ const registros = [
     );
   }
 
-  /* La opacidad de partida va en CSS y no la pone el script.
-     Si la pone el script, entre el primer pintado y la ejecución del módulo
-     hay una ventana en la que el texto se ve encima del campo azul del primer
-     fotograma. El script sigue mandando después, porque escribe opacidad en
-     línea y eso gana a la clase. Y si el script no llega, el plazo de gracia
-     de la plantilla retira html.js y el texto vuelve a ser visible. */
   .hero__copia {
     position: relative;
     z-index: 4;
@@ -234,8 +172,6 @@ const registros = [
   }
 
   .hero__antetitulo {
-    /* Carbón y no el secundario: es la línea que puede quedar sobre vidrio, y
-       aquí el contraste manda sobre la jerarquía. */
     color: var(--tinta);
     margin: 0;
   }
@@ -257,7 +193,6 @@ const registros = [
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.15rem 0.85rem;
-    /* font-size: var(--t-micro-2); */
     font-size: 1rem;
     font-weight: 450;
     letter-spacing: 0.14em;
@@ -282,9 +217,6 @@ const registros = [
     margin-top: clamp(0.25rem, 1.5vh, 1rem);
   }
 
-  /* En el primer cuadro el botón vive sobre hormigón claro, no sobre vidrio:
-     recupera la tinta carbón (14.29:1) y deja la variante clara para el
-     tramo azul, donde el script la necesita. */
   .hero__boton {
     --boton-tinta: var(--carbon);
     --boton-borde: var(--filete-fuerte);

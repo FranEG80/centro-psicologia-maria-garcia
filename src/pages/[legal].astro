@@ -4,23 +4,6 @@ import Nav from '../components/Nav.astro';
 import Pie from '../components/Pie.astro';
 import { centro } from '../data/contenido.js';
 
-/* Las tres páginas legales. Existen porque el pie las enlaza, y un enlace roto
-   en el pie de una web sanitaria es peor que no tener el enlace.
-
-   IMPORTANTE, antes de publicar:
-
-   - El aviso legal SÍ existe: lo redactó PROTECTION REPORT S, S.L. con fecha
-     23-06-2026. Aquí están solo los datos identificativos del artículo 10 de
-     la LSSI, que son los verificados. El texto completo hay que pegarlo desde
-     ese documento.
-   - La política de privacidad y la de cookies NO existen. Lo que hay aquí es
-     un aviso honesto de que faltan, no una plantilla: con datos de salud de
-     por medio, publicar una privacidad copiada es peor que no publicarla.
-     Hay que pedírselas a la misma asesoría.
-
-   El mapa del pie se sirve desde OpenStreetMap justamente para no depender de
-   una política de cookies que todavía no está. */
-
 export function getStaticPaths() {
   return [
     { params: { legal: 'aviso-legal' }, props: { tipo: 'aviso' } },
@@ -48,7 +31,6 @@ const paginas = {
 
 const { titulo, sumario } = paginas[tipo];
 
-/* Datos identificativos verificados en el documento de la asesoría. */
 const identificacion = [
   ['Denominación', centro.profesional],
   ['NIF', '23808826P'],
@@ -239,8 +221,6 @@ const identificacion = [
     font-variant-numeric: tabular-nums;
   }
 
-  /* Aviso de borrador. Visible a propósito: mientras esté, la página no está
-     lista para publicarse. */
   .aviso-borrador {
     padding: var(--paso-2);
     border-left: 2px solid var(--acento);

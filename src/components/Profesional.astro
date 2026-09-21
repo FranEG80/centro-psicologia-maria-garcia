@@ -1,20 +1,6 @@
 ---
 import { centro } from '../data/contenido.js';
 
-/* Sección añadida al encargo. En una web sanitaria el dato que más pesa antes
-   de escribir es quién te va a atender: la formación, los años y el número de
-   colegiada. Sin esto, la home enseña seis áreas y dos salas pero no dice
-   quién hay detrás.
-
-   Vuelve al hormigón después de dos hojas de azul: la secuencia necesita un
-   respiro claro antes del cierre, o las tres últimas secciones se leen como
-   un solo bloque azul.
-
-   El hueco de la fotografía va vacío, con su marco y su encuadre reales. El
-   retrato que había en el repositorio no es María, así que enseñarlo en una
-   presentación al cliente es peor que no enseñar nada: se queda el sitio
-   reservado, a tamaño y proporción definitivos, para que se vea dónde entra
-   su foto cuando la haya. */
 ---
 
 <section class="profesional" aria-labelledby="profesional-titulo">
@@ -92,16 +78,12 @@ import { centro } from '../data/contenido.js';
     align-items: start;
   }
 
-  /* Marco y paspartú: el retrato va montado, no pegado al hormigón. El filete
-     interior de 1px marca dónde acaba la fotografía y el hueco de crema
-     alrededor hace de paspartú. */
   .profesional__figura {
     background: var(--crema);
     padding: var(--paso-2);
     box-shadow: var(--sombra-baja);
   }
 
-  /* El encuadre reservado, a la altura que tendrá la fotografía definitiva. */
   .profesional__hueco {
     position: relative;
     height: clamp(20rem, 42vw, 34rem);
@@ -138,8 +120,6 @@ import { centro } from '../data/contenido.js';
     margin-top: var(--paso-2);
   }
 
-  /* Los registros, con el mismo trazo de 1px que las listas del resto de la
-     página. No son una tarjeta: son una lista con filete. */
   .profesional__registros {
     margin-top: var(--paso-3);
     display: grid;

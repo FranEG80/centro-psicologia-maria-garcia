@@ -1,23 +1,6 @@
 ---
 import { prisma } from '../data/contenido.js';
 
-/* La primera hoja del laminado, resuelta como el espejo de la sección de
-   áreas: allí un haz de azul cae sobre el hormigón y el núcleo denso va abajo
-   a la derecha; aquí el campo es azul y lo que lo cruza es la luz, en crema,
-   con el núcleo abajo a la izquierda. Mismo gesto, invertido en lado y en
-   color. La una es el negativo de la otra.
-
-   Y deriva con el scroll en sentido contrario, de izquierda a derecha, para
-   que las dos secciones se lean como un par y no como dos efectos sueltos.
-
-   El núcleo del haz llega al 34% de crema, y puede porque está en la esquina
-   inferior izquierda, lejos del bloque de texto: donde caen las letras el
-   velo no pasa del 6%. Si el texto estuviera encima del núcleo habría que
-   bajarlo al 14%, que es donde el contraste toca AA.
-     crema #F8F4EB sobre petróleo #35617F      6.04:1
-     crema sobre el velo del 6% (zona de texto) 5.8:1
-     crema sobre el núcleo del 34%             3.5:1  sin texto encima */
-
 const { texto, autor } = prisma;
 ---
 
@@ -50,21 +33,12 @@ const { texto, autor } = prisma;
     color: var(--crema);
   }
 
-  /* clip, nunca hidden: overflow: hidden convertiría esto en contenedor de
-     scroll y la línea de tiempo de vista del haz se resolvería contra esta
-     caja en vez de contra la ventana, con lo que el degradado se quedaría
-     quieto. Es el mismo motivo que en la sección de áreas. */
   .prisma__banda {
     position: relative;
     isolation: isolate;
     overflow: clip;
   }
 
-  /* El haz. Diagonal estrecho, no viñeta: entra por arriba a la derecha y el
-     núcleo cae abajo a la izquierda, al revés que el de áreas.
-
-     Desborda un 34% por cada lado porque deriva con el scroll: sin ese margen
-     asomaría el canto del degradado y parecería un rectángulo moviéndose. */
   .prisma__haz {
     position: absolute;
     inset: 0 -34%;
@@ -81,9 +55,6 @@ const { texto, autor } = prisma;
     );
   }
 
-  /* La deriva, atada al scroll con una línea de tiempo de vista: sin
-     JavaScript y sin trabajo en el hilo principal, porque solo anima
-     translate. De izquierda a derecha, al contrario que el haz de áreas. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       .prisma__haz {
@@ -103,9 +74,6 @@ const { texto, autor } = prisma;
     }
   }
 
-  /* El texto se va a la derecha, contrapesando el núcleo de luz de la
-     izquierda. Dentro del bloque sigue alineado a la izquierda: una versal
-     con este interletrado, alineada a la derecha, se lee a trompicones. */
   .prisma__caja {
     position: relative;
     z-index: 1;
@@ -118,8 +86,6 @@ const { texto, autor } = prisma;
     max-width: 44rem;
   }
 
-  /* La medida va en rem y no en ch: el ch mide el cero en caja baja, y aquí
-     el texto es versal con tracking, así que cada carácter ocupa más. */
   .prisma__texto {
     font-size: var(--t-h2);
     font-weight: 300;
@@ -130,8 +96,6 @@ const { texto, autor } = prisma;
     text-wrap: balance;
   }
 
-  /* La autoría rompe con todo lo anterior: caja baja, cuerpo pequeño y un
-     filete de luz delante. Si la frase es de alguien, se ve que lo es. */
   .prisma__autoria {
     margin-top: var(--paso-2);
     display: flex;

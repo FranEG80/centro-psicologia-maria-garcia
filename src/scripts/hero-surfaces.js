@@ -12,8 +12,6 @@ import {
   Vector3,
 } from 'three';
 
-// Un bisel real separa el filo especular del volumen oscuro del canto.
-// Las dimensiones exteriores se conservan, incluidas las del apoyo.
 export function geometriaVidrio(ancho, alto, grosor) {
   const bisel = 0.003;
   const x = ancho / 2 - bisel;
@@ -41,8 +39,6 @@ export function geometriaVidrio(ancho, alto, grosor) {
   for (let i = 0; i < uv.count; i++) {
     uv.setXY(i, p.getX(i) / ancho + 0.5, p.getY(i) / alto + 0.5);
   }
-  // Distinguir las normales del bisel de las caras estrechas. El filo tiene
-  // un recorrido óptico corto y conserva más luz que el núcleo del canto.
   const normales = geo.attributes.normal;
   const grupos = geo.groups.slice();
   geo.clearGroups();
@@ -58,8 +54,6 @@ export function geometriaVidrio(ancho, alto, grosor) {
   return geo;
 }
 
-// Canales independientes del albedo fotográfico. Semilla fija: el poro no
-// cambia al recargar y no se confunde una mancha de color con un relieve.
 export function microHormigon() {
   const N = 1024;
   const hacer = (semilla, canal) => {
@@ -92,10 +86,6 @@ export function microHormigon() {
            rugosidad: hacer(8213, 'rugosidad') };
 }
 
-// Reflejo difuso aproximado sobre hormigón. Cada fragmento del suelo lanza
-// un rayo de vista reflejado hacia los planos de vidrio; la huella cambia con
-// la cámara y con el giro de cada hoja. No es un trazador de cáusticas.
-// Los factores son cocientes de color de pantalla, no colores de albedo.
 export function reflejosVidrio(laminas, direccionSol) {
   const centros = laminas.map((l) => new Vector3(l.x, 0, l.z));
   const ejes = laminas.map((l) => new Vector3(Math.cos(l.rotY), 0, -Math.sin(l.rotY)));
@@ -153,7 +143,6 @@ export function reflejosVidrio(laminas, direccionSol) {
           float distancia = length(local - ejes[i] * s);
           float contacto = exp(-pow(distancia / 0.048, 2.0)) * 0.24;
           float reflejo = huella(p, vista, i, true);
-          // El lóbulo amplio aporta difusión, sin duplicar una mancha opaca.
           float difuso = (huella(p + vec3(0.13, 0.0, 0.08), vista, i, true)
                         + huella(p - vec3(0.13, 0.0, 0.08), vista, i, true)) * 0.5;
           float sombra = huella(p, luz, i, false) * 0.12;

@@ -1,19 +1,5 @@
 @import './tokens.css';
 
-/* ==========================================================================
-   Fuente. Host Grotesk Variable, autoalojada. Ninguna serif en toda la página,
-   que es requisito del brief.
-
-   El brief fija la categoría, «grotesca suiza neutra», no la cara. La primera
-   elección fue Geist, y era un error: es una de las caras con las que
-   converge cualquier interfaz generada hoy, así que la tipografía delataba
-   sola el origen de la página. Host Grotesk es igual de neutra y de suiza,
-   tiene mejores versalitas para el interletrado ancho del primer cuadro, y no
-   está gastada.
-
-   El eje de peso va de 300 a 800: no hay 250. Donde el diseño pedía 250 se usa
-   300, que es el extremo ligero real de esta cara.
-   ========================================================================== */
 @font-face {
   font-family: 'Host Grotesk';
   src: url('/fonts/host-grotesk-variable.woff2') format('woff2-variations');
@@ -22,9 +8,6 @@
   font-display: swap;
 }
 
-/* ==========================================================================
-   Reset acotado
-   ========================================================================== */
 *,
 *::before,
 *::after {
@@ -53,13 +36,6 @@ body {
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* clip, nunca hidden.
-     overflow-x: hidden en el body hace dos cosas que no se ven hasta que algo
-     se rompe: convierte el body en contenedor de scroll, con lo que el scroll
-     del documento deja de comportarse como se espera, y anula position: sticky
-     en TODOS sus descendientes, porque un sticky se resuelve contra el
-     antepasado con scroll más cercano. El índice fijo de Áreas depende de eso.
-     overflow: clip recorta igual y no crea contenedor de scroll. */
   overflow-x: clip;
 }
 
@@ -104,9 +80,6 @@ button {
   cursor: pointer;
 }
 
-/* ==========================================================================
-   Superficies del navegador. Nada se queda con el valor por defecto.
-   ========================================================================== */
 ::selection {
   background: color-mix(in srgb, var(--petroleo) 26%, transparent);
   color: var(--carbon);
@@ -139,17 +112,12 @@ html {
   outline-offset: 3px;
 }
 
-/* ==========================================================================
-   Utilidades tipográficas
-   ========================================================================== */
 .caps {
   font-size: var(--t-micro);
   font-weight: 450;
   letter-spacing: var(--track-caps);
   text-transform: uppercase;
   line-height: 1.5;
-  /* La última letra arrastra el tracking: se compensa para que el bloque
-     quede ópticamente centrado. */
   text-indent: var(--track-caps);
 }
 
@@ -197,7 +165,6 @@ html {
   color: var(--tinta-2);
 }
 
-/* Enlaces de texto: subrayado con offset propio, nunca el del navegador. */
 .enlace {
   color: var(--acento-fuerte);
   text-decoration: 1px solid underline
@@ -214,9 +181,6 @@ html {
   }
 }
 
-/* Cuando la acción no navega a ningún sitio —abrir las preferencias de
-   cookies— el elemento correcto es un botón, pero dentro de un párrafo tiene
-   que leerse como una palabra más. */
 button.enlace {
   background: none;
   border: 0;
@@ -225,9 +189,6 @@ button.enlace {
   cursor: pointer;
 }
 
-/* ==========================================================================
-   Retícula
-   ========================================================================== */
 .envoltura {
   width: 100%;
   max-width: var(--maxw);
@@ -240,7 +201,6 @@ button.enlace {
   position: relative;
 }
 
-/* Filete de sección: un solo trazo, 1px, del ancho de la retícula. */
 .seccion + .seccion > .envoltura > .seccion__filete {
   display: block;
 }
@@ -252,7 +212,6 @@ button.enlace {
   margin: 0 0 var(--paso-4);
 }
 
-/* Más aire encima de un titular que debajo. */
 .seccion__cabecera {
   margin-bottom: var(--paso-4);
 }
@@ -290,9 +249,6 @@ button.enlace {
   outline-offset: -4px;
 }
 
-/* ==========================================================================
-   Botones
-   ========================================================================== */
 .boton {
   --boton-tinta: var(--carbon);
   --boton-borde: var(--filete-fuerte);
@@ -320,8 +276,6 @@ button.enlace {
     color var(--dur-ui) ease, border-color var(--dur-ui) ease;
 }
 
-/* El relleno entra por clip-path, como una lámina que baja: es el mismo
-   gesto que la escena de vidrio, no un fundido genérico. */
 .boton::before {
   content: '';
   position: absolute;
@@ -354,7 +308,6 @@ button.enlace {
   transform: scale(0.97);
 }
 
-/* Variante sobre vidrio azul: crema sobre petróleo = 6.04:1 */
 .boton--claro {
   --boton-tinta: var(--crema);
   --boton-borde: color-mix(in srgb, var(--crema) 55%, transparent);
@@ -370,20 +323,6 @@ button.enlace {
   background: var(--crema);
 }
 
-/* ==========================================================================
-   LÁMINA
-   El único material de esta página. Una lámina de vidrio dicroico laminado
-   tiene siempre las mismas cuatro cosas, y aquí se construyen una sola vez:
-
-     1. densidad de azul transmitido, con gradiente vertical (arriba clara,
-        abajo densa), porque el film dicroico no tiñe uniforme;
-     2. canto encendido, un filete de luz de 1px en el borde de entrada;
-     3. la luz que la atraviesa y cae al otro lado;
-     4. el resto de la página vista a través, desaturada y algo más fría.
-
-   Se usa con .lamina y --lamina-densidad: 1 a 5. Nada de esta página es azul
-   por decoración: si hay azul, hay una lámina delante.
-   ========================================================================== */
 .lamina {
   --lamina-tinte: var(--vidrio-2);
   --lamina-canto: var(--canto);
@@ -407,7 +346,6 @@ button.enlace {
   --lamina-tinte: var(--vidrio-5);
 }
 
-/* El vidrio. Gradiente vertical de densidad + saturación caída. */
 .lamina::before {
   content: '';
   position: absolute;
@@ -425,18 +363,6 @@ button.enlace {
   transition: opacity 520ms var(--ease-out);
 }
 
-/* ==========================================================================
-   VITRINA
-   El vidrio de la interfaz, distinto del vidrio dicroico de la instalación.
-   Aquí no hay color transmitido: hay un cristal incoloro delante del
-   contenido, como el material de las barras y las hojas de iOS.
-
-   Lo que lo separa de un div con backdrop-blur son tres cosas, y ninguna es
-   el desenfoque: el brillo de canto de 1px arriba, que dibuja el bisel donde
-   la luz entra; la sombra interior de 1px abajo, que le da espesor; y la
-   saturación levantada, porque un cristal real concentra el color de lo que
-   tiene detrás en vez de lavarlo.
-   ========================================================================== */
 .vitrina {
   background: var(--vitrina-fondo);
   backdrop-filter: blur(var(--vitrina-blur)) saturate(1.5);
@@ -445,8 +371,6 @@ button.enlace {
   box-shadow: var(--vitrina-luz), var(--vitrina-espesor), var(--vitrina-sombra);
 }
 
-/* Sin translucidez el desenfoque no existe, y entonces el relleno tiene que
-   ser opaco o el texto se lee sobre la fotografía. */
 @media (prefers-reduced-transparency: reduce) {
   .vitrina {
     background: var(--crema);
@@ -455,14 +379,12 @@ button.enlace {
   }
 }
 
-/* Y si el navegador no sabe desenfocar el fondo, tampoco. */
 @supports not (backdrop-filter: blur(2px)) {
   .vitrina {
     background: color-mix(in srgb, var(--crema) 94%, transparent);
   }
 }
 
-/* El canto. Filete de luz en el borde de entrada, con su bloom. */
 .lamina::after {
   content: '';
   position: absolute;
@@ -470,10 +392,6 @@ button.enlace {
   z-index: 2;
   pointer-events: none;
   border-left: 1px solid var(--lamina-canto);
-  /* Cuatro cantos, no uno. El de entrada encendido con su bloom, el de salida
-     apenas insinuado, y arriba y abajo el bisel: un filete de luz en el borde
-     superior y una sombra de un píxel en el inferior. Sin esos dos últimos la
-     lámina es un tinte; con ellos tiene espesor. */
   box-shadow:
     inset 2px 0 9px -3px color-mix(in srgb, var(--lamina-canto) 78%, transparent),
     inset -1px 0 0 color-mix(in srgb, var(--lamina-canto) 30%, transparent),
@@ -481,8 +399,6 @@ button.enlace {
     inset 0 -1px 0 color-mix(in srgb, var(--petroleo) 26%, transparent);
 }
 
-/* Lámina que se retira: el gesto de la página. Mirar lo mismo, con luz
-   suficiente. */
 .lamina--se-retira::before {
   opacity: 1;
 }
@@ -504,11 +420,6 @@ button.enlace {
   }
 }
 
-/* ==========================================================================
-   CANTO
-   Filete horizontal de luz de vidrio, a sangre. Sustituye a la regla de 1px
-   entre secciones: cada corte de la página es el canto de otra lámina.
-   ========================================================================== */
 .canto {
   height: 1px;
   border: 0;
@@ -538,10 +449,6 @@ button.enlace {
   pointer-events: none;
 }
 
-/* ==========================================================================
-   Revelados. Un solo gesto en toda la página: la lámina que sube.
-   Visible por defecto; el script añade [data-revelar] solo si hay JS.
-   ========================================================================== */
 [data-revelar] {
   --revelar-y: 14px;
   opacity: 1;
@@ -560,15 +467,6 @@ html.js [data-revelar].es-visible {
   transition-delay: var(--revelar-retardo, 0ms);
 }
 
-/* Las imágenes se revelan con clip-path desde abajo: material que aparece,
-   no un objeto que surge de la nada.
-
-   El recorte va en los HIJOS, no en el elemento observado. Recortando el
-   propio elemento su área visible es cero, y un IntersectionObserver informa
-   entonces de intersectionRatio 0 aunque la caja esté dentro de la ventana:
-   nunca recibe .es-visible, nunca se le retira el recorte y la imagen no
-   aparece jamás. Con el recorte un nivel más abajo, el observado conserva su
-   área, entra en lectura y dispara el revelado. */
 html.js [data-revelar='lamina'] {
   opacity: 1;
   transform: none;

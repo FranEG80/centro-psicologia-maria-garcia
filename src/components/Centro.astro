@@ -5,18 +5,6 @@ import { centro, galeria } from '../data/contenido.js';
 
 const [fachada, ...interiores] = galeria;
 
-/* El bloque de estancias: canto contra canto, con un filete de un píxel entre
-   placas. Anchos 5/3/4 y 3/5/4 sobre doce columnas y dos alturas de hilera,
-   así que ninguna placa mide lo mismo que su vecina y no hay rejilla de
-   tarjetas iguales.
-
-   El foco es por fotografía. Son interiores reales tomados desde la puerta y
-   un recorte centrado corta lámparas arriba y suelo abajo, así que cada una
-   lleva el suyo.
-
-   La cascada es diagonal, no en orden de DOM: el retardo sale de columna más
-   fila, así que el taco entero se lee como un solo material que aparece desde
-   la esquina de entrada. */
 const reparto = [
   { trozo: 5, hilera: 'alta', col: 0, foco: '50% 45%' },
   { trozo: 3, hilera: 'alta', col: 1, foco: '50% 40%' },
@@ -27,10 +15,6 @@ const reparto = [
 ];
 const diagonal = (p, i) => (p.col + (p.hilera === 'baja' ? 1 : 0)) * 50 + (i === 0 ? 0 : 0);
 
-/* Ancho pedido por placa. El bloque pasa de 12 columnas a 6 en 900px y a 2 en
-   560px, y el trozo se reparte distinto en cada tramo, así que cada anchura
-   lleva su propio `sizes`. Los porcentajes van sobre el ancho útil de la
-   envoltura, no sobre el viewport entero. */
 const ANCHOS_PLACA = [320, 480, 640, 765];
 const SIZES_PLACA = {
   3: '(max-width: 560px) 46vw, (max-width: 900px) 31vw, (max-width: 84rem) 23vw, 336px',
@@ -50,7 +34,6 @@ const SIZES_PLACA = {
     </p>
   </div>
 
-  <!-- La fachada, a sangre: es la calle, y es por donde se entra. -->
   <figure class="centro__fachada" data-centro-fachada>
     <div class="centro__fachada-marco">
       <Image
@@ -68,11 +51,6 @@ const SIZES_PLACA = {
   </figure>
 
   <div class="envoltura">
-    <!--
-      Sin data-revelar-grupo: el escalonado de main.js va por orden de DOM y
-      aquí el orden es diagonal, así que el retardo se escribe desde el
-      servidor.
-    -->
     <div class="centro__bloque" data-centro-bloque>
       {
         interiores.map((f, i) => {
@@ -126,13 +104,10 @@ const SIZES_PLACA = {
     max-width: 52ch;
   }
 
-  /* -- La fachada -------------------------------------------------------- */
   .centro__fachada {
     margin: 0 0 var(--paso-3);
   }
 
-  /* El marco recorta, y la imagen se mueve dentro de él: así el zoom del
-     scroll no cambia el tamaño de la caja ni provoca reflow. */
   .centro__fachada-marco {
     overflow: hidden;
     height: clamp(14rem, 40vh, 26rem);
@@ -156,9 +131,6 @@ const SIZES_PLACA = {
     text-wrap: pretty;
   }
 
-  /* -- El bloque de estancias -------------------------------------------- */
-  /* Canto contra canto: un píxel entre placas, y aire solo entre hileras, el
-     justo para que el pie no toque la fotografía de abajo. */
   .centro__bloque {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -181,9 +153,6 @@ const SIZES_PLACA = {
     grid-column: span 5;
   }
 
-  /* Altura fija por hilera: es lo que permite que las placas queden a ras
-     aunque midan distinto de ancho. La segunda hilera es más baja, y eso da el
-     ritmo sin necesidad de huecos. */
   .centro__plato img {
     display: block;
     width: 100%;
@@ -217,9 +186,6 @@ const SIZES_PLACA = {
       grid-column: 1;
     }
 
-    /* Tres placas a ras en un móvil dejan cada fotografía en 90 px. Se pasa a
-       dos por hilera, manteniendo el canto contra canto y los anchos
-       desiguales, que es lo que da el ritmo. */
     .centro__bloque {
       grid-template-columns: repeat(6, 1fr);
     }
@@ -263,13 +229,6 @@ const SIZES_PLACA = {
 </style>
 
 <script>
-  /* El zoom de la fachada. Del 100 al 104% a lo largo de la sección, ligado al
-     scroll. Solo transform, dentro de un marco con overflow hidden: ni una
-     propiedad de layout se toca, así que no hay reflow en ningún fotograma.
-
-     Es el único movimiento de la sección aparte de la cascada de entrada, y
-     está aquí porque la fachada es la puerta: acercarse a ella mientras se lee
-     es lo que hace la sección. */
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
 

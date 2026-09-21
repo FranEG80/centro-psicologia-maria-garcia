@@ -9,20 +9,6 @@ import Ambientes from '../components/Ambientes.astro';
 import Profesional from '../components/Profesional.astro';
 import Pie from '../components/Pie.astro';
 
-/* La secuencia de láminas. La página atraviesa hoja tras hoja y el azul se
-   hace más denso al bajar, con el hormigón volviendo antes del cierre para
-   que la segunda mitad no sea un solo bloque azul:
-
-     hero        escena 3D, hormigón y vidrio          (intacta)
-     Prisma      petróleo pleno                        densidad 3
-     Áreas       hoja pálida con poro                  densidad 1
-     Ambientes   petróleo pleno                        densidad 3
-     Profesional hormigón                              respiro
-     Pie         petróleo y carbón                     densidad 5
-
-   Las dos versiones de la sección de áreas están construidas: AreasLaminas
-   son las filas regladas con relleno al pasar, AreasMuro son los rótulos
-   centrados sobre el haz. Se cambia una línea de import para ver la otra. */
 ---
 
 <Base
@@ -34,7 +20,6 @@ import Pie from '../components/Pie.astro';
     <Hero />
     <Prisma />
     <AreasLaminas />
-    <!-- <AreasMuro id="areas-muro" /> -->
     <Ambientes />
     <Profesional />
   </main>

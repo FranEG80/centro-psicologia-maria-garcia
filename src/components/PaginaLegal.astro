@@ -1,18 +1,6 @@
 ---
 import { avisoBorrador } from '../data/paginas.js';
 
-/* El armazón de las tres páginas legales.
-
-   Van sobre crema y a una sola columna estrecha, sin fotografía y sin campo de
-   petróleo: son documentos, no una sección más de la web. Lo único que
-   conservan del sistema es el pórtico, el filete de 1px y la escala
-   tipográfica; el resto sobra y estorba a la lectura.
-
-   `borrador` pinta el aviso de que el texto no es el definitivo. Se pasa a
-   `false` cuando la asesoría entregue el suyo. Publicar un texto legal
-   redactado a ojo como si fuera el bueno es peor que no tener la página.
-*/
-
 interface Props {
   borrador?: boolean;
   actualizado?: string;
@@ -53,11 +41,6 @@ const { borrador = true, actualizado } = Astro.props;
     padding-inline: var(--gutter);
   }
 
-  /* El aviso de borrador es un bloque de trabajo, no una pieza de diseño: se
-     ve, se entiende y se borra. Lino encajonado en el mismo filete de 1px que
-     el resto de la página —nada de barra de color al costado, que aquí no
-     existe ese recurso— y el rótulo en petróleo, que es lo que lo separa del
-     texto legal que tiene debajo. */
   .legal__borrador {
     max-width: var(--medida);
     margin-bottom: var(--paso-4);
@@ -79,10 +62,6 @@ const { borrador = true, actualizado } = Astro.props;
     color: var(--acento-fuerte);
   }
 
-  /* Estilo de prosa. Los selectores de tipo van aquí y no en cada página para
-     que los tres documentos se compongan exactamente igual, y `is:global`
-     porque el contenido entra por el slot desde otro archivo y el ámbito de
-     Astro no lo alcanza. */
   .legal__texto {
     max-width: var(--medida);
   }
@@ -125,7 +104,6 @@ const { borrador = true, actualizado } = Astro.props;
     font-size: var(--t-lista);
   }
 
-  /* Trazo de 1px en petróleo como marca de lista, igual que en toda la web. */
   .legal__texto :global(li) {
     position: relative;
     padding-left: 1.6em;
@@ -143,8 +121,6 @@ const { borrador = true, actualizado } = Astro.props;
     background: var(--acento);
   }
 
-  /* Los datos de identificación: una lista de definición con filetes, no una
-     tabla con bordes. */
   .legal__texto :global(dl) {
     margin-top: var(--paso-2);
     border-top: 1px solid var(--filete);
@@ -173,8 +149,6 @@ const { borrador = true, actualizado } = Astro.props;
     overflow-wrap: anywhere;
   }
 
-  /* Lo que todavía no consta se marca en el propio texto: así nadie publica
-     un aviso legal con un NIF a medias sin verlo. */
   .legal__texto :global(.pendiente) {
     padding: 0.1em 0.45em;
     background: color-mix(in srgb, var(--petroleo) 14%, transparent);

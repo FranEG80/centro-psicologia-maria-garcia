@@ -1,20 +1,4 @@
 ---
-/* El pórtico de las páginas interiores.
-
-   La portada abre con la escena de vidrio; las interiores no pueden, porque
-   un recorrido de cámara de tres pantallas delante de un listado clínico es
-   hacerle perder el tiempo a quien ya sabe a qué venía. Lo que sí conservan es
-   el material: hormigón con su poro, el canto encendido de 1px arriba y el
-   mismo bloque de versalita, titular y entradilla de toda la página.
-
-   Contraste medido (WCAG 2.1) sobre hormigón #F4EFE4:
-     carbón #1F2426   13.0:1  titular y entradilla
-     --tinta-2        4.9:1   versalita
-
-   `migas` es opcional y solo se pone donde hay un nivel por encima: las
-   páginas de área y las de espacio cuelgan de un índice, y sin la miga el
-   visitante que llega desde una búsqueda no tiene forma de subir.
-*/
 
 interface Miga {
   href: string;
@@ -65,8 +49,6 @@ const { marca, titulo, entradilla, cuerpo, migas } = Astro.props;
     position: relative;
     isolation: isolate;
     background: var(--hormigon);
-    /* El primer paso es mayor que el resto: la barra fija mide 64px y el
-       titular no puede nacer pegado a ella. */
     padding-block: var(--paso-5) var(--paso-4);
   }
 
@@ -81,7 +63,6 @@ const { marca, titulo, entradilla, cuerpo, migas } = Astro.props;
     pointer-events: none;
   }
 
-  /* -- Migas ------------------------------------------------------------- */
   .portico__migas ol {
     display: flex;
     flex-wrap: wrap;
@@ -90,8 +71,6 @@ const { marca, titulo, entradilla, cuerpo, migas } = Astro.props;
     margin-bottom: var(--paso-2);
   }
 
-  /* El separador se dibuja, no se escribe: una barra de texto entre enlaces
-     la anuncian los lectores de pantalla una por una. */
   .portico__migas li + li::before {
     content: '';
     display: inline-block;
@@ -116,13 +95,10 @@ const { marca, titulo, entradilla, cuerpo, migas } = Astro.props;
     }
   }
 
-  /* -- Bloque ------------------------------------------------------------ */
   .portico__marca {
     color: var(--tinta-2);
   }
 
-  /* El titular de página va en versalitas muy espaciadas, como el del primer
-     cuadro: es el mismo rango tipográfico, no un h1 genérico. */
   .portico__titulo {
     margin-top: var(--paso-1);
     font-size: var(--t-h1);

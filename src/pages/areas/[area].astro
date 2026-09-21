@@ -7,23 +7,6 @@ import Pie from '../../components/Pie.astro';
 import { centro, areas, materiales } from '../../data/contenido.js';
 import { detallesAreas, metaAreas, laminaRorschach } from '../../data/paginas.js';
 
-/* Una página por área. Seis rutas estáticas, generadas del mismo listado del
-   que salen la portada y el pie: si mañana cambia un punto clínico, cambia en
-   un sitio y en todas partes a la vez.
-
-   La secuencia de láminas de la portada se conserva a escala de página:
-
-     pórtico    hormigón con poro            respiro
-     listado    hoja pálida con el material  densidad 1
-     cierre     petróleo pleno               densidad 3
-     Pie        petróleo y carbón            densidad 5
-
-   Contraste medido (WCAG 2.1):
-     carbón #1F2426 sobre hoja #C3D8E2   10.6:1  listado
-     --tinta-hoja  sobre hoja             6.2:1  secundario
-     crema  #F8F4EB sobre petróleo        6.04:1 cierre
-     --campo-tinta-2 sobre petróleo       4.9:1  versalitas del cierre */
-
 export function getStaticPaths() {
   return areas.map((area) => ({
     params: { area: area.id },
@@ -34,8 +17,6 @@ export function getStaticPaths() {
 const { area } = Astro.props;
 const detalle = detallesAreas[area.id];
 
-/* Vecinas, para poder seguir sin volver al índice. El recorrido es circular
-   a propósito: la sexta área lleva a la primera en vez de a un callejón. */
 const i = areas.findIndex((a) => a.id === area.id);
 const anterior = areas[(i - 1 + areas.length) % areas.length];
 const siguiente = areas[(i + 1) % areas.length];
@@ -59,7 +40,6 @@ const siguiente = areas[(i + 1) % areas.length];
       ]}
     />
 
-    {/* ---- Listado clínico, sobre la hoja pálida ----------------------- */}
     <section class="listado" aria-labelledby="listado-titulo">
       <div class="envoltura listado__reticula" data-revelar-grupo>
         <div class="listado__texto">
@@ -100,7 +80,6 @@ const siguiente = areas[(i + 1) % areas.length];
       </div>
     </section>
 
-    {/* ---- Material de evaluación. Solo en neuropsicología ------------- */}
     {
       detalle.muestraMateriales && (
         <section class="material" aria-labelledby="material-titulo">
@@ -117,8 +96,6 @@ const siguiente = areas[(i + 1) % areas.length];
           </div>
 
           <ul class="material__tira" data-revelar-grupo>
-            {/* La lámina de Rorschach encabeza la tira: es la prueba que
-                cualquiera reconoce, y sirve de puerta de entrada al resto. */}
             <li class="pieza" data-revelar="lamina">
               <Image
                 src={laminaRorschach.src}
@@ -162,7 +139,6 @@ const siguiente = areas[(i + 1) % areas.length];
       )
     }
 
-    {/* ---- Cuándo pedir cita, sobre el campo de petróleo --------------- */}
     <section class="cuando" aria-labelledby="cuando-titulo">
       <hr class="canto" />
       <div class="envoltura cuando__caja">
@@ -173,7 +149,6 @@ const siguiente = areas[(i + 1) % areas.length];
       </div>
     </section>
 
-    {/* ---- Las áreas vecinas ------------------------------------------- */}
     <nav class="vecinas" aria-label="Otras áreas">
       <div class="envoltura vecinas__reticula">
         <a class="vecina vecina--atras" href={`/areas/${anterior.id}`}>
@@ -195,9 +170,6 @@ const siguiente = areas[(i + 1) % areas.length];
 </Base>
 
 <style>
-  /* ---- Listado --------------------------------------------------------- */
-  /* La hoja pálida del laminado, la misma que rellena las filas de la
-     portada: aquí está puesta, porque el área ya se eligió. */
   .listado {
     background: var(--vidrio-hoja);
     color: var(--carbon);
@@ -241,8 +213,6 @@ const siguiente = areas[(i + 1) % areas.length];
     background: var(--petroleo-800);
   }
 
-  /* La acreditación de mediación: no es un punto más del listado, es un
-     registro oficial, así que va separada por un filete y con su epígrafe. */
   .acreditacion {
     margin-top: var(--paso-3);
     padding-top: var(--paso-2);
@@ -277,7 +247,6 @@ const siguiente = areas[(i + 1) % areas.length];
     color: var(--tinta-2);
   }
 
-  /* ---- Material -------------------------------------------------------- */
   .material {
     background: var(--hormigon);
     position: relative;
@@ -345,7 +314,6 @@ const siguiente = areas[(i + 1) % areas.length];
     text-wrap: pretty;
   }
 
-  /* ---- Cuándo pedir cita ----------------------------------------------- */
   .cuando {
     background: var(--petroleo);
     color: var(--crema);
@@ -366,8 +334,6 @@ const siguiente = areas[(i + 1) % areas.length];
     text-wrap: balance;
   }
 
-  /* Un solo párrafo largo, en cuerpo grande: es la parte de la página que más
-     se lee y la que decide si alguien escribe o cierra la pestaña. */
   .cuando__texto {
     margin-top: var(--paso-3);
     font-size: var(--t-cuerpo-lg);
@@ -377,7 +343,6 @@ const siguiente = areas[(i + 1) % areas.length];
     text-wrap: pretty;
   }
 
-  /* ---- Vecinas --------------------------------------------------------- */
   .vecinas {
     background: var(--hormigon);
     border-top: 1px solid var(--canto);

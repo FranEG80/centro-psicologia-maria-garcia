@@ -4,23 +4,11 @@ import { Image } from 'astro:assets';
 import { areas } from '../data/contenido.js';
 import luz from '../assets/luz.webp';
 
-/* El catálogo de la instalación. Nada de vidrio de color aquí: la sección
-   abre con una banda de luz sobre hormigón, y a partir de ahí solo hay
-   tipografía, un filete de luz de 1px y aire. */
 const NAV = '64px';
 ---
 
 <section class="areas seccion" id="areas" data-areas>
   <div class="areas__banda" aria-hidden="true">
-    <!-- A sangre, así que el ancho pedido es siempre el del viewport. El alto
-         lo fija el CSS y `cover` recorta: la relación de aspecto del archivo
-         no interviene en el layout.
-
-         El techo es 1280 y no los 1536 del original a propósito. El grano del
-         hormigón dispara el peso justo en ese último escalón (32 KB frente a
-         62 KB) y aquí no compra nitidez: es luz difusa, va desenfocada, y
-         `cover` se come la mayor parte del encuadre. Un móvil a DPR 4 pediría
-         1440 px reales y se llevaría el archivo grande para nada. -->
     <Image
       src={luz}
       widths={[640, 960, 1280]}
@@ -79,17 +67,6 @@ const NAV = '64px';
 </section>
 
 <style define:vars={{ nav: NAV }}>
-  /* ------------------------------------------------------------------------
-     Tinte de sección. main.js escribe --areas-tinte de 0.03 a 0.105 sobre
-     [data-areas]. A 0.105 el compuesto es #E4E5E0 y el sumario en --tinta-2
-     se queda en 4.47:1, por debajo de AA. Así que el valor del script se usa
-     a la mitad: máximo 0.0525, compuesto #EDECE6.
-       carbón   #1F2426 sobre el compuesto   13.4:1   listas
-       --tinta-2 #6E665A sobre el compuesto   4.81:1  sumario
-       --acento #35617F sobre el compuesto    5.6:1   marca de lista
-     El tinte queda por detrás de todo el contenido y por detrás de la banda
-     de luz: ninguna fotografía de esta página lleva azul encima.
-     ---------------------------------------------------------------------- */
   .areas {
     --areas-tinte: 0.03;
   }
@@ -103,8 +80,6 @@ const NAV = '64px';
     pointer-events: none;
   }
 
-  /* Banda de luz a sangre. Es la única imagen de la sección: luz sobre
-     hormigón, sin objetos. Posicionada para quedar por delante del tinte. */
   .areas__banda {
     position: relative;
     margin-bottom: 0;
@@ -143,10 +118,6 @@ const NAV = '64px';
     max-width: 20ch;
   }
 
-  /* ------------------------------------------------------------------------
-     Índice. Tipografía y nada más: sin punto, sin número, sin fondo y sin
-     border-left. El único marcador es el filete de luz.
-     ---------------------------------------------------------------------- */
   .areas__indice {
     grid-column: 1 / span 3;
     grid-row: 2;
@@ -178,10 +149,6 @@ const NAV = '64px';
     position: relative;
   }
 
-  /* EL GESTO. Filete de luz de 1px bajo el nombre. Se dibuja de izquierda a
-     derecha cuando el área entra en lectura, y el del área anterior se retira
-     de derecha a izquierda: la misma propiedad, en sentido contrario. Solo
-     clip-path, 260ms. Nada más se mueve en esta sección. */
   .areas__etiqueta::after {
     content: '';
     position: absolute;
@@ -223,9 +190,6 @@ const NAV = '64px';
     transform: scale(0.97);
   }
 
-  /* ------------------------------------------------------------------------
-     Panel
-     ---------------------------------------------------------------------- */
   .areas__panel {
     grid-column: 5 / -1;
     grid-row: 2;
@@ -272,7 +236,6 @@ const NAV = '64px';
     overflow-wrap: break-word;
   }
 
-  /* Marca de lista: un trazo de 1px en petróleo. Ni punto, ni icono. */
   .areas__puntos li::before {
     content: '';
     position: absolute;
@@ -289,9 +252,6 @@ const NAV = '64px';
     }
   }
 
-  /* Por debajo de 900px el índice deja de ser columna fija y pasa a ser una
-     lista de enlaces de salto en dos columnas, delante del panel. Sin tira
-     con scroll horizontal. */
   @media (max-width: 900px) {
     .areas__portico,
     .areas__indice,

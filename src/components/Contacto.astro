@@ -10,8 +10,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
   data-contacto
   data-revelar-grupo
 >
-  {/* El canto abre la sección, a sangre, con la primitiva compartida. Es el
-      único corte de la página. */}
   <hr class="canto contacto__canto" />
 
   <div class="envoltura contacto__reticula">
@@ -76,16 +74,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
 </section>
 
 <style>
-  /* El cierre es el único bloque de color de toda la página: petróleo pleno,
-     de borde a borde del viewport, sin una sola imagen. Un campo a escala de
-     página aguanta solo, y aquí es además la señal de que la lectura ha
-     terminado y toca escribir o llamar.
-
-     Contraste medido sobre var(--campo) #2f5670:
-       var(--campo-tinta)   crema    7.12:1
-       var(--campo-tinta-2) #C8D7E1  5.31:1
-       var(--canto)         #CDEAF5  6.21:1  (foco)
-     Nada en carbón dentro de esta sección: carbón sobre petróleo es 2.01:1. */
   .contacto {
     position: relative;
     isolation: isolate;
@@ -102,16 +90,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
     pointer-events: none;
   }
 
-  /* EL GESTO. Un barrido de luz cruza el campo una vez, con la inclinación
-     del haz del primer cuadro: en la escena el haz va del punto (-21, 27) al
-     (2.2, -9) del mundo, es decir baja hacia la derecha a 57 grados de la
-     horizontal. Aquí es una banda vertical girada -33 grados, que da esos
-     mismos 57 grados, y se mueve solo con translate.
-
-     El núcleo de la banda es luz cálida al 6% en screen. Con ese tope, el
-     compuesto en el instante más claro es #3B6078: crema queda en 6.11:1 y
-     la tinta secundaria en 4.56:1, así que ni en el pico del barrido baja
-     nada de AA. */
   .contacto::before {
     content: '';
     position: absolute;
@@ -171,8 +149,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
     justify-items: start;
   }
 
-  /* Los dos llevan el ancestro porque pisan una medida y un color de las
-     primitivas .h2 y .plomo, que tienen la misma especificidad. */
   .contacto .contacto__titulo {
     color: var(--campo-tinta);
     max-width: 13ch;
@@ -187,9 +163,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
     margin-top: var(--paso-1);
   }
 
-  /* El relleno claro entra por clip-path (global). Al enfocar con teclado hay
-     que pasar la tinta a carbón sobre el relleno crema, o quedaría crema
-     sobre crema. Es el único carbón de la sección y va sobre crema: 14.29:1. */
   .contacto__boton:focus-visible {
     color: var(--carbon);
     border-color: var(--crema);
@@ -201,8 +174,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
     gap: var(--paso-3);
   }
 
-  /* Los tres datos van separados por un filete de 1px de la tinta secundaria
-     al 22%: no hay ninguna regla gris en la página. */
   .contacto__dato {
     display: grid;
     gap: 0.4rem;
@@ -218,10 +189,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
     color: var(--campo-tinta-2);
   }
 
-  /* Enlace grande. El subrayado se dibuja de izquierda a derecha con
-     clip-path: es el gesto de enlace de toda la página, aquí en tinta crema.
-     Alineado al pie para que el filete quede pegado al texto mientras el área
-     pulsable llega a 44px. */
   .contacto__grande {
     display: inline-flex;
     align-items: flex-end;
@@ -241,7 +208,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
     transition: transform var(--dur-pulsar) var(--ease-out);
   }
 
-  /* El teléfono es el dato mayor de la sección. */
   .contacto__grande--cifra {
     font-size: var(--t-declaracion);
     font-weight: 300;
@@ -283,8 +249,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
     transform: scale(0.97);
   }
 
-  /* El foco de la página es petróleo oscuro y sobre este campo no se vería:
-     dentro de la sección el contorno es luz de canto, 6.21:1. */
   .contacto a:focus-visible {
     outline-color: var(--canto);
   }
@@ -318,9 +282,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
 </style>
 
 <script>
-  /* El barrido ocurre una vez, cuando la sección entra en pantalla, y nunca
-     si el usuario ha pedido menos movimiento. IntersectionObserver, no un
-     listener de scroll, y se deja de observar en cuanto dispara. */
   const seccion = document.querySelector('[data-contacto]');
 
   if (
