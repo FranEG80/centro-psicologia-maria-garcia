@@ -88,7 +88,7 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
 
     <div class="nav__derecha">
       <!--
-        Aquí va el teléfono y no el WhatsApp. El rótulo "Escribir por WhatsApp"
+        Aquí va el teléfono y no el WhatsApp. El rótulo "WhatsApp"
         ya vive en el primer cuadro y en el cierre; una tercera aparición sería
         la misma intención repetida. Llamar es otra cosa, y en una consulta es
         el gesto de más valor.
@@ -122,7 +122,7 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
       }
     </ul>
     <a class="boton nav__panel-boton" href={centro.whatsapp} rel="noopener">
-      Escribir por WhatsApp
+      WhatsApp
     </a>
     <a class="nav__panel-tel" href={`tel:${centro.telefonoTel}`}>
       {centro.telefono}

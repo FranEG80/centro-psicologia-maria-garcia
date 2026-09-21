@@ -162,12 +162,12 @@ export const metaAreas = {
    Índice de áreas
    -------------------------------------------------------------------------- */
 export const indiceAreas = {
-  marca: 'Seis áreas',
+  marca: 'Áreas',
   titulo: 'Valoración e intervención',
   entradilla:
     'Valoración e intervención en psicología general, infantil y juvenil, familiar, jurídica y forense, y neuropsicología.',
   cuerpo:
-    'Seis áreas, un mismo modo de trabajar: primero se mira con calma y se pone nombre a lo que pasa; después se decide qué hacer.',
+    'Varias áreas, un mismo modo de trabajar: primero se mira con calma y se pone nombre a lo que pasa; después se decide qué hacer.',
 };
 
 /* --------------------------------------------------------------------------

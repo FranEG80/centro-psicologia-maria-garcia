@@ -7,7 +7,7 @@ const registros = [
   `Nº colegiada ${centro.credenciales[0].valor}`,
   `Mediadora familiar ${centro.credenciales[1].valor.replace('nº ', '')}`,
   `NICA ${centro.credenciales[2].valor}`,
-  `Desde ${centro.desde}`,
+  `Ofreciendo servicios desde ${centro.desde}`,
 ];
 ---
 
@@ -37,7 +37,7 @@ const registros = [
         Psicología · {centro.localidad}, {centro.provincia}
       </p>
 
-      <h1 class="hero__titulo">Lo mismo, visto<br />con luz suficiente</h1>
+      <h1 class="hero__titulo">Lo mismo, visto<br />con luz diferente</h1>
 
       <ul class="hero__areas" role="list">
         {areasHero.map((a) => <li>{a}</li>)}
@@ -45,7 +45,7 @@ const registros = [
 
       <div class="hero__acciones">
         <a class="boton boton--claro hero__boton" href={centro.whatsapp} rel="noopener">
-          Escribir por WhatsApp
+          WhatsApp
         </a>
         <a class="hero__telefono" href={`tel:${centro.telefonoTel}`}>
           {centro.telefono}
@@ -257,7 +257,8 @@ const registros = [
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.15rem 0.85rem;
-    font-size: var(--t-micro-2);
+    /* font-size: var(--t-micro-2); */
+    font-size: 1rem;
     font-weight: 450;
     letter-spacing: 0.14em;
     text-transform: uppercase;

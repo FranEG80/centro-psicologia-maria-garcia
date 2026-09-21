@@ -60,14 +60,14 @@ import { contacto } from '../data/paginas.js';
           <span class="via__relleno" aria-hidden="true"></span>
           <span class="caps via__marca">Teléfono</span>
           <span class="via__valor via__valor--numero">{centro.telefono}</span>
-          <span class="via__nota">El mismo número sirve para las dos cosas.</span>
+          <span class="via__nota">Si prefieres hablar por teléfono.</span>
         </a>
 
         <a class="via" href={`mailto:${centro.email}`} data-revelar>
           <span class="via__relleno" aria-hidden="true"></span>
           <span class="caps via__marca">Correo</span>
           <span class="via__valor via__valor--correo">{centro.email}</span>
-          <span class="via__nota">Para documentación y encargos por escrito.</span>
+          <span class="via__nota">Puedes escribirnos por email.</span>
         </a>
       </div>
 
@@ -76,9 +76,7 @@ import { contacto } from '../data/paginas.js';
           bloque en la ventana y lo saca de la retícula. */}
       <div class="envoltura" data-revelar>
         <p class="vias__aviso">
-          No hay formulario de contacto a propósito: contar por escrito en una
-          web por qué se pide cita es dar un dato de salud. Por WhatsApp o por
-          teléfono lo cuentas directamente a quien te va a atender.
+          Escoge la vía que te resulte más cómoda y cuéntame qué necesitas; estaré encantada de atenderte, resolver tus dudas y ayudarte a encontrar la información que buscas.
         </p>
       </div>
     </section>
@@ -99,8 +97,7 @@ import { contacto } from '../data/paginas.js';
           </address>
 
           <p class="donde__nota" data-revelar>
-            Fachada de granito negro con la rotulación del centro, en pleno
-            casco urbano de {centro.localidad}.
+            Una consulta privada para sentirte cómodo y atendido, a escasos minutos del centro urbano de {centro.localidad}.
           </p>
 
           <a
@@ -126,7 +123,7 @@ import { contacto } from '../data/paginas.js';
             decoding="async"
           />
           <figcaption class="caps caps--contenido donde__pie">
-            Así se ve desde la calle
+            Fachada del centro
           </figcaption>
         </figure>
       </div>

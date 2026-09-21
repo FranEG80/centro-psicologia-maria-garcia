@@ -23,7 +23,7 @@ import retrato from '../assets/retrato.webp';
 
 <Base
   titulo={`Sobre mí · ${centro.profesional}`}
-  descripcion={`${centro.profesional}, psicóloga sanitaria y mediadora familiar en ${centro.localidad} desde ${centro.desde}. Especialista en Neuropsicología y máster en Psicología Jurídica y Forense.`}
+  descripcion={`${centro.profesional}, psicóloga sanitaria y mediadora familiar en ${centro.localidad} ofreciendo servicios desde ${centro.desde}. Especialista en Neuropsicología y máster en Psicología Jurídica y Forense.`}
 >
   <Nav />
 
@@ -47,9 +47,15 @@ import retrato from '../assets/retrato.webp';
       <div class="envoltura quien__reticula" data-revelar-grupo>
         <figure class="quien__figura" data-revelar="lamina">
           <span class="quien__marco" aria-hidden="true"></span>
-          <Image
+          <!-- <Image
             src={retrato}
             widths={[420, 640, 860]}
+            sizes="(max-width: 900px) 100vw, 40vw"
+            alt={`${centro.profesional}, psicóloga sanitaria y mediadora familiar.`}
+            loading="eager"
+            decoding="async"
+          /> -->
+          <img
             sizes="(max-width: 900px) 100vw, 40vw"
             alt={`${centro.profesional}, psicóloga sanitaria y mediadora familiar.`}
             loading="eager"
@@ -114,7 +120,7 @@ import retrato from '../assets/retrato.webp';
           aprendizaje, mediar en una separación y elaborar un informe pericial.
         </p>
         <a class="boton boton--claro alcance__boton" href="/areas">
-          Ver las seis áreas
+          Ver las áreas
         </a>
       </div>
     </section>

@@ -37,8 +37,8 @@ export const centro = {
   coordenadas: { lat: 36.750956, lon: -3.5215472 },
   credenciales: [
     { etiqueta: 'Nº colegiada', valor: 'AO 05323' },
-    { etiqueta: 'Mediadora Familiar de la Junta de Andalucía', valor: 'nº 631' },
     { etiqueta: 'NICA', valor: '67672' },
+    { etiqueta: 'Mediadora Familiar de la Junta de Andalucía', valor: 'nº 631' },
   ],
 };
 
@@ -152,7 +152,7 @@ export const formacion = [
 ];
 
 export const trayectoria = [
-  'Psicóloga sanitaria y mediadora familiar con práctica profesional activa y continua en clínica privada desde 2005',
+  'Psicóloga sanitaria y mediadora familiar con práctica profesional activa y continua en clínica privada ofreciendo servicios desde 2005',
   'Psicóloga y mediadora familiar en distintas instituciones de la administración pública',
   'Ponente en jornadas, cursos formativos y talleres de psicología, como parte de la sensibilización, divulgación y prevención de la salud mental',
   'Intervención con personas con diversidad funcional y sus familias',
@@ -162,8 +162,8 @@ export const trayectoria = [
 export const galeria = [
   {
     src: centerExterior,
-    alt: 'Fachada del centro en granito negro, con la rotulación del Centro de Psicología María García.',
-    pie: 'Granito negro y rotulación, en C. Rafael Alberti',
+    alt: 'Una consulta privada para sentirte cómodo y atendido, a escasos minutos del centro urbano de Motril.',
+    pie: 'Fachada del centro psicológico María García en C. Rafael Alberti',
   },
   {
     src: reception,
