@@ -1,4 +1,3 @@
-
 import artInkblot from '../assets/photo/art-inkblot.webp';
 import childrenRoom from '../assets/photo/children-room.webp';
 import gameForms from '../assets/photo/game-forms.webp';
@@ -16,7 +15,7 @@ export const detallesAreas = {
     cierre: {
       epigrafe: 'Cuándo pedir cita',
       texto:
-        'Cuando algo lleva tiempo y no remite solo. Cuando el colegio comenta algo que en casa no se ve, o al revés. Cuando ha habido un cambio fuerte —una mudanza, una separación, una pérdida— y el niño no vuelve a su sitio. O cuando la duda es simplemente si esto es normal para su edad: esa pregunta también se responde en una valoración.',
+        'Cuando algo lleva tiempo y no remite solo. Cuando el colegio comenta algo que en casa no se ve, o al revés. Cuando ha habido un cambio importante (una mudanza, una separación, una pérdida) y el niño no vuelve a su sitio. O si la duda es si evoluciona de forma adecuada para su edad; esa pregunta también se responde en una valoración.',
     },
     imagen: {
       src: childrenRoom,
@@ -37,8 +36,7 @@ export const detallesAreas = {
     },
     imagen: {
       src: gameForms,
-      alt: 'Cubos de colores para la prueba de diseño de bloques, sobre una superficie clara.',
-      pie: 'Material de evaluación del centro',
+      alt: 'Cubos pequeños de colores rojo, blanco y azul dispuestos sobre una superficie clara.',
     },
   },
 
@@ -56,6 +54,10 @@ export const detallesAreas = {
       src: officeCalm,
       alt: 'El despacho de consulta desde detrás de la mesa, con la ventana y la luz natural al fondo.',
       pie: 'El despacho, con luz natural',
+    },
+    imagenAdicional: {
+      src: artInkblot,
+      alt: 'Lámina con manchas de tinta de colores sobre fondo claro.',
     },
   },
 
@@ -80,15 +82,16 @@ export const detallesAreas = {
     },
   },
 
-  forense: {
+  juridica: {
+    listadoTitulo: 'Acompañamiento y asesoramiento',
     entradilla:
-      'Un procedimiento judicial a veces necesita una valoración psicológica rigurosa y por escrito: un informe que sirva como prueba y que su autora pueda defender ante el juzgado.',
+      'Acompañamiento y asesoramiento psicológico en procesos judiciales y legales.',
     cuerpo:
-      'Es un trabajo distinto del clínico. No busca tratar: busca evaluar con método y responder con precisión a lo que se pregunta.',
+      'Aporta rigor científico e información objetiva para ayudar a jueces y tribunales en la toma de decisiones, mientras se atiende al bienestar emocional de quienes atraviesan el proceso.',
     cierre: {
-      epigrafe: 'Quién suele encargarlo',
+      epigrafe: 'A quién se dirige',
       texto:
-        'Particulares que necesitan un informe para su procedimiento, despachos de abogados, y profesionales que trabajan con menores o con víctimas y necesitan asesoramiento psicológico para llevar un caso.',
+        'A personas que necesitan orientación psicológica durante un proceso legal y a profesionales que requieren asesoramiento para desarrollar un caso.',
     },
     imagen: {
       src: reception,
@@ -97,21 +100,51 @@ export const detallesAreas = {
     },
   },
 
+  forense: {
+    listadoTitulo: 'Cómo se realiza la peritación',
+    entradilla:
+      'Elaboración de informes periciales basados en entrevistas clínicas y pruebas baremadas.',
+    cuerpo:
+      'Los resultados se recogen en dictámenes válidos para juicios, que pueden ratificarse ante el juzgado.',
+    ambitos: [
+      {
+        titulo: 'Ámbito penal',
+        texto: 'Evaluación de secuelas psicológicas en víctimas y de la credibilidad del testimonio.',
+      },
+      {
+        titulo: 'Ámbito civil y de familia',
+        texto: 'Informes sobre custodias de menores, regímenes de visitas, curatelas y capacidad civil.',
+      },
+      {
+        titulo: 'Ámbito laboral',
+        texto: 'Valoración del acoso psicológico, de las secuelas por accidente de trabajo y de la incapacidad laboral.',
+      },
+    ],
+    cierre: {
+      epigrafe: 'Cuándo solicitar un peritaje',
+      texto:
+        'Cuando un procedimiento requiere una valoración objetiva del daño psicológico, un informe sobre menores o una evaluación en el ámbito laboral.',
+    },
+    imagen: {
+      src: officeDarkwood,
+      alt: 'Despacho de consulta con mesa de madera oscura y dos butacas.',
+      pie: 'El despacho de consulta',
+    },
+  },
+
   neuropsicologia: {
     entradilla:
       'La memoria, la atención, el lenguaje y la capacidad de planificar se pueden medir. Y cuando algo falla —por la edad, por una lesión, por un trastorno del desarrollo— se puede saber exactamente qué falla y en qué grado.',
     cuerpo:
-      'A partir de ahí se diseña un programa de estimulación cognitiva ajustado a esa persona, no un cuaderno de ejercicios genérico.',
+      'A partir de ahí se diseña un programa de estimulación cognitiva ajustado a esa persona.',
     cierre: {
       epigrafe: 'Cuándo pedir cita',
       texto:
         'Cuando aparecen olvidos que empiezan a interferir en el día a día. Cuando un familiar mayor se desorienta o pierde el hilo con frecuencia. Tras una lesión cerebral, para saber qué funciones han quedado afectadas. O cuando hace falta una valoración cognitiva completa que oriente un diagnóstico.',
     },
-    muestraMateriales: true,
     imagen: {
       src: gameRings,
-      alt: 'Torre de Hanoi de madera con anillas de distintos tamaños.',
-      pie: 'Torre de Hanoi: planificación y control de impulsos',
+      alt: 'Estructura de madera con anillas de distintos tamaños y colores.',
     },
   },
 };
@@ -125,8 +158,10 @@ export const metaAreas = {
     'Ansiedad, estado de ánimo, duelo, conflictos y trastornos adaptativos. Psicología para adultos en Motril, Granada.',
   familia:
     'Terapia familiar y de pareja, separación y divorcio, y mediación familiar acreditada por la Junta de Andalucía, en Motril.',
+  juridica:
+    'Acompañamiento y asesoramiento psicológico en procesos judiciales y legales en Motril, Granada.',
   forense:
-    'Peritaje psicológico, informes forenses y ratificación en juzgados. Psicología jurídica y forense en Motril, Granada.',
+    'Peritajes psicológicos en los ámbitos penal, civil, familiar y laboral, con informes y ratificación en juzgados. Motril, Granada.',
   neuropsicologia:
     'Valoración neuropsicológica y programas de estimulación cognitiva para adultos, niños y adolescentes, en Motril.',
 };
@@ -135,7 +170,7 @@ export const indiceAreas = {
   marca: 'Áreas',
   titulo: 'Valoración e intervención',
   entradilla:
-    'Valoración e intervención en psicología general, infantil y juvenil, familiar, jurídica y forense, y neuropsicología.',
+    'Valoración e intervención en psicología general, infantil y juvenil, familiar, neuropsicología, jurídica y forense.',
   cuerpo:
     'Varias áreas, un mismo modo de trabajar: primero se mira con calma y se pone nombre a lo que pasa; después se decide qué hacer.',
 };
@@ -148,7 +183,7 @@ export const consulta = {
   espacio: {
     epigrafe: 'El espacio',
     parrafos: [
-      'El despacho sirve igual para una sesión individual, una de pareja o una con toda la familia sentada. Y la zona infantil es una sala aparte, con mesa baja, sillas pequeñas y pizarra, para que los niños trabajen a su altura y no a la del adulto.',
+      'Hay salas para la atención de adultos, parejas y familias, una sala juvenil y una zona infantil independiente, con mesa baja, sillas pequeñas y pizarra.',
       'Y una sala de espera con las titulaciones a la vista, que es donde deben estar.',
     ],
   },
@@ -159,21 +194,16 @@ export const sobreMi = {
   titulo: 'María García Molina',
   sumario: 'Psicóloga sanitaria y mediadora familiar. En Motril desde 2005.',
   entradilla:
-    'Práctica clínica continuada en Motril desde 2005, y una formación que ha ido en tres direcciones a la vez: la neuropsicología, el ámbito jurídico y forense, y la mediación familiar.',
+    'Trato directo de principio a fin, con implicación directa y atención terapéutica unificada.',
   cuerpo:
-    'Esa combinación es poco habitual y explica el alcance del centro: el mismo despacho puede valorar a un niño con dificultades de aprendizaje, mediar en una separación y elaborar un informe pericial.',
+    'La misma profesional te acompaña desde la primera entrevista de valoración hasta concluir la terapia, con un tratamiento adaptado a tus tiempos y necesidades.',
 };
 
 export const contacto = {
   marca: 'Contacto',
   titulo: 'Escríbeme y lo vemos',
   entradilla:
-    'Lo más rápido es WhatsApp. Si prefieres llamar, el mismo número funciona para las dos cosas.',
-};
-
-export const laminaRorschach = {
-  src: artInkblot,
-  alt: 'Lámina simétrica de manchas de tinta, del tipo empleado en la prueba de Rorschach.',
+    'Llama o escríbeme y lo vemos. Te contestaré en un máximo de 24 horas.',
 };
 
 export const avisoBorrador =
