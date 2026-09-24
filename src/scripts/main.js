@@ -70,7 +70,7 @@ function marcaPortada() {
 
   const medir = () => {
     plan = null;
-    monograma.style.transform = '';
+    limpiarLogo();
     if (prefijo) prefijo.style.transform = '';
     nucleo.style.transform = '';
 
@@ -110,6 +110,8 @@ function marcaPortada() {
         dx: eje - (rLogo.left + rLogo.width / 2),
         dy: arriba + altoLogo / 2 - (rLogo.top + rLogo.height / 2),
         escala: escalaLogo,
+        ancho: rLogo.width,
+        alto: rLogo.height,
       },
       nombre: {
         dx: eje - (rNombre.left + rNombre.width / 2),
@@ -149,13 +151,36 @@ function marcaPortada() {
     ).toFixed(2)}px, 0) scale(${(1 + (paso.escala - 1) * k).toFixed(4)})`;
   };
 
+  // Safari rasteriza el SVG a su tamaño de caja y escala el bitmap: se
+  // redimensiona de verdad y el margen negativo conserva su hueco de 26px.
+  const escribirLogo = (paso, k) => {
+    const s = 1 + (paso.escala - 1) * k;
+    const extraAncho = paso.ancho * (s - 1);
+    const extraAlto = paso.alto * (s - 1);
+    monograma.style.maxWidth = 'none';
+    monograma.style.width = `${(paso.ancho * s).toFixed(2)}px`;
+    monograma.style.margin = `${(-extraAlto / 2).toFixed(2)}px ${(
+      -extraAncho / 2
+    ).toFixed(2)}px`;
+    monograma.style.transform = `translate3d(${(paso.dx * k).toFixed(2)}px, ${(
+      paso.dy * k
+    ).toFixed(2)}px, 0)`;
+  };
+
+  const limpiarLogo = () => {
+    monograma.style.transform = '';
+    monograma.style.width = '';
+    monograma.style.maxWidth = '';
+    monograma.style.margin = '';
+  };
+
   const aplicar = (p) => {
     if (!plan) medir();
     marca.classList.add('esta-medida');
     if (!plan) return;
     const q = suavizar(gsap.utils.clamp(0, 1, p / ATERRIZAJE));
     const k = 1 - q;
-    escribir(monograma, plan.logo, k);
+    escribirLogo(plan.logo, k);
     if (prefijo && plan.prefijo) escribir(prefijo, plan.prefijo, k);
     escribir(nucleo, plan.nombre, k);
     marca.classList.toggle('ha-aterrizado', q >= 1);
@@ -163,7 +188,7 @@ function marcaPortada() {
 
   const rematar = () => {
     plan = null;
-    monograma.style.transform = '';
+    limpiarLogo();
     if (prefijo) prefijo.style.transform = '';
     nucleo.style.transform = '';
     marca.classList.add('esta-medida', 'ha-aterrizado');
