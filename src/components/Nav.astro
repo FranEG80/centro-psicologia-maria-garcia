@@ -1,5 +1,6 @@
 ---
 import { centro, navegacion } from '../data/contenido.js';
+import Boton from './Boton.astro';
 
 const nucleo = 'María García';
 const prefijo = centro.nombre.endsWith(nucleo)
@@ -90,9 +91,9 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
         ))
       }
     </ul>
-    <a class="boton nav__panel-boton" href={centro.whatsapp} rel="noopener">
+    <Boton class="nav__panel-boton" href={centro.whatsapp} rel="noopener">
       WhatsApp
-    </a>
+    </Boton>
     <a class="nav__panel-tel" href={`tel:${centro.telefonoTel}`}>
       {centro.telefono}
     </a>

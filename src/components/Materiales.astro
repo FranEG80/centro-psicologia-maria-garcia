@@ -36,10 +36,6 @@ const SIZES_PIEZA = '(max-width: 900px) 92vw, (max-width: 84rem) 40vw, 540px';
           decoding="async"
           data-revelar="lamina"
         />
-        <figcaption data-revelar-grupo>
-          <h3 class="h3" data-revelar>{rorschach.titulo}</h3>
-          <p data-revelar>{rorschach.nota}</p>
-        </figcaption>
       </figure>
 
       <figure class="materiales__pieza materiales__pieza--bloques">
@@ -52,10 +48,6 @@ const SIZES_PIEZA = '(max-width: 900px) 92vw, (max-width: 84rem) 40vw, 540px';
           decoding="async"
           data-revelar="lamina"
         />
-        <figcaption data-revelar-grupo>
-          <h3 class="h3" data-revelar>{bloques.titulo}</h3>
-          <p data-revelar>{bloques.nota}</p>
-        </figcaption>
       </figure>
 
       <figure class="materiales__pieza materiales__pieza--hanoi">
@@ -68,10 +60,6 @@ const SIZES_PIEZA = '(max-width: 900px) 92vw, (max-width: 84rem) 40vw, 540px';
           decoding="async"
           data-revelar="lamina"
         />
-        <figcaption data-revelar-grupo>
-          <h3 class="h3" data-revelar>{hanoi.titulo}</h3>
-          <p data-revelar>{hanoi.nota}</p>
-        </figcaption>
       </figure>
     </div>
   </div>
@@ -145,18 +133,6 @@ const SIZES_PIEZA = '(max-width: 900px) 92vw, (max-width: 84rem) 40vw, 540px';
   }
   .materiales__pieza--hanoi img {
     aspect-ratio: 14 / 11;
-  }
-
-  .materiales__pieza figcaption {
-    display: grid;
-    gap: 0.4rem;
-    max-width: 44ch;
-  }
-
-  .materiales__pieza figcaption p {
-    font-size: var(--t-lista);
-    color: var(--tinta-2);
-    text-wrap: pretty;
   }
 
   :global(html.js) .materiales__pieza--mancha img[data-revelar='lamina'] {

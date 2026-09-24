@@ -1,20 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import { ambientes } from '../data/contenido.js';
+import Boton from './Boton.astro';
 
 ---
 
 <section class="ambientes" aria-labelledby="ambientes-titulo">
   <div class="envoltura ambientes__cabecera">
-    <p class="caps ambientes__marca">El centro</p>
     <h2 class="h2 ambientes__titulo" id="ambientes-titulo">
-      Dos espacios, según quién entre por la puerta
+      Espacios adaptados según la edad y las necesidades del paciente
     </h2>
-    <p class="plomo ambientes__plomo">
-      No es lo mismo sentarse a hablar que sentarse a jugar. Por eso hay un
-      despacho de consulta y un rincón preparado para trabajar a la altura de
-      un niño.
-    </p>
   </div>
 
   <ul class="ambientes__tira" data-revelar-grupo>
@@ -22,25 +17,29 @@ import { ambientes } from '../data/contenido.js';
       ambientes.map((a) => (
         <li class="ambiente" data-revelar="lamina">
           <figure class="ambiente__figura">
-            <Image
-              src={a.src}
-              widths={[480, 720, 960]}
-              sizes="(max-width: 860px) 100vw, 50vw"
-              alt={a.alt}
-              loading="eager"
-              fetchpriority="low"
-              decoding="async"
-            />
+            {a.src ? (
+              <Image
+                src={a.src}
+                widths={[480, 720, 960]}
+                sizes="(max-width: 860px) 100vw, 33vw"
+                alt={a.alt}
+                loading="eager"
+                fetchpriority="low"
+                decoding="async"
+              />
+            ) : (
+              <div class="ambiente__pendiente" aria-hidden="true"></div>
+            )}
           </figure>
 
           <div class="ambiente__texto">
             <p class="caps caps--contenido ambiente__marca">{a.sumario}</p>
             <h3 class="h3 ambiente__nombre">{a.titulo}</h3>
             <p class="ambiente__cuerpo">{a.texto}</p>
-            <a class="boton boton--claro ambiente__boton" href={a.href}>
+            <Boton class="ambiente__boton" variant="claro" href={a.href}>
               Conocer el espacio
               <span class="solo-lectores"> de {a.titulo.toLowerCase()}</span>
-            </a>
+            </Boton>
           </div>
         </li>
       ))
@@ -76,7 +75,7 @@ import { ambientes } from '../data/contenido.js';
 
   .ambientes__tira {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .ambiente {
@@ -93,11 +92,19 @@ import { ambientes } from '../data/contenido.js';
     overflow: hidden;
   }
 
-  .ambiente__figura img {
+  .ambiente__figura img,
+  .ambiente__pendiente {
     width: 100%;
     height: clamp(17rem, 34vw, 29rem);
+  }
+
+  .ambiente__figura img {
     object-fit: cover;
     transition: transform 500ms var(--ease-out);
+  }
+
+  .ambiente__pendiente {
+    background: var(--lino);
   }
 
   @media (hover: hover) and (pointer: fine) {

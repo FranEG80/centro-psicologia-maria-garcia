@@ -1,5 +1,6 @@
 ---
 import { areasHero, centro } from '../data/contenido.js';
+import Boton from './Boton.astro';
 
 const registros = [
   `Nº colegiada ${centro.credenciales[0].valor}`,
@@ -29,9 +30,9 @@ const registros = [
       </ul>
 
       <div class="hero__acciones">
-        <a class="boton boton--claro hero__boton" href={centro.whatsapp} rel="noopener">
+        <Boton class="hero__boton" variant="claro" href={centro.whatsapp} rel="noopener">
           WhatsApp
-        </a>
+        </Boton>
         <a class="hero__telefono" href={`tel:${centro.telefonoTel}`}>
           {centro.telefono}
         </a>

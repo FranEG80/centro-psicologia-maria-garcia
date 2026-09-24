@@ -1,5 +1,6 @@
 ---
 import { centro } from '../data/contenido.js';
+import Boton from './Boton.astro';
 
 const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${centro.provincia}`;
 ---
@@ -21,8 +22,9 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
         por dónde empezar.
       </p>
 
-      <a
-        class="boton boton--claro contacto__boton"
+      <Boton
+        class="contacto__boton"
+        variant="claro"
         href={centro.whatsapp}
         target="_blank"
         rel="noopener noreferrer"
@@ -30,7 +32,7 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
       >
         WhatsApp
         <span class="solo-lectores">(se abre en una pestaña nueva)</span>
-      </a>
+      </Boton>
     </div>
 
     <dl class="contacto__datos">
@@ -161,11 +163,6 @@ const direccion = `${centro.direccion}, ${centro.cp} ${centro.localidad}, ${cent
 
   .contacto__boton {
     margin-top: var(--paso-1);
-  }
-
-  .contacto__boton:focus-visible {
-    color: var(--carbon);
-    border-color: var(--crema);
   }
 
   .contacto__datos {

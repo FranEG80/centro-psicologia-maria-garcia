@@ -4,8 +4,8 @@ import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Portico from '../../components/Portico.astro';
 import Pie from '../../components/Pie.astro';
-import { centro, areas, materiales } from '../../data/contenido.js';
-import { detallesAreas, metaAreas, laminaRorschach } from '../../data/paginas.js';
+import { centro, areas } from '../../data/contenido.js';
+import { detallesAreas, metaAreas } from '../../data/paginas.js';
 
 export function getStaticPaths() {
   return areas.map((area) => ({
@@ -44,7 +44,7 @@ const siguiente = areas[(i + 1) % areas.length];
       <div class="envoltura listado__reticula" data-revelar-grupo>
         <div class="listado__texto">
           <h2 class="caps listado__epigrafe" id="listado-titulo" data-revelar>
-            Se valora e interviene en
+            {detalle.listadoTitulo ?? 'Se valora e interviene en'}
           </h2>
 
           <ul class="listado__puntos" data-revelar>
@@ -63,78 +63,59 @@ const siguiente = areas[(i + 1) % areas.length];
           }
         </div>
 
-        <figure class="listado__figura" data-revelar="lamina">
-          <Image
-            src={detalle.imagen.src}
-            widths={[420, 640, 860]}
-            sizes="(max-width: 900px) 100vw, 40vw"
-            alt={detalle.imagen.alt}
-            loading="eager"
-            fetchpriority="low"
-            decoding="async"
-          />
-          <figcaption class="caps caps--contenido listado__pie">
-            {detalle.imagen.pie}
-          </figcaption>
-        </figure>
+        <div class="listado__galeria">
+          <figure class="listado__figura" data-revelar="lamina">
+            <Image
+              src={detalle.imagen.src}
+              widths={[420, 640, 860]}
+              sizes="(max-width: 900px) 100vw, 40vw"
+              alt={detalle.imagen.alt}
+              loading="eager"
+              fetchpriority="low"
+              decoding="async"
+            />
+            {
+              detalle.imagen.pie && (
+                <figcaption class="caps caps--contenido listado__pie">
+                  {detalle.imagen.pie}
+                </figcaption>
+              )
+            }
+          </figure>
+          {
+            detalle.imagenAdicional && (
+              <figure class="listado__figura listado__figura--adicional" data-revelar="lamina">
+                <Image
+                  src={detalle.imagenAdicional.src}
+                  widths={[420, 640, 860]}
+                  sizes="(max-width: 900px) 100vw, 40vw"
+                  alt={detalle.imagenAdicional.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+            )
+          }
+        </div>
       </div>
     </section>
 
     {
-      detalle.muestraMateriales && (
-        <section class="material" aria-labelledby="material-titulo">
-          <div class="envoltura material__cabecera">
-            <p class="caps material__marca">Material de evaluación</p>
-            <h2 class="h2 material__titulo" id="material-titulo">
-              Lo que hay encima de la mesa
+      detalle.ambitos && (
+        <section class="ambitos" aria-labelledby="ambitos-titulo">
+          <div class="envoltura">
+            <h2 class="h2 ambitos__titulo" id="ambitos-titulo">
+              Áreas de actuación
             </h2>
-            <p class="plomo material__plomo">
-              Instrumentos reales del centro. Cada uno mide algo concreto, y
-              por eso una valoración no es una conversación larga: es una
-              prueba con resultado.
-            </p>
-          </div>
-
-          <ul class="material__tira" data-revelar-grupo>
-            <li class="pieza" data-revelar="lamina">
-              <Image
-                src={laminaRorschach.src}
-                widths={[380, 560, 760]}
-                sizes="(max-width: 860px) 100vw, 33vw"
-                alt={laminaRorschach.alt}
-                loading="eager"
-                fetchpriority="low"
-                decoding="async"
-              />
-              <div class="pieza__texto">
-                <h3 class="h3 pieza__nombre">Lámina de Rorschach</h3>
-                <p class="pieza__nota">
-                  Prueba proyectiva. La misma mancha, y lo que cada persona ve
-                  en ella.
-                </p>
-              </div>
-            </li>
-
-            {materiales
-              .filter((m) => m.titulo !== 'Lámina de Rorschach')
-              .map((m) => (
-                <li class="pieza" data-revelar="lamina">
-                  <Image
-                    src={m.src}
-                    widths={[380, 560, 760]}
-                    sizes="(max-width: 860px) 100vw, 33vw"
-                    alt={m.alt}
-                    loading="eager"
-                    fetchpriority="low"
-                    decoding="async"
-                  />
-                  <div class="pieza__texto">
-                    <h3 class="h3 pieza__nombre">{m.titulo}</h3>
-                    <p class="pieza__nota">{m.nota}</p>
-                  </div>
-                </li>
+            <div class="ambitos__lista" data-revelar-grupo>
+              {detalle.ambitos.map((ambito) => (
+                <article class="ambitos__item" data-revelar>
+                  <h3 class="h3 ambitos__nombre">{ambito.titulo}</h3>
+                  <p class="ambitos__texto">{ambito.texto}</p>
+                </article>
               ))}
-          </ul>
+            </div>
+          </div>
         </section>
       )
     }
@@ -230,6 +211,11 @@ const siguiente = areas[(i + 1) % areas.length];
     font-variant-numeric: tabular-nums;
   }
 
+  .listado__galeria {
+    display: grid;
+    gap: var(--paso-2);
+  }
+
   .listado__figura {
     background: var(--crema);
     padding: var(--paso-2);
@@ -242,74 +228,43 @@ const siguiente = areas[(i + 1) % areas.length];
     object-fit: cover;
   }
 
+  .listado__figura--adicional img {
+    height: clamp(10rem, 20vw, 16rem);
+  }
+
   .listado__pie {
     margin-top: var(--paso-2);
     color: var(--tinta-2);
   }
 
-  .material {
+  .ambitos {
     background: var(--hormigon);
-    position: relative;
-    isolation: isolate;
     border-top: 1px solid var(--canto);
-    padding-block: var(--paso-5) 0;
+    padding-block: var(--paso-5);
   }
 
-  .material::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background-image: url('/media/tex/wall.webp');
-    background-size: 900px auto;
-    opacity: 0.4;
-    mix-blend-mode: multiply;
-    pointer-events: none;
-  }
-
-  .material__cabecera {
+  .ambitos__titulo {
     margin-bottom: var(--paso-4);
   }
 
-  .material__marca {
-    color: var(--tinta-2);
-  }
-
-  .material__titulo {
-    margin-top: var(--paso-1);
-  }
-
-  .material__plomo {
-    margin-top: var(--paso-2);
-  }
-
-  .material__tira {
+  .ambitos__lista {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     border-top: 1px solid var(--filete);
   }
 
-  .pieza {
-    padding-bottom: var(--paso-5);
+  .ambitos__item {
+    padding: var(--paso-3) var(--paso-3) 0 0;
   }
 
-  .pieza + .pieza {
+  .ambitos__item + .ambitos__item {
     border-left: 1px solid var(--filete);
+    padding-left: var(--paso-3);
   }
 
-  .pieza img {
-    width: 100%;
-    height: clamp(12rem, 22vw, 18rem);
-    object-fit: cover;
-  }
-
-  .pieza__texto {
-    padding: var(--paso-2) var(--paso-2) 0;
-  }
-
-  .pieza__nota {
-    margin-top: var(--paso-1);
-    font-size: var(--t-micro-2);
+  .ambitos__texto {
+    margin-top: var(--paso-2);
+    max-width: 36ch;
     color: var(--tinta-2);
     text-wrap: pretty;
   }
@@ -399,14 +354,15 @@ const siguiente = areas[(i + 1) % areas.length];
   }
 
   @media (max-width: 860px) {
-    .material__tira {
+    .ambitos__lista {
       grid-template-columns: minmax(0, 1fr);
     }
-    .pieza {
-      padding-bottom: var(--paso-3);
-    }
-    .pieza + .pieza {
+    .ambitos__item,
+    .ambitos__item + .ambitos__item {
       border-left: 0;
+      padding: var(--paso-3) 0;
+    }
+    .ambitos__item + .ambitos__item {
       border-top: 1px solid var(--filete);
     }
   }

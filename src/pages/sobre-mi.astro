@@ -1,18 +1,17 @@
 ---
-import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Portico from '../components/Portico.astro';
 import Pie from '../components/Pie.astro';
-import { centro, formacion, trayectoria } from '../data/contenido.js';
+import Boton from '../components/Boton.astro';
+import { centro, formacion, perfil, trayectoria } from '../data/contenido.js';
 import { sobreMi } from '../data/paginas.js';
-import retrato from '../assets/retrato.webp';
 
 ---
 
 <Base
   titulo={`Sobre mí · ${centro.profesional}`}
-  descripcion={`${centro.profesional}, psicóloga sanitaria y mediadora familiar en ${centro.localidad} ofreciendo servicios desde ${centro.desde}. Especialista en Neuropsicología y máster en Psicología Jurídica y Forense.`}
+  descripcion={`${centro.profesional}, psicóloga sanitaria y mediadora familiar en ${centro.localidad} desde ${centro.desde}. Especialista en Neuropsicología y Psicología Jurídica y Forense.`}
 >
   <Nav />
 
@@ -31,30 +30,22 @@ import retrato from '../assets/retrato.webp';
       <h2 class="solo-lectores" id="quien-titulo">Quién atiende</h2>
 
       <div class="envoltura quien__reticula" data-revelar-grupo>
-        <figure class="quien__figura" data-revelar="lamina">
-          <span class="quien__marco" aria-hidden="true"></span>
-          <!-- <Image
-            src={retrato}
-            widths={[420, 640, 860]}
-            sizes="(max-width: 900px) 100vw, 40vw"
-            alt={`${centro.profesional}, psicóloga sanitaria y mediadora familiar.`}
-            loading="eager"
-            decoding="async"
-          /> -->
-          <img
-            sizes="(max-width: 900px) 100vw, 40vw"
-            alt={`${centro.profesional}, psicóloga sanitaria y mediadora familiar.`}
-            loading="eager"
-            decoding="async"
-          />
-        </figure>
+        <div class="quien__figura" data-revelar="lamina" aria-hidden="true">
+          <div class="quien__hueco">
+            <span class="quien__marco"></span>
+          </div>
+        </div>
 
         <div class="quien__texto">
           <p class="plomo quien__plomo" data-revelar>
-            Quien valora es quien interviene y quien acompaña. Sin derivaciones
-            internas ni cambio de profesional a mitad del proceso.
+            {perfil.trayectoria}
           </p>
-
+          <p class="quien__detalle" data-revelar>
+            La misma profesional realiza la valoración, interviene y acompaña
+            durante todo el proceso.
+          </p>
+        </div>
+        <div class="quien__datos">
           <dl class="registros" data-revelar>
             {
               centro.credenciales.map((c) => (
@@ -65,6 +56,17 @@ import retrato from '../assets/retrato.webp';
               ))
             }
           </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="compromiso" aria-labelledby="compromiso-titulo">
+      <div class="envoltura compromiso__reticula" data-revelar-grupo>
+        <h2 class="h2 compromiso__titulo" id="compromiso-titulo" data-revelar>
+          Mi compromiso contigo
+        </h2>
+        <div class="compromiso__texto" data-revelar>
+          {perfil.compromiso.map((parrafo) => <p>{parrafo}</p>)}
         </div>
       </div>
     </section>
@@ -103,9 +105,9 @@ import retrato from '../assets/retrato.webp';
           eso el mismo despacho puede valorar a un niño con dificultades de
           aprendizaje, mediar en una separación y elaborar un informe pericial.
         </p>
-        <a class="boton boton--claro alcance__boton" href="/areas">
+        <Boton class="alcance__boton" variant="claro" href="/areas">
           Ver las áreas
-        </a>
+        </Boton>
       </div>
     </section>
   </main>
@@ -130,30 +132,32 @@ import retrato from '../assets/retrato.webp';
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     gap: var(--paso-4);
-    align-items: center;
+    align-items: start;
   }
 
   .quien__figura {
-    position: relative;
+    grid-row: span 2;
     background: var(--crema);
     padding: var(--paso-2);
     box-shadow: var(--sombra-baja);
   }
 
-  .quien__marco {
-    position: absolute;
-    inset: calc(var(--paso-2) / 2);
-    border: 1px solid var(--filete);
-    pointer-events: none;
-    z-index: 1;
+  .quien__hueco {
+    position: relative;
+    height: clamp(20rem, 42vw, 34rem);
+    background: color-mix(in srgb, var(--topo) 12%, transparent);
   }
 
-  .quien__figura img {
-    width: 100%;
-    height: clamp(20rem, 42vw, 34rem);
-    object-fit: cover;
-    object-position: center 28%;
-    filter: grayscale(1) contrast(1.04);
+  .quien__marco {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--filete);
+    pointer-events: none;
+  }
+
+  .quien__detalle {
+    margin-top: var(--paso-2);
+    max-width: 42ch;
   }
 
   .registros {
@@ -182,6 +186,33 @@ import retrato from '../assets/retrato.webp';
   .registro__valor {
     font-size: var(--t-lista);
     font-variant-numeric: tabular-nums;
+  }
+
+  .compromiso {
+    padding-block: var(--paso-5);
+    border-top: 1px solid var(--canto);
+    background: var(--vidrio-hoja);
+    color: var(--carbon);
+  }
+
+  .compromiso__reticula {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--paso-4);
+    align-items: start;
+  }
+
+  .compromiso__texto {
+    padding-left: var(--paso-2);
+    border-left: 1px solid var(--acento);
+    font-size: var(--t-cuerpo-lg);
+    font-weight: 300;
+    line-height: 1.5;
+    max-width: 49ch;
+  }
+
+  .compromiso__texto p + p {
+    margin-top: var(--paso-2);
   }
 
   .curriculo {
@@ -276,10 +307,14 @@ import retrato from '../assets/retrato.webp';
 
   @media (max-width: 900px) {
     .quien__reticula,
+    .compromiso__reticula,
     .curriculo__reticula {
       grid-template-columns: minmax(0, 1fr);
     }
-    .quien__figura img {
+    .quien__figura {
+      grid-row: auto;
+    }
+    .quien__hueco {
       height: clamp(16rem, 58vw, 24rem);
     }
   }

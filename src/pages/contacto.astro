@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Portico from '../components/Portico.astro';
 import Pie from '../components/Pie.astro';
+import Boton from '../components/Boton.astro';
 import { centro, galeria } from '../data/contenido.js';
 import { contacto } from '../data/paginas.js';
 
@@ -83,8 +84,9 @@ import { contacto } from '../data/paginas.js';
             Una consulta privada para sentirte cómodo y atendido, a escasos minutos del centro urbano de {centro.localidad}.
           </p>
 
-          <a
-            class="boton boton--claro donde__boton"
+          <Boton
+            class="donde__boton"
+            variant="claro"
             href={centro.mapa}
             rel="noopener noreferrer"
             target="_blank"
@@ -92,7 +94,7 @@ import { contacto } from '../data/paginas.js';
           >
             Abrir en Google Maps
             <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
-          </a>
+          </Boton>
         </div>
 
         <figure class="donde__figura" data-revelar="lamina">

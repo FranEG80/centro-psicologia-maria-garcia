@@ -3,14 +3,13 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Pie from '../../components/Pie.astro';
+import Boton from '../../components/Boton.astro';
 import { centro, ambientes } from '../../data/contenido.js';
 
 import officeDarkwood from '../../assets/photo/office-darkwood.webp';
 import officeCalm from '../../assets/photo/office-calm.webp';
 import officeFamily from '../../assets/photo/office-family.webp';
 import childrenRoom from '../../assets/photo/children-room.webp';
-import gameForms from '../../assets/photo/game-forms.webp';
-import gameRings from '../../assets/photo/game-rings.webp';
 import reception from '../../assets/photo/reception.webp';
 import waitingRoom from '../../assets/photo/waiting-room.webp';
 
@@ -22,7 +21,7 @@ export function getStaticPaths() {
         titulo: 'Los despachos',
         sumario: 'Adultos, pareja y familia',
         entradilla:
-          'Dos salas de consulta tranquilas, sin ruido de fondo ni gente pasando por delante. Un sitio para sentarse a hablar con calma, ya vengas solo, en pareja o con toda la familia.',
+          'Salas de consulta tranquilas para hablar con calma, ya vengas solo, en pareja o con tu familia.',
         vistas: [officeDarkwood, officeCalm, officeFamily],
         alts: [
           'Despacho de consulta del Centro de Psicología María García.',
@@ -32,7 +31,7 @@ export function getStaticPaths() {
         notas: [
           'Sesiones individuales, de pareja y de familia.',
           'Valoración, intervención y seguimiento en el mismo espacio y con la misma persona.',
-          'Dos despachos, así que una cita no depende de que el otro esté libre.',
+          'Distintas salas de trabajo según las necesidades de cada paciente.',
         ],
       },
     },
@@ -40,39 +39,40 @@ export function getStaticPaths() {
       params: { espacio: 'infantil' },
       props: {
         titulo: 'La zona infantil',
-        sumario: 'Niños y adolescentes',
+        sumario: 'Un espacio para niños',
         entradilla:
           'Una sala aparte, a su altura y con su propio material. Aquí se trabaja jugando, porque jugando es como un niño cuenta lo que le pasa.',
         vistas: [childrenRoom],
         alts: ['Zona infantil del centro, con mesa baja, sillas pequeñas y pizarra.'],
         notas: [
-          'Valoración e intervención con niños y adolescentes.',
+          'Valoración e intervención con niños.',
           'Pruebas y material de trabajo pensados para su edad.',
-          'Un espacio suyo, separado de la consulta de adultos.',
+          'La sala juvenil es un espacio distinto de esta zona infantil.',
         ],
-        material: [
-          {
-            src: gameForms,
-            alt: 'Cubos de diseño de bloques, en rojo y blanco, sobre una superficie clara.',
-            titulo: 'Diseño de bloques',
-            nota: 'Organización visoespacial y razonamiento no verbal.',
-          },
-          {
-            src: gameRings,
-            alt: 'Torre de Hanoi de madera con anillas de colores.',
-            titulo: 'Torre de Hanoi',
-            nota: 'Planificación, memoria de trabajo y control de impulsos.',
-          },
+      },
+    },
+    {
+      params: { espacio: 'juvenil' },
+      props: {
+        titulo: 'La sala juvenil',
+        sumario: 'Un espacio para adolescentes',
+        entradilla:
+          'La atención a adolescentes cuenta con una sala de trabajo propia, distinta de la zona infantil.',
+        vistas: [],
+        alts: [],
+        notas: [
+          'Una sala independiente de la zona infantil.',
+          'El espacio se adapta a la edad y a las necesidades de cada paciente.',
         ],
       },
     },
   ];
 }
 
-const { titulo, sumario, entradilla, vistas, alts, notas, material } =
+const { titulo, sumario, entradilla, vistas, alts, notas } =
   Astro.props;
 
-const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
+const otros = ambientes.filter((a) => !a.href.endsWith(Astro.params.espacio));
 ---
 
 <Base titulo={`${titulo} · ${centro.nombre}`} descripcion={entradilla}>
@@ -86,13 +86,13 @@ const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
         <p class="plomo espacio__entradilla" data-revelar>{entradilla}</p>
       </header>
 
-      <div
-        class="espacio__tira"
-        data-revelar-grupo
-        style={`--vistas:${vistas.length}`}
-      >
-        {
-          vistas.map((v, i) => (
+      {vistas.length ? (
+        <div
+          class="espacio__tira"
+          data-revelar-grupo
+          style={`--vistas:${vistas.length}`}
+        >
+          {vistas.map((v, i) => (
             <figure class="vista" data-revelar="lamina">
               <Image
                 src={v}
@@ -103,9 +103,11 @@ const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
                 decoding="async"
               />
             </figure>
-          ))
-        }
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div class="espacio__marco" aria-hidden="true"></div>
+      )}
 
       <div class="envoltura espacio__cierre">
         <ul class="espacio__notas" data-revelar-grupo>
@@ -147,40 +149,14 @@ const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
             </figure>
           </div>
 
-          <a class="boton espacio__boton" href={otro.href}>
-            Ver {otro.titulo.toLowerCase()}
-          </a>
+          {otros.map((otro) => (
+            <Boton class="espacio__boton" href={otro.href}>
+              Ver {otro.titulo.toLowerCase()}
+            </Boton>
+          ))}
         </aside>
       </div>
 
-      {
-        material && (
-          <div class="envoltura espacio__material" data-revelar-grupo>
-            <h2 class="caps espacio__epigrafe" data-revelar>
-              Con qué se trabaja
-            </h2>
-            <ul class="material">
-              {material.map((m) => (
-                <li class="material__pieza" data-revelar>
-                  <figure class="material__figura">
-                    <Image
-                      src={m.src}
-                      widths={[320, 480, 640]}
-                      sizes="(max-width: 720px) 100vw, 40vw"
-                      alt={m.alt}
-                      loading="eager"
-                      fetchpriority="low"
-                      decoding="async"
-                    />
-                  </figure>
-                  <h3 class="h3 material__titulo">{m.titulo}</h3>
-                  <p class="material__nota">{m.nota}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
     </article>
   </main>
 
@@ -245,6 +221,12 @@ const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
     object-fit: cover;
   }
 
+  .espacio__marco {
+    width: 100%;
+    height: clamp(18rem, 34vw, 30rem);
+    background: var(--lino);
+  }
+
   .espacio__cierre {
     margin-top: var(--paso-5);
     display: grid;
@@ -303,36 +285,6 @@ const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
     margin-top: var(--paso-3);
   }
 
-  .espacio__material {
-    margin-top: var(--paso-5);
-    padding-top: var(--paso-4);
-    border-top: 1px solid var(--filete);
-  }
-
-  .material {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--paso-4);
-  }
-
-  .material__figura {
-    overflow: hidden;
-    margin-bottom: var(--paso-2);
-  }
-
-  .material__figura img {
-    width: 100%;
-    height: clamp(12rem, 22vw, 18rem);
-    object-fit: cover;
-  }
-
-  .material__nota {
-    margin-top: var(--paso-1);
-    color: var(--tinta-2);
-    max-width: 40ch;
-    text-wrap: pretty;
-  }
-
   @media (max-width: 860px) {
     .espacio__tira {
       grid-template-columns: minmax(0, 1fr);
@@ -346,9 +298,4 @@ const otro = ambientes.find((a) => !a.href.endsWith(Astro.params.espacio));
     }
   }
 
-  @media (max-width: 720px) {
-    .material {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
 </style>

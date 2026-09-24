@@ -1,4 +1,6 @@
 ---
+import Boton from './Boton.astro';
+
 ---
 
 <aside
@@ -15,16 +17,12 @@
   </p>
 
   <div class="aviso__acciones">
-    <button class="aviso__boton" type="button" data-consentimiento-rechazar>
+    <Boton class="aviso__boton" data-consentimiento-rechazar>
       Rechazar
-    </button>
-    <button
-      class="aviso__boton aviso__boton--si"
-      type="button"
-      data-consentimiento-aceptar
-    >
+    </Boton>
+    <Boton class="aviso__boton aviso__boton--si" data-consentimiento-aceptar>
       Aceptar
-    </button>
+    </Boton>
   </div>
 </aside>
 

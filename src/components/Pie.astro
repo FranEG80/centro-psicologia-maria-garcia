@@ -1,5 +1,6 @@
 ---
 import { centro, navegacion, areas } from '../data/contenido.js';
+import Boton from './Boton.astro';
 
 const anio = new Date().getFullYear();
 
@@ -15,20 +16,20 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
       <div class="cierre__texto">
         <h2 class="cierre__titulo" id="cierre-titulo">Escríbeme y lo vemos</h2>
         <p class="cierre__plomo">
-          Lo más rápido es WhatsApp. Si prefieres llamar, el mismo número sirve
-          para las dos cosas.
+          Llama o escríbeme y lo vemos. Te contestaré en un máximo de 24 horas.
         </p>
       </div>
 
       <div class="cierre__acciones">
-        <a
-          class="boton boton--claro cierre__boton"
+        <Boton
+          class="cierre__boton"
+          variant="claro"
           href={centro.whatsapp}
           rel="noopener noreferrer"
           target="_blank"
         >
           WhatsApp
-        </a>
+        </Boton>
         <a class="cierre__tel" href={`tel:${centro.telefonoTel}`}>
           {centro.telefono}
         </a>
@@ -161,9 +162,9 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
                 Este mapa lo sirve Google y deja cookies suyas en tu navegador.
                 No se carga hasta que lo autorices.
               </p>
-              <button class="boton boton--claro marco__boton" type="button" data-tercero-cargar>
+              <Boton class="marco__boton" variant="claro" data-tercero-cargar>
                 Cargar el mapa
-              </button>
+              </Boton>
               <a
                 class="pie__enlace marco__alterna"
                 href={centro.mapa}
