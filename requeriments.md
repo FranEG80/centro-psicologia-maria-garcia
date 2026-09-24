@@ -27,6 +27,7 @@ Problemas escolares
 * Altas Capacidades Intelectuales
 * Programas individualizados de estimulación cognitiva.
 * Estrés y ansiedad derivados de las demandas académicas.
+* Dificultades escolares relacionadas con TEA
 Valoración e intervención con adultos:
 * Trastornos de Ansiedad y Estrés.
 * Trastornos del estado de ánimo.

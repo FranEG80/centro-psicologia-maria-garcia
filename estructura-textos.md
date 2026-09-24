@@ -120,7 +120,7 @@ Debajo, las seis con su texto y su listado, cada una enlazando a su página.
 
 **Cuándo pedir cita**
 
-> Cuando algo lleva tiempo y no remite solo. Cuando el colegio comenta algo que en casa no se ve, o al revés. Cuando ha habido un cambio fuerte —una mudanza, una separación, una pérdida— y el niño no vuelve a su sitio. O cuando la duda es simplemente si esto es normal para su edad: esa pregunta también se responde en una valoración.
+> Cuando algo lleva tiempo y no remite solo. Cuando el colegio comenta algo que en casa no se ve, o al revés. Cuando ha habido un cambio importante (una mudanza, una separación, una pérdida) y el niño no vuelve a su sitio. O si la duda es si evoluciona de forma adecuada para su edad; esa pregunta también se responde en una valoración.
 
 ---
 
@@ -140,6 +140,7 @@ Debajo, las seis con su texto y su listado, cada una enlazando a su página.
 - Altas capacidades intelectuales
 - Programas individualizados de estimulación cognitiva
 - Estrés y ansiedad derivados de las demandas académicas
+- Dificultades escolares relacionadas con TEA
 
 **Cuándo pedir cita**
 
@@ -232,7 +233,7 @@ Esto va también aquí, además de en el pie de la web: es una acreditación ofi
 >
 > La memoria, la atención, el lenguaje y la capacidad de planificar se pueden medir. Y cuando algo falla —por la edad, por una lesión, por un trastorno del desarrollo— se puede saber exactamente qué falla y en qué grado.
 >
-> A partir de ahí se diseña un programa de estimulación cognitiva ajustado a esa persona, no un cuaderno de ejercicios genérico.
+> A partir de ahí se diseña un programa de estimulación cognitiva ajustado a esa persona.
 
 **Se valora e interviene en**
 
@@ -245,13 +246,9 @@ Esto va también aquí, además de en el pie de la web: es una acreditación ofi
 
 > Cuando aparecen olvidos que empiezan a interferir en el día a día. Cuando un familiar mayor se desorienta o pierde el hilo con frecuencia. Tras una lesión cerebral, para saber qué funciones han quedado afectadas. O cuando hace falta una valoración cognitiva completa que oriente un diagnóstico.
 
-**Material de evaluación**
-
-Con las fotos del material del centro:
-
-- **Lámina de Rorschach.** Prueba proyectiva. La misma mancha, y lo que cada persona ve en ella.
-- **Diseño de bloques.** Organización visoespacial y razonamiento no verbal.
-- **Torre de Hanoi.** Planificación, memoria de trabajo y control de impulsos.
+Las fotografías del material se usan como ilustraciones en las páginas de Adultos,
+Problemas escolares y Neuropsicología, sin un apartado propio ni fichas de cada
+prueba.
 
 ---
 

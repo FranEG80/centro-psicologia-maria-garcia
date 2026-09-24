@@ -125,7 +125,7 @@ sesiones online, si el centro es accesible, política de cancelación, idiomas.
 
 Real y utilizable:
 
-- Retrato de María: `src/assets/retrato.webp`.
+- El retrato de María está pendiente. Los marcos de Home y «Sobre mí» permanecen vacíos hasta que se aporte la fotografía real.
 - Fotografía del centro (7 imágenes): fachada de granito, recepción con
   titulaciones, sala de espera, los tres despachos, rincón infantil.
   `src/assets/photo/`.
