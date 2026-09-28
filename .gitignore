@@ -9,3 +9,5 @@ node_modules
 # variables de entorno locales
 .env
 .env.local
+
+**/.DS_Store
