@@ -27,14 +27,10 @@ import { indiceAreas } from '../../data/paginas.js';
 
       <ul class="envoltura indice__reticula" data-revelar-grupo>
         {
-          areas.map((a, i) => (
+          areas.map((a) => (
             <li class="area" data-revelar>
               <a class="area__hoja" href={`/areas/${a.id}`}>
                 <span class="area__relleno" aria-hidden="true" />
-
-                <span class="area__numero" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
 
                 <span class="area__cuerpo">
                   <span class="caps caps--contenido area__sumario">
@@ -113,8 +109,7 @@ import { indiceAreas } from '../../data/paginas.js';
     position: relative;
     isolation: isolate;
     display: grid;
-    grid-template-columns: 3.5rem minmax(0, 1fr);
-    gap: var(--paso-2);
+    grid-template-columns: minmax(0, 1fr);
     height: 100%;
     padding: var(--paso-3) var(--paso-3) var(--paso-3) var(--paso-2);
     color: var(--carbon);
@@ -138,16 +133,6 @@ import { indiceAreas } from '../../data/paginas.js';
     background: var(--canto);
     opacity: 0;
     transition: opacity var(--dur-ui) ease;
-  }
-
-  .area__numero {
-    font-size: var(--t-micro);
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    line-height: 2.2;
-    color: var(--tinta-2);
-    font-variant-numeric: tabular-nums;
-    transition: color var(--dur-ui) ease;
   }
 
   .area__cuerpo {
@@ -242,7 +227,6 @@ import { indiceAreas } from '../../data/paginas.js';
     .area__hoja:hover .area__relleno::after {
       opacity: 1;
     }
-    .area__hoja:hover .area__numero,
     .area__hoja:hover .area__sumario,
     .area__hoja:hover .area__nota,
     .area__hoja:hover .area__punto {
@@ -263,7 +247,6 @@ import { indiceAreas } from '../../data/paginas.js';
   .area__hoja:focus-visible .area__relleno::after {
     opacity: 1;
   }
-  .area__hoja:focus-visible .area__numero,
   .area__hoja:focus-visible .area__sumario,
   .area__hoja:focus-visible .area__nota,
   .area__hoja:focus-visible .area__punto {
@@ -285,7 +268,6 @@ import { indiceAreas } from '../../data/paginas.js';
 
   @media (max-width: 560px) {
     .area__hoja {
-      grid-template-columns: 2.5rem minmax(0, 1fr);
       padding-inline: 0;
     }
   }
@@ -293,7 +275,6 @@ import { indiceAreas } from '../../data/paginas.js';
   @media (prefers-reduced-motion: reduce) {
     .area__relleno,
     .area__relleno::after,
-    .area__numero,
     .area__sumario,
     .area__nota,
     .area__punto,
