@@ -87,7 +87,7 @@ export const areas = [
   {
     id: 'familia',
     titulo: 'Familia y pareja',
-    sumario: 'Valoración, intervención y mediación',
+    sumario: 'Valoración, intervención, mediación',
     puntos: [
       'Disfunciones familiares',
       'Terapia de pareja',
@@ -145,7 +145,7 @@ export const formacion = [
   'Licenciada en Psicología. Universidad de Granada',
   'Especialista en Neuropsicología',
   'Especializada en Psicología Jurídica y Forense',
-  'Mediadora Familiar de la Junta de Andalucía, nº de registro 631',
+  'Experta en Mediación Familiar inscrita en el registro oficial de la Junta de Andalucía, nº de registro 631',
 ];
 
 export const perfil = {
@@ -178,7 +178,7 @@ export const galeria = [
   {
     src: waitingRoom,
     alt: 'Sala de espera con asientos y las titulaciones enmarcadas.',
-    pie: 'Sala de espera, con las titulaciones a la vista',
+    pie: 'Sala de espera',
   },
   {
     src: officeDarkwood,
