@@ -87,7 +87,7 @@ export const areas = [
   {
     id: 'familia',
     titulo: 'Familia y pareja',
-    sumario: 'Valoración, intervención y mediación',
+    sumario: 'Valoración, intervención, mediación',
     puntos: [
       'Disfunciones familiares',
       'Terapia de pareja',
@@ -145,7 +145,7 @@ export const formacion = [
   'Licenciada en Psicología. Universidad de Granada',
   'Especialista en Neuropsicología',
   'Especializada en Psicología Jurídica y Forense',
-  'Mediadora Familiar de la Junta de Andalucía, nº de registro 631',
+  'Experta en Mediación Familiar inscrita en el registro oficial de la Junta de Andalucía, nº de registro 631',
 ];
 
 export const perfil = {
@@ -172,33 +172,33 @@ export const galeria = [
   },
   {
     src: reception,
-    alt: 'Recepción del centro, con mostrador claro y las titulaciones enmarcadas en la pared.',
+    alt: 'Recepción del centro, un primer recibimiento tranquilo y discreto.',
     pie: 'Recepción, con sala de espera',
   },
   {
     src: waitingRoom,
-    alt: 'Sala de espera con asientos y las titulaciones enmarcadas.',
-    pie: 'Sala de espera, con las titulaciones a la vista',
+    alt: 'Sala de espera tranquila, con privacidad.',
+    pie: 'Sala de espera',
   },
   {
     src: officeDarkwood,
-    alt: 'El despacho de consulta, con mesa de madera oscura y dos butacas.',
-    pie: 'El despacho, mesa de madera oscura y dos butacas',
+    alt: 'El despacho de consulta, un espacio reservado para hablar con calma.',
+    pie: 'El despacho, un espacio reservado para hablar con calma',
   },
   {
     src: officeCalm,
-    alt: 'El mismo despacho desde detrás de la mesa, con la ventana al fondo.',
-    pie: 'El mismo despacho, desde el otro lado de la mesa',
+    alt: 'El mismo despacho, luminoso y tranquilo.',
+    pie: 'Luz natural y tranquilidad durante la sesión',
   },
   {
     src: officeFamily,
-    alt: 'Segundo despacho del centro, de tonos claros.',
+    alt: 'Segundo despacho del centro, preparado para sesiones de pareja y familia.',
     pie: 'El segundo despacho',
   },
   {
     src: childrenRoom,
-    alt: 'Rincón de trabajo de la zona infantil, con mesa baja, sillas pequeñas y pizarra.',
-    pie: 'Su rincón de trabajo: mesa baja, sillas pequeñas y pizarra',
+    alt: 'Zona infantil del centro, un espacio propio pensado para los niños.',
+    pie: 'Un espacio propio, pensado para que se sientan a gusto',
   },
 ];
 
@@ -226,7 +226,7 @@ export const navegacion = [
 
 export const prisma = {
   texto:
-    'Mirar lo mismo a través de otro cristal no cambia lo que pasó. Cambia lo que puedes hacer con ello.',
+    'Mirar tu realidad a través de otro cristal no cambia lo que pasó. Cambia lo que puedes hacer con ello.',
   autor: null,
 };
 
@@ -238,7 +238,7 @@ export const ambientes = [
     texto:
       'Distintas salas para la atención individual, de pareja y de familia.',
     src: officeDarkwood,
-    alt: 'Despacho de consulta con mesa de madera oscura y dos butacas.',
+    alt: 'Despacho de consulta, privado y tranquilo.',
     href: '/instalaciones/adultos',
   },
   {
@@ -246,18 +246,18 @@ export const ambientes = [
     titulo: 'Zona infantil',
     sumario: 'Infancia',
     texto:
-      'Una sala propia, con mobiliario y material a la altura de los niños.',
+      'Una sala propia, cómoda y segura, pensada para que los niños se sientan a gusto.',
     src: childrenRoom,
-    alt: 'Rincón infantil con mesa baja, sillas pequeñas y pizarra.',
+    alt: 'Zona infantil del centro, un espacio propio para los niños.',
     href: '/instalaciones/infantil',
   },
   {
     id: 'juvenil',
     titulo: 'Sala juvenil',
     sumario: 'Adolescencia',
-    texto: 'Un espacio de trabajo distinto de la zona infantil.',
-    src: null,
-    alt: '',
+    texto: 'Una sala propia para adolescentes, tranquila y reservada, donde hablar con confianza.',
+    src: officeCalm,
+    alt: 'Despacho del centro, luminoso y tranquilo, para la atención a adolescentes.',
     href: '/instalaciones/juvenil',
   },
 ];

@@ -16,14 +16,11 @@ const { id = 'areas' } = Astro.props;
 
   <ul class="laminas__filas" data-revelar-grupo>
     {
-      areas.map((a, i) => (
+      areas.map((a) => (
         <li class="laminas__fila" data-revelar>
           <a class="hoja" href={`/areas/${a.id}`}>
             <span class="hoja__relleno" aria-hidden="true" />
             <span class="hoja__linea">
-              <span class="hoja__numero" aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
               <span class="hoja__nombre">{a.titulo}</span>
               {/* <span class="hoja__nota">{resumenAreas[a.id] ?? a.sumario}</span> */}
               <span class="hoja__flecha" aria-hidden="true">
@@ -97,7 +94,7 @@ const { id = 'areas' } = Astro.props;
 
   .hoja__linea {
     display: grid;
-    grid-template-columns: 5.5rem minmax(0, 29.5rem) minmax(0, 1fr) 3rem;
+    grid-template-columns: minmax(0, 1fr) 3rem;
     align-items: center;
     gap: var(--paso-2);
     width: 100%;
@@ -124,15 +121,6 @@ const { id = 'areas' } = Astro.props;
     background: var(--canto);
     opacity: 0;
     transition: opacity var(--dur-ui) ease;
-  }
-
-  .hoja__numero {
-    font-size: var(--t-micro);
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    color: var(--tinta-2);
-    font-variant-numeric: tabular-nums;
-    transition: color var(--dur-ui) ease;
   }
 
   .hoja__nombre {
@@ -168,7 +156,6 @@ const { id = 'areas' } = Astro.props;
     .hoja:hover .hoja__relleno::after {
       opacity: 1;
     }
-    .hoja:hover .hoja__numero,
     .hoja:hover .hoja__nota {
       color: var(--tinta-hoja);
     }
@@ -188,7 +175,6 @@ const { id = 'areas' } = Astro.props;
   .hoja:focus-visible .hoja__relleno::after {
     opacity: 1;
   }
-  .hoja:focus-visible .hoja__numero,
   .hoja:focus-visible .hoja__nota {
     color: var(--tinta-hoja);
   }
@@ -200,18 +186,18 @@ const { id = 'areas' } = Astro.props;
 
   @media (max-width: 1100px) {
     .hoja__linea {
-      grid-template-columns: 4rem minmax(0, 1fr) 2.5rem;
+      grid-template-columns: minmax(0, 1fr) 2.5rem;
       row-gap: var(--paso-1);
       padding-block: var(--paso-2);
     }
     .hoja__nota {
-      grid-column: 2 / 3;
+      grid-column: 1 / 2;
     }
   }
 
   @media (max-width: 560px) {
     .hoja__linea {
-      grid-template-columns: 3.25rem minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
       min-height: 5.5rem;
     }
     .hoja__flecha {
@@ -226,7 +212,6 @@ const { id = 'areas' } = Astro.props;
     .hoja,
     .hoja__relleno,
     .hoja__relleno::after,
-    .hoja__numero,
     .hoja__nota,
     .hoja__flecha {
       transition-duration: 1ms;

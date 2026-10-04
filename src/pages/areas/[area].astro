@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import Foto from '../../components/Foto.astro';
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Portico from '../../components/Portico.astro';
@@ -38,8 +38,8 @@ const siguiente = areas[(i + 1) % areas.length];
         { href: '/', texto: 'Inicio' },
         { href: '/areas', texto: 'Áreas' },
       ]}
+      image={detalle.imagenAdicional}
     />
-
     <section class="listado" aria-labelledby="listado-titulo">
       <div class="envoltura listado__reticula" data-revelar-grupo>
         <div class="listado__texto">
@@ -63,19 +63,19 @@ const siguiente = areas[(i + 1) % areas.length];
           }
         </div>
 
-        <div class="listado__galeria">
+        <div class:list={['listado__galeria', { 'listado__galeria--solapada': detalle.imagenComplementaria }]}>
           <figure class="listado__figura" data-revelar="lamina">
-            <Image
+            <Foto
               src={detalle.imagen.src}
               widths={[420, 640, 860]}
-              sizes="(max-width: 900px) 100vw, 40vw"
+              sizes={detalle.imagenComplementaria ? '(max-width: 900px) 75vw, 32vw' : '(max-width: 900px) 100vw, 40vw'}
               alt={detalle.imagen.alt}
               loading="eager"
               fetchpriority="low"
               decoding="async"
             />
             {
-              detalle.imagen.pie && (
+              detalle.imagen.pie && !detalle.imagenComplementaria && (
                 <figcaption class="caps caps--contenido listado__pie">
                   {detalle.imagen.pie}
                 </figcaption>
@@ -83,19 +83,24 @@ const siguiente = areas[(i + 1) % areas.length];
             }
           </figure>
           {
-            detalle.imagenAdicional && (
+            detalle.imagenComplementaria && (
               <figure class="listado__figura listado__figura--adicional" data-revelar="lamina">
-                <Image
-                  src={detalle.imagenAdicional.src}
+                <Foto
+                  src={detalle.imagenComplementaria.src}
                   widths={[420, 640, 860]}
-                  sizes="(max-width: 900px) 100vw, 40vw"
-                  alt={detalle.imagenAdicional.alt}
+                  sizes="(max-width: 900px) 55vw, 24vw"
+                  alt={detalle.imagenComplementaria.alt}
                   loading="lazy"
                   decoding="async"
                 />
               </figure>
             )
           }
+          {detalle.imagenComplementaria && detalle.imagen.pie && (
+            <p class="caps caps--contenido listado__pie listado__pie--conjunto">
+              {detalle.imagen.pie}
+            </p>
+          )}
         </div>
       </div>
     </section>
@@ -230,6 +235,37 @@ const siguiente = areas[(i + 1) % areas.length];
 
   .listado__figura--adicional img {
     height: clamp(10rem, 20vw, 16rem);
+  }
+
+  .listado__galeria--solapada {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: repeat(10, minmax(0, 1fr)) auto;
+    gap: 0;
+    aspect-ratio: 1 / 1.05;
+    isolation: isolate;
+  }
+
+  .listado__galeria--solapada .listado__figura {
+    grid-column: 1 / 10;
+    grid-row: 1 / 9;
+    min-height: 0;
+    padding: var(--paso-1);
+  }
+
+  .listado__galeria--solapada .listado__figura--adicional {
+    grid-column: 6 / 13;
+    grid-row: 5 / 11;
+    z-index: 1;
+  }
+
+  .listado__galeria--solapada .listado__figura img {
+    height: 100%;
+    object-position: center 60%;
+  }
+
+  .listado__pie--conjunto {
+    grid-column: 1 / -1;
+    grid-row: 11;
   }
 
   .listado__pie {

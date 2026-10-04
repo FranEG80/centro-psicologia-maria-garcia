@@ -1,0 +1,35 @@
+---
+import { getImage, type LocalImageProps } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { originalesPorWebp } from '../data/fallbacks-fotos.js';
+
+type Props = Omit<LocalImageProps, 'src'> & { src: ImageMetadata };
+
+const props = Astro.props;
+const original = originalesPorWebp.get(props.src.src) ?? props.src;
+
+// Keep the existing WebP as the source for its responsive variants.
+// Generate the JPEG branch independently from the saved original.
+const [webp, jpeg] = await Promise.all([
+  getImage({ ...props, format: 'webp' }),
+  getImage({ ...props, src: original, format: 'jpeg' }),
+]);
+
+const webpSrcset = props.densities || !props.widths
+  ? [webp.src, webp.srcSet.attribute].filter(Boolean).join(', ')
+  : webp.srcSet.attribute;
+const pictureAttributes = Object.fromEntries(
+  Object.entries(props).filter(([name]) => name.startsWith('data-astro-cid')),
+);
+const { class: className, ...attributes } = jpeg.attributes;
+---
+
+<picture {...pictureAttributes}>
+  <source srcset={webpSrcset} type="image/webp" sizes={props.sizes} />
+  <img
+    src={jpeg.src}
+    {...attributes}
+    srcset={jpeg.srcSet.attribute || undefined}
+    class={className}
+  />
+</picture>

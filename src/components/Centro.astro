@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import Foto from './Foto.astro';
 
 import { centro, galeria } from '../data/contenido.js';
 
@@ -37,7 +37,7 @@ const SIZES_PLACA = {
 
   <figure class="centro__fachada" data-centro-fachada>
     <div class="centro__fachada-marco">
-      <Image
+      <Foto
         src={fachada.src}
         widths={[640, 960, 1280, 1360]}
         sizes="100vw"
@@ -62,7 +62,7 @@ const SIZES_PLACA = {
               data-trozo={p.trozo}
               data-hilera={p.hilera}
             >
-              <Image
+              <Foto
                 src={f.src}
                 widths={ANCHOS_PLACA}
                 sizes={SIZES_PLACA[p.trozo]}

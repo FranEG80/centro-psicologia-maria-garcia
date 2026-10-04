@@ -29,7 +29,7 @@ Esto ya está hecho y no cambia:
 
 > **PSICOLOGÍA · MOTRIL, GRANADA**
 >
-> **Lo mismo, visto con luz suficiente**
+> **Tu realidad, vista con luz suficiente**
 >
 > General · Infantil y juvenil · Mediación familiar · Neuropsicología · Jurídica y forense
 
@@ -58,7 +58,7 @@ Cada una lleva a su página:
 
 > **Un despacho y una zona infantil**
 >
-> Recepción, sala de espera, el despacho de consulta y una zona infantil aparte, en C. Rafael Alberti, 3, Motril. La zona infantil tiene mesa baja, sillas pequeñas, pizarra y el material a mano.
+> Recepción, sala de espera, el despacho de consulta y una zona infantil aparte, en C. Rafael Alberti, 3, Motril. Espacios tranquilos y reservados, pensados para que cada persona se sienta cómoda y con total privacidad.
 >
 > Una sala aparte para los niños, porque no es lo mismo sentarse a hablar que sentarse a jugar.
 
@@ -101,7 +101,7 @@ Debajo, las seis con su texto y su listado, cada una enlazando a su página.
 > **Infancia y adolescencia**
 > Valoración e intervención
 >
-> Un niño no dice «tengo ansiedad». Deja de dormir, estalla por cualquier cosa, se queda callado o le duele la barriga cada mañana de colegio.
+> Un niño no dice «tengo ansiedad». Deja de dormir, estalla por cualquier cosa, se queda callado, le duele la barriga cada mañana de colegio o al enfrentar situaciones nuevas.
 >
 > El trabajo empieza por traducir eso: entender qué está pasando por debajo del síntoma, y desde ahí decidir qué hacer, con el niño y con su familia.
 
@@ -155,7 +155,7 @@ Debajo, las seis con su texto y su listado, cada una enlazando a su página.
 >
 > Se llega por algo que ya no se sostiene: la ansiedad que no baja, el ánimo que no levanta, una pérdida que no termina de colocarse, una decisión que lleva meses parada.
 >
-> No hace falta que sea grave para que merezca atención. Basta con que esté ocupando demasiado sitio.
+> No hace falta que sea grave para que merezca atención. Basta con que esté ocupando demasiado espacio.
 
 **Se valora e interviene en**
 
@@ -175,11 +175,11 @@ Debajo, las seis con su texto y su listado, cada una enlazando a su página.
 ## Familia y pareja
 
 > **Familia y pareja**
-> Valoración, intervención y mediación
+> Valoración, intervención, mediación
 >
 > En una familia el problema rara vez está en una sola persona: está en cómo se hablan, en lo que se da por sabido y en lo que nadie dice.
 >
-> Aquí se trabaja con el vínculo, no con un culpable. Y cuando hay una separación de por medio, se puede trabajar además desde la mediación: llegar a acuerdos sin convertirlo en una batalla, sobre todo si hay hijos.
+> Aquí se trabaja con el vínculo, no con un culpable. Cuando hay un problema de por medio, se puede trabajar además desde la mediación: llegar a acuerdos sin convertirlo en una batalla, sobre todo si hay hijos.
 
 **Se valora e interviene en**
 
@@ -190,7 +190,7 @@ Debajo, las seis con su texto y su listado, cada una enlazando a su página.
 
 **Mediación familiar**
 
-> Mediadora Familiar de la Junta de Andalucía, nº de registro 631.
+> Experta en Mediación Familiar inscrita en el registro oficial de la Junta de Andalucía, nº de registro 631.
 
 Esto va también aquí, además de en el pie de la web: es una acreditación oficial y en esta página es justo lo que la gente busca.
 
@@ -260,7 +260,7 @@ prueba.
 
 **El espacio**
 
-> El despacho sirve igual para una sesión individual, una de pareja o una con toda la familia sentada. Y la zona infantil es una sala aparte, con mesa baja, sillas pequeñas y pizarra, para que los niños trabajen a su altura y no a la del adulto.
+> El despacho sirve igual para una sesión individual, una de pareja o una con toda la familia sentada. Y la zona infantil es una sala aparte, cómoda y segura, para que los niños trabajen a su ritmo y no al del adulto.
 >
 > Y una sala de espera con las titulaciones a la vista, que es donde deben estar.
 

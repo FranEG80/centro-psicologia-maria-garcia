@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import Foto from '../../components/Foto.astro';
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Portico from '../../components/Portico.astro';
@@ -25,7 +25,7 @@ import { consulta } from '../../data/paginas.js';
     />
 
     <figure class="fachada" data-revelar="lamina">
-      <Image
+      <Foto
         src={galeria[0].src}
         widths={[760, 1200, 1800]}
         sizes="100vw"
@@ -58,7 +58,7 @@ import { consulta } from '../../data/paginas.js';
         {
           galeria.slice(1, 3).map((g) => (
             <figure class="vista" data-revelar="lamina">
-              <Image
+              <Foto
                 src={g.src}
                 widths={[520, 780, 1040]}
                 sizes="(max-width: 860px) 100vw, 50vw"
@@ -90,7 +90,7 @@ import { consulta } from '../../data/paginas.js';
             <li class="ambiente" data-revelar="lamina">
               <figure class="ambiente__figura">
                 {a.src ? (
-                  <Image
+                  <Foto
                     src={a.src}
                     widths={[480, 720, 960]}
                     sizes="(max-width: 860px) 100vw, 33vw"

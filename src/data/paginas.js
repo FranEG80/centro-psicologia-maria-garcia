@@ -4,12 +4,11 @@ import gameForms from '../assets/photo/game-forms.webp';
 import gameRings from '../assets/photo/game-rings.webp';
 import officeCalm from '../assets/photo/office-calm.webp';
 import officeDarkwood from '../assets/photo/office-darkwood.webp';
-import reception from '../assets/photo/reception.webp';
 
 export const detallesAreas = {
   infancia: {
     entradilla:
-      'Un niño no dice «tengo ansiedad». Deja de dormir, estalla por cualquier cosa, se queda callado o le duele la barriga cada mañana de colegio.',
+      'Un niño no dice «tengo ansiedad». Deja de dormir, estalla por cualquier cosa, se queda callado, le duele la barriga cada mañana de colegio o al enfrentar situaciones nuevas.',
     cuerpo:
       'El trabajo empieza por traducir eso: entender qué está pasando por debajo del síntoma, y desde ahí decidir qué hacer, con el niño y con su familia.',
     cierre: {
@@ -19,8 +18,12 @@ export const detallesAreas = {
     },
     imagen: {
       src: childrenRoom,
-      alt: 'Rincón de trabajo de la zona infantil, con mesa baja, sillas pequeñas y pizarra.',
-      pie: 'La zona infantil, donde se trabaja a su altura',
+      alt: 'Zona infantil del centro, un espacio propio pensado para los niños.',
+      pie: 'Espacios del centro para la infancia y la adolescencia',
+    },
+    imagenComplementaria: {
+      src: officeCalm,
+      alt: 'Despacho del centro, luminoso y tranquilo, para la atención a adolescentes.',
     },
   },
 
@@ -44,18 +47,13 @@ export const detallesAreas = {
     entradilla:
       'Se llega por algo que ya no se sostiene: la ansiedad que no baja, el ánimo que no levanta, una pérdida que no termina de colocarse, una decisión que lleva meses parada.',
     cuerpo:
-      'No hace falta que sea grave para que merezca atención. Basta con que esté ocupando demasiado sitio.',
+      'No hace falta que sea grave para que merezca atención. Basta con que esté ocupando demasiado espacio.',
     cierre: {
       epigrafe: 'Cuándo pedir cita',
       texto:
         'Cuando el malestar dura más de lo razonable o se repite en ciclos. Cuando afecta al sueño, al trabajo o a la gente de alrededor. Cuando ha habido un cambio vital —un duelo, una separación, un despido, una enfermedad— y la adaptación no llega. Cuando hablarlo con quien está fuera del asunto ayudaría más que seguir dándole vueltas dentro.',
     },
     imagen: {
-      src: officeCalm,
-      alt: 'El despacho de consulta desde detrás de la mesa, con la ventana y la luz natural al fondo.',
-      pie: 'El despacho, con luz natural',
-    },
-    imagenAdicional: {
       src: artInkblot,
       alt: 'Lámina con manchas de tinta de colores sobre fondo claro.',
     },
@@ -65,7 +63,7 @@ export const detallesAreas = {
     entradilla:
       'En una familia el problema rara vez está en una sola persona: está en cómo se hablan, en lo que se da por sabido y en lo que nadie dice.',
     cuerpo:
-      'Aquí se trabaja con el vínculo, no con un culpable. Y cuando hay una separación de por medio, se puede trabajar además desde la mediación: llegar a acuerdos sin convertirlo en una batalla, sobre todo si hay hijos.',
+      'Aquí se trabaja con el vínculo, no con un culpable. Cuando hay un problema de por medio, se puede trabajar además desde la mediación: llegar a acuerdos sin convertirlo en una batalla, sobre todo si hay hijos.',
     acreditacion: {
       epigrafe: 'Mediación familiar',
       texto: 'Mediadora Familiar de la Junta de Andalucía, nº de registro 631.',
@@ -77,7 +75,7 @@ export const detallesAreas = {
     },
     imagen: {
       src: officeDarkwood,
-      alt: 'El despacho de consulta visto desde la puerta, con mesa de madera oscura y dos butacas.',
+      alt: 'El despacho de consulta, preparado para sesiones de pareja y familia.',
       pie: 'El mismo despacho sirve para una sesión de pareja o de familia',
     },
   },
@@ -94,9 +92,9 @@ export const detallesAreas = {
         'A personas que necesitan orientación psicológica durante un proceso legal y a profesionales que requieren asesoramiento para desarrollar un caso.',
     },
     imagen: {
-      src: reception,
-      alt: 'Recepción del centro, con mostrador claro y las titulaciones enmarcadas en la pared.',
-      pie: 'Las titulaciones, a la vista en recepción',
+      src: officeCalm,
+      alt: 'El despacho de consulta, luminoso y tranquilo.',
+      pie: 'El despacho, con luz natural',
     },
   },
 
@@ -127,7 +125,7 @@ export const detallesAreas = {
     },
     imagen: {
       src: officeDarkwood,
-      alt: 'Despacho de consulta con mesa de madera oscura y dos butacas.',
+      alt: 'Despacho de consulta, privado y tranquilo.',
       pie: 'El despacho de consulta',
     },
   },
@@ -157,7 +155,7 @@ export const metaAreas = {
   adultos:
     'Ansiedad, estado de ánimo, duelo, conflictos y trastornos adaptativos. Psicología para adultos en Motril, Granada.',
   familia:
-    'Terapia familiar y de pareja, separación y divorcio, y mediación familiar acreditada por la Junta de Andalucía, en Motril.',
+    'Terapia familiar y de pareja, separación y divorcio. Mediación familiar acreditada por la Junta de Andalucía, en Motril.',
   juridica:
     'Acompañamiento y asesoramiento psicológico en procesos judiciales y legales en Motril, Granada.',
   forense:
@@ -183,8 +181,8 @@ export const consulta = {
   espacio: {
     epigrafe: 'El espacio',
     parrafos: [
-      'Hay salas para la atención de adultos, parejas y familias, una sala juvenil y una zona infantil independiente, con mesa baja, sillas pequeñas y pizarra.',
-      'Y una sala de espera con las titulaciones a la vista, que es donde deben estar.',
+      'Hay salas para la atención de adultos, parejas y familias, una sala juvenil y una zona infantil independiente, pensada para que los niños se sientan cómodos y seguros.',
+      'Y una sala de espera cómoda y tranquila, que cuida la privacidad de cada persona.',
     ],
   },
 };
@@ -203,7 +201,7 @@ export const contacto = {
   marca: 'Contacto',
   titulo: 'Escríbeme y lo vemos',
   entradilla:
-    'Llama o escríbeme y lo vemos. Te contestaré en un máximo de 24 horas.',
+    'Llama o escríbeme y lo vemos. Se responderá en un plazo máximo de 24 horas.',
 };
 
 export const avisoBorrador =
