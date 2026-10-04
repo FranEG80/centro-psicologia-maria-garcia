@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import Foto from './Foto.astro';
 import { ambientes } from '../data/contenido.js';
 import Boton from './Boton.astro';
 
@@ -18,7 +18,7 @@ import Boton from './Boton.astro';
         <li class="ambiente" data-revelar="lamina">
           <figure class="ambiente__figura">
             {a.src ? (
-              <Image
+              <Foto
                 src={a.src}
                 widths={[480, 720, 960]}
                 sizes="(max-width: 860px) 100vw, 33vw"

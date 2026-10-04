@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import Foto from '../components/Foto.astro';
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Portico from '../components/Portico.astro';
@@ -98,7 +98,7 @@ import { contacto } from '../data/paginas.js';
         </div>
 
         <figure class="donde__figura" data-revelar="lamina">
-          <Image
+          <Foto
             src={galeria[0].src}
             widths={[520, 780, 1040]}
             sizes="(max-width: 900px) 100vw, 46vw"

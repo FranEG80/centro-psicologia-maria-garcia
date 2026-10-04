@@ -58,7 +58,7 @@ Cada una lleva a su página:
 
 > **Un despacho y una zona infantil**
 >
-> Recepción, sala de espera, el despacho de consulta y una zona infantil aparte, en C. Rafael Alberti, 3, Motril. La zona infantil tiene mesa baja, sillas pequeñas, pizarra y el material a mano.
+> Recepción, sala de espera, el despacho de consulta y una zona infantil aparte, en C. Rafael Alberti, 3, Motril. Espacios tranquilos y reservados, pensados para que cada persona se sienta cómoda y con total privacidad.
 >
 > Una sala aparte para los niños, porque no es lo mismo sentarse a hablar que sentarse a jugar.
 
@@ -260,7 +260,7 @@ prueba.
 
 **El espacio**
 
-> El despacho sirve igual para una sesión individual, una de pareja o una con toda la familia sentada. Y la zona infantil es una sala aparte, con mesa baja, sillas pequeñas y pizarra, para que los niños trabajen a su altura y no a la del adulto.
+> El despacho sirve igual para una sesión individual, una de pareja o una con toda la familia sentada. Y la zona infantil es una sala aparte, cómoda y segura, para que los niños trabajen a su ritmo y no al del adulto.
 >
 > Y una sala de espera con las titulaciones a la vista, que es donde deben estar.
 

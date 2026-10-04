@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import Foto from '../../components/Foto.astro';
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Pie from '../../components/Pie.astro';
@@ -25,8 +25,8 @@ export function getStaticPaths() {
         vistas: [officeDarkwood, officeCalm, officeFamily],
         alts: [
           'Despacho de consulta del Centro de Psicología María García.',
-          'El mismo despacho, con la ventana y la luz natural al fondo.',
-          'Segundo despacho del centro, de tonos claros.',
+          'El mismo despacho, luminoso y tranquilo.',
+          'Segundo despacho del centro, preparado para sesiones de pareja y familia.',
         ],
         notas: [
           'Sesiones individuales, de pareja y de familia.',
@@ -43,11 +43,11 @@ export function getStaticPaths() {
         entradilla:
           'Una sala aparte, a su altura y con su propio material. Aquí se trabaja jugando, porque jugando es como un niño cuenta lo que le pasa.',
         vistas: [childrenRoom],
-        alts: ['Zona infantil del centro, con mesa baja, sillas pequeñas y pizarra.'],
+        alts: ['Zona infantil del centro, un espacio propio pensado para los niños.'],
         notas: [
           'Valoración e intervención con niños.',
           'Pruebas y material de trabajo pensados para su edad.',
-          'La sala juvenil es un espacio distinto de esta zona infantil.',
+          'Un ambiente cómodo y seguro, donde el niño se siente a gusto.',
         ],
       },
     },
@@ -57,11 +57,11 @@ export function getStaticPaths() {
         titulo: 'La sala juvenil',
         sumario: 'Un espacio para adolescentes',
         entradilla:
-          'La atención a adolescentes cuenta con una sala de trabajo propia, distinta de la zona infantil.',
+          'Los adolescentes cuentan con una sala propia, tranquila y reservada, donde hablar con confianza y a su manera.',
         vistas: [],
         alts: [],
         notas: [
-          'Una sala independiente de la zona infantil.',
+          'Privacidad y confianza para contar lo que les pasa.',
           'El espacio se adapta a la edad y a las necesidades de cada paciente.',
         ],
       },
@@ -94,7 +94,7 @@ const otros = ambientes.filter((a) => !a.href.endsWith(Astro.params.espacio));
         >
           {vistas.map((v, i) => (
             <figure class="vista" data-revelar="lamina">
-              <Image
+              <Foto
                 src={v}
                 widths={[520, 780, 1040]}
                 sizes={vistas.length > 1 ? '(max-width: 860px) 100vw, 33vw' : '100vw'}
@@ -124,7 +124,7 @@ const otros = ambientes.filter((a) => !a.href.endsWith(Astro.params.espacio));
           <h2 class="caps espacio__epigrafe">El resto del centro</h2>
           <div class="espacio__miniaturas">
             <figure class="mini">
-              <Image
+              <Foto
                 src={reception}
                 widths={[280, 420]}
                 sizes="(max-width: 640px) 45vw, 220px"
@@ -136,7 +136,7 @@ const otros = ambientes.filter((a) => !a.href.endsWith(Astro.params.espacio));
               <figcaption class="mini__pie">Recepción</figcaption>
             </figure>
             <figure class="mini">
-              <Image
+              <Foto
                 src={waitingRoom}
                 widths={[280, 420]}
                 sizes="(max-width: 640px) 45vw, 220px"

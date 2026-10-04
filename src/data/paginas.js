@@ -4,7 +4,6 @@ import gameForms from '../assets/photo/game-forms.webp';
 import gameRings from '../assets/photo/game-rings.webp';
 import officeCalm from '../assets/photo/office-calm.webp';
 import officeDarkwood from '../assets/photo/office-darkwood.webp';
-import reception from '../assets/photo/reception.webp';
 
 export const detallesAreas = {
   infancia: {
@@ -19,8 +18,12 @@ export const detallesAreas = {
     },
     imagen: {
       src: childrenRoom,
-      alt: 'Rincón de trabajo de la zona infantil, con mesa baja, sillas pequeñas y pizarra.',
-      pie: 'La zona infantil, donde se trabaja a su altura',
+      alt: 'Zona infantil del centro, un espacio propio pensado para los niños.',
+      pie: 'Espacios del centro para la infancia y la adolescencia',
+    },
+    imagenComplementaria: {
+      src: officeCalm,
+      alt: 'Despacho del centro, luminoso y tranquilo, para la atención a adolescentes.',
     },
   },
 
@@ -51,11 +54,6 @@ export const detallesAreas = {
         'Cuando el malestar dura más de lo razonable o se repite en ciclos. Cuando afecta al sueño, al trabajo o a la gente de alrededor. Cuando ha habido un cambio vital —un duelo, una separación, un despido, una enfermedad— y la adaptación no llega. Cuando hablarlo con quien está fuera del asunto ayudaría más que seguir dándole vueltas dentro.',
     },
     imagen: {
-      src: officeCalm,
-      alt: 'El despacho de consulta desde detrás de la mesa, con la ventana y la luz natural al fondo.',
-      pie: 'El despacho, con luz natural',
-    },
-    imagenAdicional: {
       src: artInkblot,
       alt: 'Lámina con manchas de tinta de colores sobre fondo claro.',
     },
@@ -77,7 +75,7 @@ export const detallesAreas = {
     },
     imagen: {
       src: officeDarkwood,
-      alt: 'El despacho de consulta visto desde la puerta, con mesa de madera oscura y dos butacas.',
+      alt: 'El despacho de consulta, preparado para sesiones de pareja y familia.',
       pie: 'El mismo despacho sirve para una sesión de pareja o de familia',
     },
   },
@@ -94,9 +92,9 @@ export const detallesAreas = {
         'A personas que necesitan orientación psicológica durante un proceso legal y a profesionales que requieren asesoramiento para desarrollar un caso.',
     },
     imagen: {
-      src: reception,
-      alt: 'Recepción del centro, con mostrador claro y las titulaciones enmarcadas en la pared.',
-      pie: 'Sala de espera',
+      src: officeCalm,
+      alt: 'El despacho de consulta, luminoso y tranquilo.',
+      pie: 'El despacho, con luz natural',
     },
   },
 
@@ -127,7 +125,7 @@ export const detallesAreas = {
     },
     imagen: {
       src: officeDarkwood,
-      alt: 'Despacho de consulta con mesa de madera oscura y dos butacas.',
+      alt: 'Despacho de consulta, privado y tranquilo.',
       pie: 'El despacho de consulta',
     },
   },
@@ -183,8 +181,8 @@ export const consulta = {
   espacio: {
     epigrafe: 'El espacio',
     parrafos: [
-      'Hay salas para la atención de adultos, parejas y familias, una sala juvenil y una zona infantil independiente, con mesa baja, sillas pequeñas y pizarra.',
-      'Y una sala de espera cómoda y acogedora con privacidad.',
+      'Hay salas para la atención de adultos, parejas y familias, una sala juvenil y una zona infantil independiente, pensada para que los niños se sientan cómodos y seguros.',
+      'Y una sala de espera cómoda y tranquila, que cuida la privacidad de cada persona.',
     ],
   },
 };

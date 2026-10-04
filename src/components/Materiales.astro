@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import Foto from './Foto.astro';
 
 import { materiales } from '../data/contenido.js';
 
@@ -27,7 +27,7 @@ const SIZES_PIEZA = '(max-width: 900px) 92vw, (max-width: 84rem) 40vw, 540px';
 
     <div class="materiales__bento">
       <figure class="materiales__pieza materiales__pieza--mancha">
-        <Image
+        <Foto
           src={rorschach.src}
           widths={ANCHOS}
           sizes={SIZES_MANCHA}
@@ -39,7 +39,7 @@ const SIZES_PIEZA = '(max-width: 900px) 92vw, (max-width: 84rem) 40vw, 540px';
       </figure>
 
       <figure class="materiales__pieza materiales__pieza--bloques">
-        <Image
+        <Foto
           src={bloques.src}
           widths={ANCHOS}
           sizes={SIZES_PIEZA}
@@ -51,7 +51,7 @@ const SIZES_PIEZA = '(max-width: 900px) 92vw, (max-width: 84rem) 40vw, 540px';
       </figure>
 
       <figure class="materiales__pieza materiales__pieza--hanoi">
-        <Image
+        <Foto
           src={hanoi.src}
           widths={ANCHOS}
           sizes={SIZES_PIEZA}

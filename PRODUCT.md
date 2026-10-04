@@ -55,10 +55,10 @@ mano en todo momento» (palabras de la clienta).
 - Centro físico en C. Rafael Alberti, 3 · 18600 Motril, Granada. Fachada de
   granito negro con rotulación.
 - El espacio importa y se usa como prueba: recepción con las titulaciones
-  enmarcadas a la vista, sala de espera, **tres despachos distintos** (uno de
-  madera oscura para adultos, uno claro con luz natural, uno preparado para
-  familia y pareja) y un **rincón infantil** con mesa baja, sillas pequeñas y
-  pizarra. Hay fotografía real de todos ellos.
+  enmarcadas a la vista, sala de espera, **tres despachos distintos** (adultos, uno con luz natural,
+  uno preparado para familia y pareja) y una **zona infantil** propia. Hay
+  fotografía real de todos ellos. En textos, pies y `alt` no se describe el
+  mobiliario que sale en las fotos: se habla de comodidad, calma y privacidad.
 - Material de evaluación real y fotografiado: lámina de Rorschach, cubos de
   diseño de bloques, torre de Hanoi.
 - La valoración precede a la intervención en casi todas las áreas: primero se
