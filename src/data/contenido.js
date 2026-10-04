@@ -256,7 +256,7 @@ export const ambientes = [
     titulo: 'Sala juvenil',
     sumario: 'Adolescencia',
     texto: 'Una sala propia para adolescentes, tranquila y reservada, donde hablar con confianza.',
-    src: officeCalm,
+    src: officeFamily,
     alt: 'Despacho del centro, luminoso y tranquilo, para la atención a adolescentes.',
     href: '/instalaciones/juvenil',
   },
