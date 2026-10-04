@@ -226,7 +226,7 @@ export const navegacion = [
 
 export const prisma = {
   texto:
-    'Mirar lo mismo a través de otro cristal no cambia lo que pasó. Cambia lo que puedes hacer con ello.',
+    'Mirar tu realidad a través de otro cristal no cambia lo que pasó. Cambia lo que puedes hacer con ello.',
   autor: null,
 };
 

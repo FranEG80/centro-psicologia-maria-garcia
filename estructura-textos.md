@@ -29,7 +29,7 @@ Esto ya está hecho y no cambia:
 
 > **PSICOLOGÍA · MOTRIL, GRANADA**
 >
-> **Lo mismo, visto con luz suficiente**
+> **Tu realidad, vista con luz suficiente**
 >
 > General · Infantil y juvenil · Mediación familiar · Neuropsicología · Jurídica y forense
 
