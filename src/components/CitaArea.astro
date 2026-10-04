@@ -1,0 +1,99 @@
+---
+interface Props {
+  texto: string;
+  autor: string;
+}
+
+const { texto, autor } = Astro.props;
+---
+
+<aside class="cita-area" aria-label={`Cita de ${autor}`}>
+  <div class="envoltura cita-area__reticula">
+    <span class="cita-area__comilla" aria-hidden="true">«</span>
+    <figure class="cita-area__figura">
+      <blockquote class="cita-area__texto">
+        <p>{texto}</p>
+      </blockquote>
+      <figcaption class="cita-area__autor">{autor}</figcaption>
+    </figure>
+  </div>
+</aside>
+
+<style>
+  .cita-area {
+    background: var(--crema);
+    color: var(--acento-fuerte);
+    border-top: 1px solid var(--filete);
+    padding-block: var(--paso-5);
+  }
+
+  .cita-area__reticula {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--paso-2);
+    align-items: start;
+  }
+
+  .cita-area__comilla {
+    grid-column: 2;
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    font-weight: 300;
+    line-height: 0.85;
+    color: var(--petroleo);
+  }
+
+  .cita-area__figura {
+    grid-column: 3 / span 8;
+  }
+
+  .cita-area__texto {
+    max-width: 34ch;
+    font-size: clamp(1.75rem, 1.25rem + 2vw, 2.875rem);
+    font-weight: 300;
+    line-height: 1.28;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+  }
+
+  .cita-area__autor {
+    display: flex;
+    align-items: center;
+    gap: var(--paso-2);
+    margin-top: var(--paso-3);
+    color: var(--tinta-2);
+    font-size: var(--t-cuerpo);
+    font-weight: 450;
+    line-height: 1.5;
+  }
+
+  .cita-area__autor::before {
+    content: '';
+    width: 2rem;
+    height: 1px;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 900px) {
+    .cita-area__comilla {
+      grid-column: 1;
+    }
+
+    .cita-area__figura {
+      grid-column: 2 / -1;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .cita-area__reticula {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--paso-2);
+    }
+
+    .cita-area__comilla,
+    .cita-area__figura {
+      grid-column: 1;
+    }
+  }
+</style>

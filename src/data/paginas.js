@@ -44,6 +44,10 @@ export const detallesAreas = {
   },
 
   adultos: {
+    cita: {
+      texto: 'El problema no es el dolor en sí, sino lo que hacemos con él para evitarlo.',
+      autor: 'S. Hayes',
+    },
     entradilla:
       'Se llega por algo que ya no se sostiene: la ansiedad que no baja, el ánimo que no levanta, una pérdida que no termina de colocarse, una decisión que lleva meses parada.',
     cuerpo:
@@ -60,6 +64,10 @@ export const detallesAreas = {
   },
 
   familia: {
+    cita: {
+      texto: 'La curiosa paradoja es que cuando me acepto tal como soy, entonces puedo cambiar.',
+      autor: 'C. Rogers',
+    },
     entradilla:
       'En una familia el problema rara vez está en una sola persona: está en cómo se hablan, en lo que se da por sabido y en lo que nadie dice.',
     cuerpo:
@@ -131,6 +139,10 @@ export const detallesAreas = {
   },
 
   neuropsicologia: {
+    cita: {
+      texto: 'Toda persona puede ser, si se lo propones, escultor de su propio cerebro',
+      autor: 'Ramón y Cajal',
+    },
     entradilla:
       'La memoria, la atención, el lenguaje y la capacidad de planificar se pueden medir. Y cuando algo falla —por la edad, por una lesión, por un trastorno del desarrollo— se puede saber exactamente qué falla y en qué grado.',
     cuerpo:

@@ -3,8 +3,7 @@ import Foto from '../../components/Foto.astro';
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Pie from '../../components/Pie.astro';
-import Boton from '../../components/Boton.astro';
-import { centro, ambientes } from '../../data/contenido.js';
+import { centro } from '../../data/contenido.js';
 
 import officeDarkwood from '../../assets/photo/office-darkwood.webp';
 import officeCalm from '../../assets/photo/office-calm.webp';
@@ -71,8 +70,6 @@ export function getStaticPaths() {
 
 const { titulo, sumario, entradilla, vistas, alts, notas } =
   Astro.props;
-
-const otros = ambientes.filter((a) => !a.href.endsWith(Astro.params.espacio));
 ---
 
 <Base titulo={`${titulo} · ${centro.nombre}`} descripcion={entradilla}>
@@ -148,12 +145,6 @@ const otros = ambientes.filter((a) => !a.href.endsWith(Astro.params.espacio));
               <figcaption class="mini__pie">Sala de espera</figcaption>
             </figure>
           </div>
-
-          {otros.map((otro) => (
-            <Boton class="espacio__boton" href={otro.href}>
-              Ver {otro.titulo.toLowerCase()}
-            </Boton>
-          ))}
         </aside>
       </div>
 
@@ -279,10 +270,6 @@ const otros = ambientes.filter((a) => !a.href.endsWith(Astro.params.espacio));
     margin-top: 0.5rem;
     font-size: var(--t-micro);
     color: var(--tinta-2);
-  }
-
-  .espacio__boton {
-    margin-top: var(--paso-3);
   }
 
   @media (max-width: 860px) {

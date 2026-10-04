@@ -1,7 +1,6 @@
 ---
 import Foto from './Foto.astro';
 import { ambientes } from '../data/contenido.js';
-import Boton from './Boton.astro';
 
 ---
 
@@ -36,10 +35,6 @@ import Boton from './Boton.astro';
             <p class="caps caps--contenido ambiente__marca">{a.sumario}</p>
             <h3 class="h3 ambiente__nombre">{a.titulo}</h3>
             <p class="ambiente__cuerpo">{a.texto}</p>
-            <Boton class="ambiente__boton" variant="claro" href={a.href}>
-              Conocer el espacio
-              <span class="solo-lectores"> de {a.titulo.toLowerCase()}</span>
-            </Boton>
           </div>
         </li>
       ))
@@ -132,14 +127,9 @@ import Boton from './Boton.astro';
 
   .ambiente__cuerpo {
     margin-top: var(--paso-2);
-    margin-bottom: var(--paso-3);
     max-width: 44ch;
     color: var(--campo-tinta-2);
     text-wrap: pretty;
-  }
-
-  .ambiente__boton {
-    margin-top: auto;
   }
 
   @media (max-width: 860px) {

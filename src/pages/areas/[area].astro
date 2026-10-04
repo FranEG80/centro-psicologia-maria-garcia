@@ -1,5 +1,6 @@
 ---
 import Foto from '../../components/Foto.astro';
+import CitaArea from '../../components/CitaArea.astro';
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Portico from '../../components/Portico.astro';
@@ -124,6 +125,8 @@ const siguiente = areas[(i + 1) % areas.length];
         </section>
       )
     }
+
+    {detalle.cita && <CitaArea texto={detalle.cita.texto} autor={detalle.cita.autor} />}
 
     <section class="cuando" aria-labelledby="cuando-titulo">
       <hr class="canto" />
