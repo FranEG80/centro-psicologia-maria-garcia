@@ -26,6 +26,7 @@ const paginas = {
   avisoLegal: { es: '/aviso-legal' },
   privacidad: { es: '/privacidad' },
   cookies: { es: '/cookies' },
+  accesibilidad: { es: '/accesibilidad' },
 };
 
 // Secciones con una página por elemento. `slugs` va de id interno a slug por

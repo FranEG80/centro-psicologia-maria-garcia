@@ -21,6 +21,12 @@ html {
   scroll-padding-top: 5rem;
 }
 
+/* Con teclado y el aviso de cookies abierto, el elemento enfocado no debe
+   quedar debajo: consentimiento.js fija --aviso-alto y marca html.usa-teclado. */
+html.usa-teclado {
+  scroll-padding-bottom: var(--aviso-alto, 0px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -188,6 +194,11 @@ main:focus-visible {
     color: var(--carbon);
     text-decoration-color: var(--carbon);
   }
+}
+/* Con teclado, igual que con hover. */
+.enlace:focus-visible {
+  color: var(--carbon);
+  text-decoration-color: var(--carbon);
 }
 
 button.enlace {

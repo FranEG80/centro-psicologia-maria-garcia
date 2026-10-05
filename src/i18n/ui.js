@@ -78,6 +78,7 @@ export const ui = {
       avisoLegal: 'Aviso legal',
       privacidad: 'Protección de datos',
       cookies: 'Cookies',
+      accesibilidad: 'Accesibilidad',
       preferencias: 'Preferencias de cookies',
     },
 
@@ -91,6 +92,7 @@ export const ui = {
       aceptado: 'Has aceptado el contenido de terceros: el mapa de Google se carga donde aparece.',
       rechazado: 'Has rechazado el contenido de terceros: el mapa de Google no se carga.',
       sin: 'Todavía no has elegido. Mientras tanto, el mapa de Google no se carga.',
+      anuncio: 'Aviso de cookies abierto al principio de la página, en la región Cookies.',
     },
   },
 
@@ -169,6 +171,7 @@ export const ui = {
       avisoLegal: 'Legal notice (ES)',
       privacidad: 'Data protection (ES)',
       cookies: 'Cookies (ES)',
+      accesibilidad: 'Accessibility (ES)',
       preferencias: 'Cookie preferences',
     },
 
@@ -182,6 +185,7 @@ export const ui = {
       aceptado: 'You have accepted third-party content: the Google map loads where it appears.',
       rechazado: 'You have declined third-party content: the Google map does not load.',
       sin: 'You have not chosen yet. Until then, the Google map does not load.',
+      anuncio: 'Cookie notice open at the top of the page, in the Cookies region.',
     },
   },
 };

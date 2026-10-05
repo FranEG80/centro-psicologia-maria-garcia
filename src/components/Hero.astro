@@ -322,6 +322,18 @@ const registros = [
       letter-spacing: 0.06em;
       line-height: 1.5;
     }
+    /* El bloque ocupa casi toda la escena y cruza los paneles de cristal
+       (carbón sobre azul: ~3:1). Un velo crema más alto y más denso lleva el
+       texto por encima de 5:1 sin ocultar la escena. */
+    .hero__velo {
+      height: 82%;
+      background: linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--crema) 0%, transparent) 0%,
+        color-mix(in srgb, var(--crema) 40%, transparent) 14%,
+        color-mix(in srgb, var(--crema) 66%, transparent) 100%
+      );
+    }
   }
 
   @media (max-height: 620px) and (min-width: 701px) {

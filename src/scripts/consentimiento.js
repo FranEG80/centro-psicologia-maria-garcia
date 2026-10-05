@@ -20,6 +20,7 @@ function guardar(valor) {
 
 export function consentimiento() {
   const franja = document.querySelector('[data-consentimiento]');
+  const anuncio = document.querySelector('[data-consentimiento-anuncio]');
   // Los textos de estado llegan ya en el idioma de la página (Consentimiento.astro).
   const TEXTOS = {
     [ACEPTADO]: franja?.dataset.textoAceptado,
@@ -74,16 +75,44 @@ export function consentimiento() {
     });
   }
 
+  // El aviso es fijo y tapa el final de la página: mientras está abierto se
+  // reserva su alto (margen del pie y scroll-padding-bottom) para que un
+  // elemento enfocado no quede debajo de él (WCAG 2.4.11).
+  function reservarAlto(abierto) {
+    const alto = abierto
+      ? Math.ceil(franja.offsetHeight + parseFloat(getComputedStyle(franja).bottom || '0'))
+      : 0;
+    document.documentElement.style.setProperty('--aviso-alto', `${alto}px`);
+  }
+  if (franja && 'ResizeObserver' in window) {
+    new ResizeObserver(() => {
+      if (!franja.hidden) reservarAlto(true);
+    }).observe(franja);
+  }
+  // La reserva solo se aplica a quien navega con teclado (clase en <html>):
+  // con ratón o táctil el aviso se cierra sin más y no queda hueco bajo el pie.
+  const html = document.documentElement;
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') html.classList.add('usa-teclado');
+  });
+  document.addEventListener('pointerdown', () => html.classList.remove('usa-teclado'));
+
   function abrir({ foco = false } = {}) {
     if (!franja) return;
     franja.hidden = false;
+    reservarAlto(true);
     requestAnimationFrame(() => franja.classList.add('esta-visible'));
     if (foco) franja.querySelector('[data-consentimiento-aceptar]')?.focus();
+    // Apertura automática: el foco no se mueve, se anuncia. Con un pequeño
+    // retraso para que el lector no lo pise con lo que esté leyendo.
+    else if (anuncio) setTimeout(() => (anuncio.textContent = anuncio.dataset.texto), 150);
   }
 
   function cerrar() {
     if (!franja) return;
     if (franja.contains(document.activeElement)) devolverFoco();
+    if (anuncio) anuncio.textContent = '';
+    reservarAlto(false);
     franja.classList.remove('esta-visible');
     let hecho = false;
     const ocultar = () => {

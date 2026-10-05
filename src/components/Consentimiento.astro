@@ -32,6 +32,12 @@ const texto = t.consentimiento;
   </div>
 </aside>
 
+<!-- El aviso se abre cuando el hero sale de pantalla y, para entonces, el
+     cursor del lector ya ha pasado de largo: esta región avisa de que existe
+     y dónde está, sin mover el foco. Va fuera del <aside> porque una región
+     viva dentro de un contenedor oculto no se anuncia. -->
+<p class="solo-lectores" aria-live="polite" data-consentimiento-anuncio data-texto={texto.anuncio}></p>
+
 <style>
   .aviso {
     position: fixed;
@@ -118,12 +124,20 @@ const texto = t.consentimiento;
       color var(--dur-ui) ease, border-color var(--dur-ui) ease;
   }
 
+  /* Con teclado, igual que con hover. Sin esto, .aviso__boton (color tinta)
+     pisaba el texto crema del .boton:focus-visible global y quedaba carbón
+     sobre el relleno carbón. */
   @media (hover: hover) and (pointer: fine) {
     .aviso__boton:hover {
       background: var(--carbon);
       border-color: var(--carbon);
       color: var(--crema);
     }
+  }
+  .aviso__boton:focus-visible {
+    background: var(--carbon);
+    border-color: var(--carbon);
+    color: var(--crema);
   }
 
   .aviso__boton--si {
@@ -137,6 +151,10 @@ const texto = t.consentimiento;
       background: var(--acento-fuerte);
       border-color: var(--acento-fuerte);
     }
+  }
+  .aviso__boton--si:focus-visible {
+    background: var(--acento-fuerte);
+    border-color: var(--acento-fuerte);
   }
 
   @media (max-width: 560px) {

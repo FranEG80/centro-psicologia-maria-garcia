@@ -205,6 +205,12 @@ const idiomaLegal = lang === 'es' ? undefined : 'es';
           <a class="pie__enlace" href={ruta('avisoLegal')} hreflang={idiomaLegal}>{texto.avisoLegal}</a>
           <a class="pie__enlace" href={ruta('privacidad')} hreflang={idiomaLegal}>{texto.privacidad}</a>
           <a class="pie__enlace" href={ruta('cookies')} hreflang={idiomaLegal}>{texto.cookies}</a>
+          <a
+            class="pie__enlace"
+            href={ruta('accesibilidad')}
+            hreflang={idiomaLegal}
+            aria-current={ariaCurrent(Astro.url.pathname, ruta('accesibilidad'))}
+          >{texto.accesibilidad}</a>
           <button class="pie__enlace pie__preferencias" type="button" data-consentimiento-abrir>
             {texto.preferencias}
           </button>
@@ -285,6 +291,12 @@ const idiomaLegal = lang === 'es' ? undefined : 'es';
   .pie__fondo {
     background: var(--carbon);
     color: var(--crema);
+  }
+
+  /* Mientras el aviso de cookies está abierto tapa el final de la página: con
+     teclado se reserva su alto aquí para que el foco pueda subir por encima. */
+  :global(html.usa-teclado) .pie__fondo {
+    border-bottom: var(--aviso-alto, 0px) solid var(--carbon);
   }
 
   .pie__reticula {
@@ -473,7 +485,10 @@ const idiomaLegal = lang === 'es' ? undefined : 'es';
     }
   }
 
+  /* Con teclado, igual que con hover. */
   .pie__enlace:focus-visible {
+    border-color: var(--canto);
+    color: var(--canto);
     outline-color: var(--canto);
     outline-offset: 4px;
   }
