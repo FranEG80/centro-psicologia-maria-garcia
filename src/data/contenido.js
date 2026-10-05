@@ -1,9 +1,6 @@
 
-import artInkblot from '../assets/photo/art-inkblot.webp';
 import centerExterior from '../assets/photo/center-exterior.webp';
 import childrenRoom from '../assets/photo/children-room.webp';
-import gameForms from '../assets/photo/game-forms.webp';
-import gameRings from '../assets/photo/game-rings.webp';
 import officeCalm from '../assets/photo/office-calm.webp';
 import officeDarkwood from '../assets/photo/office-darkwood.webp';
 import officeFamily from '../assets/photo/office-family.webp';
@@ -24,11 +21,12 @@ export const centro = {
   cp: '18600',
   mapa: 'https://maps.google.com/?q=C.+Rafael+Alberti+3,+18600+Motril,+Granada',
   coordenadas: { lat: 36.750956, lon: -3.5215472 },
+  // `id` es estable entre idiomas: el código busca por él, no por la etiqueta.
   credenciales: [
-    { etiqueta: 'Nº colegiada', valor: 'AO 05323' },
+    { id: 'colegiada', etiqueta: 'Nº colegiada', valor: 'AO 05323' },
     // Verificado con la clienta: Mediadora 631, NICA 67672. No intercambiar.
-    { etiqueta: 'Mediadora Familiar de la Junta de Andalucía', valor: 'nº 631' },
-    { etiqueta: 'NICA', valor: '67672' },
+    { id: 'mediadora', etiqueta: 'Mediadora Familiar de la Junta de Andalucía', valor: 'nº 631' },
+    { id: 'nica', etiqueta: 'NICA', valor: '67672' },
   ],
 };
 
@@ -200,21 +198,6 @@ export const galeria = [
     src: childrenRoom,
     alt: 'Zona infantil del centro, un espacio propio pensado para los niños.',
     pie: 'Un espacio propio, pensado para que se sientan a gusto',
-  },
-];
-
-export const materiales = [
-  {
-    src: artInkblot,
-    alt: 'Lámina simétrica con manchas de tinta en tonos de colores sobre fondo claro.',
-  },
-  {
-    src: gameForms,
-    alt: 'Cubos pequeños de colores rojo, blanco y azul dispuestos sobre una superficie clara.',
-  },
-  {
-    src: gameRings,
-    alt: 'Estructura de madera con anillas de distintos tamaños y colores.',
   },
 ];
 

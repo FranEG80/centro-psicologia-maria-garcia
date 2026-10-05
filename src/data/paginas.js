@@ -197,6 +197,87 @@ export const consulta = {
       'Y una sala de espera cómoda y tranquila, que cuida la privacidad de cada persona.',
     ],
   },
+  donde: {
+    epigrafe: 'Dónde está',
+    nota: 'Una consulta privada para sentirte cómodo y atendido, a escasos minutos del centro urbano de Motril.',
+    comoLlegar: 'Cómo llegar',
+  },
+};
+
+// Las tres salas de /instalaciones/<espacio>. Las fotos de cada una están en la
+// propia página; aquí solo el texto, para poder traducirlo.
+export const espacios = {
+  adultos: {
+    titulo: 'Los despachos',
+    sumario: 'Adultos, pareja y familia',
+    entradilla:
+      'Salas de consulta tranquilas para hablar con calma, ya vengas solo, en pareja o con tu familia.',
+    alts: [
+      'Despacho de consulta del Centro de Psicología María García.',
+      'El mismo despacho, luminoso y tranquilo.',
+      'Segundo despacho del centro, preparado para sesiones de pareja y familia.',
+    ],
+    notas: [
+      'Sesiones individuales, de pareja y de familia.',
+      'Valoración, intervención y seguimiento en el mismo espacio y con la misma persona.',
+      'Distintas salas de trabajo según las necesidades de cada paciente.',
+    ],
+  },
+  infantil: {
+    titulo: 'La zona infantil',
+    sumario: 'Un espacio para niños',
+    entradilla:
+      'Una sala aparte, a su altura y con su propio material. Aquí se trabaja jugando, porque jugando es como un niño cuenta lo que le pasa.',
+    alts: ['Zona infantil del centro, un espacio propio pensado para los niños.'],
+    notas: [
+      'Valoración e intervención con niños.',
+      'Pruebas y material de trabajo pensados para su edad.',
+      'Un ambiente cómodo y seguro, donde el niño se siente a gusto.',
+    ],
+  },
+  juvenil: {
+    titulo: 'La sala juvenil',
+    sumario: 'Un espacio para adolescentes',
+    entradilla:
+      'Los adolescentes cuentan con una sala propia, tranquila y reservada, donde hablar con confianza y a su manera.',
+    alts: [],
+    notas: [
+      'Privacidad y confianza para contar lo que les pasa.',
+      'El espacio se adapta a la edad y a las necesidades de cada paciente.',
+    ],
+  },
+  resto: {
+    epigrafe: 'El resto del centro',
+    recepcion: 'Recepción del centro.',
+    espera: 'Sala de espera del centro.',
+  },
+};
+
+// Título y descripción de cada página (<title>, meta y Open Graph).
+export const metas = {
+  inicio: {
+    titulo: (c) => `${c.nombre} · ${c.localidad}, ${c.provincia}`,
+    descripcion: (c) =>
+      `Psicología general, infantil y juvenil, mediación familiar, neuropsicología, psicología jurídica y psicología forense en ${c.localidad}. ${c.profesional}, psicóloga sanitaria y mediadora familiar desde ${c.desde}.`,
+  },
+  areas: {
+    titulo: (c) => `Áreas de atención · ${c.nombre}`,
+  },
+  consulta: {
+    titulo: (c) => `El centro · ${c.nombre}`,
+    descripcion: (c) =>
+      `Espacios adaptados según la edad y las necesidades del paciente en ${c.direccion}, ${c.localidad}. Conoce las distintas zonas de trabajo del centro.`,
+  },
+  sobreMi: {
+    titulo: (c) => `Sobre mí · ${c.profesional}`,
+    descripcion: (c) =>
+      `${c.profesional}, psicóloga sanitaria y mediadora familiar en ${c.localidad} desde ${c.desde}. Especialista en Neuropsicología y Psicología Jurídica y Forense.`,
+  },
+  contacto: {
+    titulo: (c) => `Contacto · ${c.nombre}`,
+    descripcion: (c) =>
+      `WhatsApp y teléfono ${c.telefono}. ${c.direccion}, ${c.cp} ${c.localidad}, ${c.provincia}.`,
+  },
 };
 
 export const sobreMi = {
@@ -207,6 +288,19 @@ export const sobreMi = {
     'Trato directo de principio a fin, con implicación directa y atención terapéutica unificada.',
   cuerpo:
     'La misma profesional te acompaña desde la primera entrevista de valoración hasta concluir la terapia, con un tratamiento adaptado a tus tiempos y necesidades.',
+  quien: 'Quién atiende',
+  detalle:
+    'La misma profesional realiza la valoración, interviene y acompaña durante todo el proceso.',
+  compromisoTitulo: 'Mi compromiso contigo',
+  curriculo: 'Formación y trayectoria',
+  formacion: 'Formación',
+  trayectoria: 'Trayectoria',
+  alcance: {
+    titulo: 'Tres formaciones, un solo despacho',
+    texto:
+      'La neuropsicología, el ámbito jurídico y forense y la mediación familiar no suelen coincidir en la misma profesional. Aquí sí, y por eso el mismo despacho puede valorar a un niño con dificultades de aprendizaje, mediar en una separación y elaborar un informe pericial.',
+    boton: 'Ver las áreas',
+  },
 };
 
 export const contacto = {
@@ -214,6 +308,20 @@ export const contacto = {
   titulo: 'Escríbeme y lo vemos',
   entradilla:
     'Llama o escríbeme y lo vemos. Se responderá en un plazo máximo de 24 horas.',
+  vias: {
+    epigrafe: 'Cómo escribir o llamar',
+    whatsapp: { marca: 'Lo más rápido', valor: 'Escribir por WhatsApp' },
+    telefono: { marca: 'Teléfono', nota: 'Si prefieres hablar por teléfono.' },
+    correo: { marca: 'Correo', nota: 'Puedes escribirnos por email.' },
+    aviso:
+      'Escoge la vía que te resulte más cómoda y cuéntame qué necesitas; estaré encantada de atenderte, resolver tus dudas y ayudarte a encontrar la información que buscas.',
+  },
+  donde: {
+    epigrafe: 'Dónde estamos',
+    nota: 'Una consulta privada para sentirte cómodo y atendido, a escasos minutos del centro urbano de Motril.',
+    mapa: 'Abrir en Google Maps',
+  },
+  registros: 'Registros del centro',
 };
 
 export const avisoBorrador =
