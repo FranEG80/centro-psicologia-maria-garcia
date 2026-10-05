@@ -18,16 +18,14 @@ function guardar(valor) {
   }
 }
 
-const TEXTOS = {
-  [ACEPTADO]:
-    'Has aceptado el contenido de terceros: el mapa de Google se carga donde aparece.',
-  [RECHAZADO]:
-    'Has rechazado el contenido de terceros: el mapa de Google no se carga.',
-  sin: 'Todavía no has elegido. Mientras tanto, el mapa de Google no se carga.',
-};
-
 export function consentimiento() {
   const franja = document.querySelector('[data-consentimiento]');
+  // Los textos de estado llegan ya en el idioma de la página (Consentimiento.astro).
+  const TEXTOS = {
+    [ACEPTADO]: franja?.dataset.textoAceptado,
+    [RECHAZADO]: franja?.dataset.textoRechazado,
+    sin: franja?.dataset.textoSin,
+  };
   const marcos = [...document.querySelectorAll('[data-tercero]')];
   let valor = leer();
 

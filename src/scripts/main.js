@@ -407,8 +407,8 @@ function menu() {
   const fijar = (abierto) => {
     boton.setAttribute('aria-expanded', String(abierto));
     boton.querySelector('.solo-lectores').textContent = abierto
-      ? 'Cerrar el menú'
-      : 'Abrir el menú';
+      ? boton.dataset.textoCerrar
+      : boton.dataset.textoAbrir;
     panel.hidden = !abierto;
   };
 
