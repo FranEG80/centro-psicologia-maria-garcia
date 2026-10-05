@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { i18n } from '../i18n/index.js';
 
 
 interface Miga {
@@ -13,10 +14,31 @@ interface Props {
   entradilla?: string;
   cuerpo?: string;
   migas?: Miga[];
+  /** Nombre corto de esta página en el BreadcrumbList (por defecto, el título). */
+  miga?: string;
 }
 
-const { marca, titulo, entradilla, cuerpo, migas } = Astro.props;
+const { marca, titulo, entradilla, cuerpo, migas, miga = titulo } = Astro.props;
+const { t } = i18n(Astro);
+
+// La misma ruta de las migas, para buscadores: migas + página actual. Las URL
+// llevan la misma barra final que el canonical.
+const conBarra = Astro.url.pathname.length > 1 && Astro.url.pathname.endsWith('/');
+const absoluta = (href) =>
+  new URL(conBarra && !href.endsWith('/') ? `${href}/` : href, Astro.site).href;
+const rastro = migas?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        ...migas.map((m) => ({ name: m.texto, item: absoluta(m.href) })),
+        { name: miga, item: new URL(Astro.url.pathname, Astro.site).href },
+      ].map((paso, i) => ({ '@type': 'ListItem', position: i + 1, ...paso })),
+    }
+  : null;
 ---
+
+{rastro && <script type="application/ld+json" set:html={JSON.stringify(rastro)} />}
 
 <header class="portico">
   <div class="portico__poro" aria-hidden="true"></div>
@@ -24,7 +46,7 @@ const { marca, titulo, entradilla, cuerpo, migas } = Astro.props;
   <div class="envoltura portico__caja" data-revelar-grupo>
     {
       migas && migas.length > 0 && (
-        <nav class="portico__migas" aria-label="Ruta">
+        <nav class="portico__migas" aria-label={t.portico.ruta}>
           <ol>
             {migas.map((m) => (
               <li>

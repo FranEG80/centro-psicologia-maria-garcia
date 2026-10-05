@@ -1,0 +1,128 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Portico from '../components/Portico.astro';
+import PaginaLegal from '../components/PaginaLegal.astro';
+import Pie from '../components/Pie.astro';
+import { centro } from '../data/contenido.js';
+
+// Declaración de accesibilidad. Describe el estado real tras la revisión del
+// 5-10-2026 (WCAG 2.1 AA + criterios A/AA nuevos de 2.2). Si cambia el sitio,
+// hay que volver a comprobarlo y actualizar la fecha y las limitaciones.
+---
+
+<Base
+  titulo={`Declaración de accesibilidad · ${centro.nombre}`}
+  descripcion={`Estado de accesibilidad del sitio web del ${centro.nombre}: qué se ha hecho, qué limitaciones quedan y cómo avisar de un problema.`}
+>
+  <Nav />
+
+  <main id="contenido" tabindex="-1">
+    <Portico
+      marca="Información legal"
+      titulo="Declaración de accesibilidad"
+      entradilla="Qué se ha hecho para que este sitio se pueda usar, qué limitaciones quedan y cómo avisar si algo no te funciona."
+      migas={[{ href: '/', texto: 'Inicio' }]}
+    />
+
+    <PaginaLegal borrador={false} actualizado="5 de octubre de 2026">
+      <p>
+        El {centro.nombre} quiere que su sitio web pueda usarlo cualquier
+        persona, vea, oiga, se mueva o use la tecnología como la use.
+      </p>
+
+      <h2>Estado de conformidad</h2>
+      <p>
+        Este sitio es <strong>parcialmente conforme</strong> con las Pautas de
+        Accesibilidad para el Contenido Web (WCAG) 2.1 del W3C, nivel AA. Se
+        han revisado también los criterios de nivel A y AA que añade la versión
+        2.2. «Parcialmente» significa que se han corregido los problemas
+        detectados, pero quedan las limitaciones que se detallan más abajo y
+        todavía no se ha probado con personas usuarias de tecnologías de apoyo.
+      </p>
+
+      <h2>Qué se ha hecho</h2>
+      <ul>
+        <li>
+          Todo el sitio se puede recorrer con teclado, con el foco siempre
+          visible y un enlace «Saltar al contenido» al principio de cada
+          página.
+        </li>
+        <li>
+          Las páginas tienen título propio, encabezados ordenados, regiones
+          identificadas (cabecera, navegación, contenido principal y pie) y el
+          idioma declarado.
+        </li>
+        <li>
+          Las imágenes con contenido llevan texto alternativo; las meramente
+          decorativas se ocultan a los lectores de pantalla.
+        </li>
+        <li>
+          Se han medido los contrastes de color del texto y se han corregido
+          los que quedaban por debajo de 4,5 a 1.
+        </li>
+        <li>
+          Las páginas se adaptan a pantallas de 320 píxeles de ancho (lo que
+          equivale a ampliar al 400 %) sin desplazamiento horizontal.
+        </li>
+        <li>
+          La animación de entrada de la portada respeta la preferencia del
+          sistema de reducir el movimiento. Con teclado se salta directamente
+          al final de la animación, y el ligero balanceo de la escena se
+          detiene solo a los cinco segundos.
+        </li>
+        <li>
+          El aviso de cookies no bloquea la navegación, se alcanza con teclado
+          y está etiquetado como región propia para los lectores de pantalla.
+        </li>
+      </ul>
+
+      <h2>Limitaciones conocidas</h2>
+      <ul>
+        <li>
+          <strong>Mapa de Google.</strong> Es contenido de un tercero, que
+          este sitio no controla. Solo se carga si lo autorizas. La dirección
+          figura en texto y hay un enlace para abrirla en la aplicación de
+          mapas que prefieras.
+        </li>
+        <li>
+          <strong>Portada.</strong> El texto se superpone a una escena en
+          movimiento. El contraste está comprobado con la escena en su estado
+          final; mientras el texto va apareciendo durante la animación de
+          entrada, puede ser menor.
+        </li>
+        <li>
+          <strong>Textos secundarios.</strong> Sobre algunas zonas con textura
+          de fondo, el contraste queda cerca del mínimo de 4,5 a 1.
+        </li>
+        <li>
+          <strong>Pruebas con personas usuarias.</strong> No se ha probado
+          todavía con lectores de pantalla ni con personas con discapacidad
+          visual. Se prevé hacerlo cuando el sitio esté publicado y esta
+          declaración se actualizará con el resultado.
+        </li>
+      </ul>
+
+      <h2>Cómo se ha evaluado</h2>
+      <p>
+        Autoevaluación de quien ha desarrollado el sitio: comprobaciones
+        automáticas con axe-core en todas las páginas, y pruebas manuales de
+        navegación con teclado, ampliación, espaciado de texto y contraste. No
+        ha habido una auditoría externa.
+      </p>
+
+      <h2>Si encuentras un problema</h2>
+      <p>
+        Si algo de este sitio no te funciona o no puedes usarlo, escribe a
+        <a class="enlace" href={`mailto:${centro.email}`}>{centro.email}</a>
+        o llama al
+        <a class="enlace" href={`tel:${centro.telefonoTel}`}>{centro.telefono}</a>.
+        Cuéntanos en qué página ocurre, qué intentabas hacer y qué dispositivo,
+        navegador o ayuda técnica usas. Con eso se puede reproducir y
+        corregir.
+      </p>
+    </PaginaLegal>
+  </main>
+
+  <Pie />
+</Base>

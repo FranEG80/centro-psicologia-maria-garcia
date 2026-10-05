@@ -1,5 +1,6 @@
 ---
 import '@fontsource-variable/host-grotesk/wght-italic.css';
+import { i18n } from '../i18n/index.js';
 
 interface Props {
   texto: string;
@@ -7,9 +8,10 @@ interface Props {
 }
 
 const { texto, autor } = Astro.props;
+const { t } = i18n(Astro);
 ---
 
-<aside class="cita-area" aria-label={`Cita de ${autor}`}>
+<aside class="cita-area" aria-label={`${t.cita.de} ${autor}`}>
   <div class="envoltura cita-area__reticula">
     <figure class="cita-area__figura">
       <blockquote class="cita-area__texto">

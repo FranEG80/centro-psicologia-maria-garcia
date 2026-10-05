@@ -1,5 +1,9 @@
 ---
+import { i18n } from '../i18n/index.js';
 import Boton from './Boton.astro';
+
+const { lang, t, ruta } = i18n(Astro);
+const texto = t.consentimiento;
 
 ---
 
@@ -8,23 +12,31 @@ import Boton from './Boton.astro';
   data-consentimiento
   hidden
   aria-labelledby="consentimiento-titulo"
+  data-texto-aceptado={texto.aceptado}
+  data-texto-rechazado={texto.rechazado}
+  data-texto-sin={texto.sin}
 >
-  <h2 class="caps aviso__epigrafe" id="consentimiento-titulo">Cookies</h2>
+  <h2 class="caps aviso__epigrafe" id="consentimiento-titulo">{texto.epigrafe}</h2>
   <p class="aviso__texto">
-    Sin analítica ni publicidad. Solo el mapa del pie es de Google y deja
-    cookies suyas al cargarse.
-    <a class="aviso__enlace" href="/cookies">Más detalle</a>
+    {texto.texto}
+    <a class="aviso__enlace" href={ruta('cookies')} hreflang={lang === 'es' ? undefined : 'es'}>{texto.mas}</a>
   </p>
 
   <div class="aviso__acciones">
     <Boton class="aviso__boton" data-consentimiento-rechazar>
-      Rechazar
+      {texto.rechazar}
     </Boton>
     <Boton class="aviso__boton aviso__boton--si" data-consentimiento-aceptar>
-      Aceptar
+      {texto.aceptar}
     </Boton>
   </div>
 </aside>
+
+<!-- El aviso se abre cuando el hero sale de pantalla y, para entonces, el
+     cursor del lector ya ha pasado de largo: esta región avisa de que existe
+     y dónde está, sin mover el foco. Va fuera del <aside> porque una región
+     viva dentro de un contenedor oculto no se anuncia. -->
+<p class="solo-lectores" aria-live="polite" data-consentimiento-anuncio data-texto={texto.anuncio}></p>
 
 <style>
   .aviso {
@@ -61,8 +73,10 @@ import Boton from './Boton.astro';
     opacity: 1;
   }
 
+  /* El fondo es translúcido y se oscurece sobre el pie o las secciones en
+     petróleo: tinta-2 y acento-fuerte no llegan a 4,5:1 en el peor caso. */
   .aviso__epigrafe {
-    color: var(--tinta-2);
+    color: var(--tinta);
   }
 
   .aviso__texto {
@@ -73,7 +87,7 @@ import Boton from './Boton.astro';
   }
 
   .aviso__enlace {
-    color: var(--acento-fuerte);
+    color: color-mix(in srgb, var(--acento-fuerte) 55%, var(--carbon));
     text-decoration: none;
     border-bottom: 1px solid
       color-mix(in srgb, var(--acento-fuerte) 45%, transparent);
@@ -110,12 +124,20 @@ import Boton from './Boton.astro';
       color var(--dur-ui) ease, border-color var(--dur-ui) ease;
   }
 
+  /* Con teclado, igual que con hover. Sin esto, .aviso__boton (color tinta)
+     pisaba el texto crema del .boton:focus-visible global y quedaba carbón
+     sobre el relleno carbón. */
   @media (hover: hover) and (pointer: fine) {
     .aviso__boton:hover {
       background: var(--carbon);
       border-color: var(--carbon);
       color: var(--crema);
     }
+  }
+  .aviso__boton:focus-visible {
+    background: var(--carbon);
+    border-color: var(--carbon);
+    color: var(--crema);
   }
 
   .aviso__boton--si {
@@ -129,6 +151,10 @@ import Boton from './Boton.astro';
       background: var(--acento-fuerte);
       border-color: var(--acento-fuerte);
     }
+  }
+  .aviso__boton--si:focus-visible {
+    background: var(--acento-fuerte);
+    border-color: var(--acento-fuerte);
   }
 
   @media (max-width: 560px) {

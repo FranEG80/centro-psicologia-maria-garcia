@@ -1,15 +1,19 @@
 ---
-import { centro, formacion, perfil } from '../data/contenido.js';
+import { i18n } from '../i18n/index.js';
 import Boton from './Boton.astro';
+
+const { t, d, ruta } = i18n(Astro);
+const { centro, formacion, perfil } = d;
+const texto = t.inicio.profesional;
 ---
 
 <section class="profesional" aria-labelledby="profesional-titulo">
   <div class="envoltura">
     <div class="profesional__cabecera">
       <div class="profesional__presentacion">
-        <p class="caps profesional__marca">Quién atiende</p>
+        <p class="caps profesional__marca">{texto.marca}</p>
         <h2 class="h2 profesional__titulo" id="profesional-titulo">
-          Una misma profesional, todo el recorrido
+          {texto.titulo}
         </h2>
       </div>
 
@@ -32,11 +36,11 @@ import Boton from './Boton.astro';
 
       <div class="profesional__trayectoria">
         <p class="cuerpo">{perfil.trayectoria}</p>
-        <Boton class="profesional__boton" href="/sobre-mi">Sobre mí</Boton>
+        <Boton class="profesional__boton" href={ruta('sobreMi')}>{texto.sobreMi}</Boton>
       </div>
 
       <div class="profesional__formacion">
-        <h3 class="caps profesional__epigrafe">Formación</h3>
+        <h3 class="caps profesional__epigrafe">{texto.formacion}</h3>
         <ul class="profesional__lista">
           {formacion.map((f) => <li>{f}</li>)}
         </ul>

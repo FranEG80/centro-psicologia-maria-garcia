@@ -1,0 +1,9 @@
+---
+import Instalaciones from '../../instalaciones/index.astro';
+import { bilingue, ruta } from '../../../i18n/index.js';
+
+// Con PUBLIC_BILINGUE=false el inglés se apaga y la URL lleva al español.
+if (!bilingue) return Astro.redirect(ruta('es', 'consulta'));
+---
+
+<Instalaciones />

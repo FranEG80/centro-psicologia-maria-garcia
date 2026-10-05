@@ -8,6 +8,11 @@ const movimientoReducido = window.matchMedia(
   '(prefers-reduced-motion: reduce)'
 ).matches;
 
+// Los rellena la entrada de la portada (primerCuadro): llevan el scroll al
+// último fotograma de la escena. Con teclado no hay forma de recorrerla.
+let lenisActivo = null;
+let saltarAlFinal = null;
+
 async function scrollSuave() {
   if (movimientoReducido) return null;
   const { default: Lenis } = await import('lenis');
@@ -17,6 +22,7 @@ async function scrollSuave() {
     smoothWheel: true,
     syncTouch: false,
   });
+  lenisActivo = lenis;
   lenis.on('scroll', () => {
     ScrollTrigger.update();
     avisarScroll();
@@ -29,7 +35,9 @@ async function scrollSuave() {
       const destino = document.querySelector(a.getAttribute('href'));
       if (!destino) return;
       e.preventDefault();
-      lenis.scrollTo(destino, { offset: -8 });
+      // En la portada el contenido empieza donde acaba la entrada de la escena.
+      if (destino.id === 'contenido' && saltarAlFinal) saltarAlFinal();
+      else lenis.scrollTo(destino, { offset: -8 });
       destino.setAttribute('tabindex', '-1');
       destino.focus({ preventScroll: true });
     });
@@ -226,7 +234,6 @@ async function primerCuadro() {
   const aplicarCopia = (v) => {
     copia.style.opacity = String(v);
     copia.style.transform = `translate3d(0, ${(1 - v) * 18}px, 0)`;
-    copia.setAttribute('aria-hidden', v < 0.05 ? 'true' : 'false');
   };
 
   const aplicarNav = (sobreVidrio) => {
@@ -319,6 +326,22 @@ async function primerCuadro() {
   aplicarEsmerilado(0);
   marca?.aplicar(0);
 
+  saltarAlFinal = () => {
+    if (lenisActivo) lenisActivo.scrollTo(st.end, { immediate: true });
+    else window.scrollTo(0, st.end);
+  };
+
+  // Si el foco llega con teclado al texto del hero o a la barra antes de que
+  // se vean (opacidad 0 hasta el 76 % y el 30 % de la entrada), se salta al
+  // último fotograma. Con rueda, ratón o táctil nada de esto interviene.
+  document.addEventListener('focusin', (e) => {
+    const el = e.target;
+    const enCopia = el.closest?.('[data-hero-copia]');
+    const enBarra = el.closest?.('[data-nav]') && !el.closest('[data-nav-marca]');
+    if (!enCopia && !enBarra) return;
+    if (st.progress < (enCopia ? 0.95 : ATERRIZAJE)) saltarAlFinal();
+  });
+
   if (import.meta.env.DEV) {
     window.__heroST = st;
     window.__heroFijar = (p) => {
@@ -407,8 +430,8 @@ function menu() {
   const fijar = (abierto) => {
     boton.setAttribute('aria-expanded', String(abierto));
     boton.querySelector('.solo-lectores').textContent = abierto
-      ? 'Cerrar el menú'
-      : 'Abrir el menú';
+      ? boton.dataset.textoCerrar
+      : boton.dataset.textoAbrir;
     panel.hidden = !abierto;
   };
 

@@ -4,30 +4,29 @@ import Nav from '../components/Nav.astro';
 import Portico from '../components/Portico.astro';
 import Pie from '../components/Pie.astro';
 import Boton from '../components/Boton.astro';
-import { centro, formacion, perfil, trayectoria } from '../data/contenido.js';
-import { sobreMi } from '../data/paginas.js';
+import { i18n } from '../i18n/index.js';
 
+const { t, d, ruta } = i18n(Astro);
+const { centro, formacion, perfil, trayectoria, sobreMi, metas } = d;
 ---
 
-<Base
-  titulo={`Sobre mí · ${centro.profesional}`}
-  descripcion={`${centro.profesional}, psicóloga sanitaria y mediadora familiar en ${centro.localidad} desde ${centro.desde}. Especialista en Neuropsicología y Psicología Jurídica y Forense.`}
->
+<Base titulo={metas.sobreMi.titulo(centro)} descripcion={metas.sobreMi.descripcion(centro)}>
   <Nav />
 
-  <main id="contenido">
+  <main id="contenido" tabindex="-1">
     <Portico
       marca={sobreMi.marca}
       titulo={sobreMi.titulo}
       entradilla={sobreMi.entradilla}
       cuerpo={sobreMi.cuerpo}
-      migas={[{ href: '/', texto: 'Inicio' }]}
+      migas={[{ href: ruta('inicio'), texto: t.migas.inicio }]}
+      miga={sobreMi.marca}
     >
       <p class="caps portico__oficio" data-revelar>{sobreMi.sumario}</p>
     </Portico>
 
     <section class="quien" aria-labelledby="quien-titulo">
-      <h2 class="solo-lectores" id="quien-titulo">Quién atiende</h2>
+      <h2 class="solo-lectores" id="quien-titulo">{sobreMi.quien}</h2>
 
       <div class="envoltura quien__reticula" data-revelar-grupo>
         <div class="quien__figura" data-revelar="lamina" aria-hidden="true">
@@ -41,8 +40,7 @@ import { sobreMi } from '../data/paginas.js';
             {perfil.trayectoria}
           </p>
           <p class="quien__detalle" data-revelar>
-            La misma profesional realiza la valoración, interviene y acompaña
-            durante todo el proceso.
+            {sobreMi.detalle}
           </p>
         </div>
         <div class="quien__datos">
@@ -63,7 +61,7 @@ import { sobreMi } from '../data/paginas.js';
     <section class="compromiso" aria-labelledby="compromiso-titulo">
       <div class="envoltura compromiso__reticula" data-revelar-grupo>
         <h2 class="h2 compromiso__titulo" id="compromiso-titulo" data-revelar>
-          Mi compromiso contigo
+          {sobreMi.compromisoTitulo}
         </h2>
         <div class="compromiso__texto" data-revelar>
           {perfil.compromiso.map((parrafo) => <p>{parrafo}</p>)}
@@ -73,19 +71,19 @@ import { sobreMi } from '../data/paginas.js';
 
     <section class="curriculo" aria-labelledby="curriculo-titulo">
       <h2 class="solo-lectores" id="curriculo-titulo">
-        Formación y trayectoria
+        {sobreMi.curriculo}
       </h2>
 
       <div class="envoltura curriculo__reticula" data-revelar-grupo>
         <div class="columna" data-revelar>
-          <h3 class="caps columna__epigrafe">Formación</h3>
+          <h3 class="caps columna__epigrafe">{sobreMi.formacion}</h3>
           <ul class="columna__lista">
             {formacion.map((f) => <li class="columna__punto">{f}</li>)}
           </ul>
         </div>
 
         <div class="columna" data-revelar>
-          <h3 class="caps columna__epigrafe">Trayectoria</h3>
+          <h3 class="caps columna__epigrafe">{sobreMi.trayectoria}</h3>
           <ul class="columna__lista">
             {trayectoria.map((t) => <li class="columna__punto">{t}</li>)}
           </ul>
@@ -93,23 +91,20 @@ import { sobreMi } from '../data/paginas.js';
       </div>
     </section>
 
-    <section class="alcance" aria-labelledby="alcance-titulo">
+    <!-- <section class="alcance" aria-labelledby="alcance-titulo">
       <hr class="canto" />
       <div class="envoltura alcance__caja">
         <h2 class="alcance__titulo" id="alcance-titulo">
-          Tres formaciones, un solo despacho
+          {sobreMi.alcance.titulo}
         </h2>
         <p class="alcance__texto">
-          La neuropsicología, el ámbito jurídico y forense y la mediación
-          familiar no suelen coincidir en la misma profesional. Aquí sí, y por
-          eso el mismo despacho puede valorar a un niño con dificultades de
-          aprendizaje, mediar en una separación y elaborar un informe pericial.
+          {sobreMi.alcance.texto}
         </p>
-        <Boton class="alcance__boton" variant="claro" href="/areas">
-          Ver las áreas
+        <Boton class="alcance__boton" variant="claro" href={ruta('areas')}>
+          {sobreMi.alcance.boton}
         </Boton>
       </div>
-    </section>
+    </section> -->
   </main>
 
   <Pie />

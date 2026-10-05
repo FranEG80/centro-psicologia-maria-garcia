@@ -5,27 +5,26 @@ import Nav from '../components/Nav.astro';
 import Portico from '../components/Portico.astro';
 import Pie from '../components/Pie.astro';
 import Boton from '../components/Boton.astro';
-import { centro, galeria } from '../data/contenido.js';
-import { contacto } from '../data/paginas.js';
+import { i18n } from '../i18n/index.js';
 
+const { t, d, ruta } = i18n(Astro);
+const { centro, galeria, contacto, metas } = d;
 ---
 
-<Base
-  titulo={`Contacto · ${centro.nombre}`}
-  descripcion={`WhatsApp y teléfono ${centro.telefono}. ${centro.direccion}, ${centro.cp} ${centro.localidad}, ${centro.provincia}.`}
->
+<Base titulo={metas.contacto.titulo(centro)} descripcion={metas.contacto.descripcion(centro)}>
   <Nav />
 
-  <main id="contenido">
+  <main id="contenido" tabindex="-1">
     <Portico
       marca={contacto.marca}
       titulo={contacto.titulo}
       entradilla={contacto.entradilla}
-      migas={[{ href: '/', texto: 'Inicio' }]}
+      migas={[{ href: ruta('inicio'), texto: t.migas.inicio }]}
+      miga={contacto.marca}
     />
 
     <section class="vias" aria-labelledby="vias-titulo">
-      <h2 class="solo-lectores" id="vias-titulo">Cómo escribir o llamar</h2>
+      <h2 class="solo-lectores" id="vias-titulo">{contacto.vias.epigrafe}</h2>
 
       <div class="envoltura vias__reticula" data-revelar-grupo>
         <a
@@ -36,32 +35,32 @@ import { contacto } from '../data/paginas.js';
           data-revelar
         >
           <span class="via__relleno" aria-hidden="true"></span>
-          <span class="caps via__marca">Lo más rápido</span>
-          <span class="via__valor">Escribir por WhatsApp</span>
+          <span class="caps via__marca">{contacto.vias.whatsapp.marca}</span>
+          <span class="via__valor">{contacto.vias.whatsapp.valor}</span>
           <span class="via__nota">
             {centro.telefono}
-            <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
+            <span class="solo-lectores"> {t.nuevaPestana}</span>
           </span>
         </a>
 
         <a class="via" href={`tel:${centro.telefonoTel}`} data-revelar>
           <span class="via__relleno" aria-hidden="true"></span>
-          <span class="caps via__marca">Teléfono</span>
+          <span class="caps via__marca">{contacto.vias.telefono.marca}</span>
           <span class="via__valor via__valor--numero">{centro.telefono}</span>
-          <span class="via__nota">Si prefieres hablar por teléfono.</span>
+          <span class="via__nota">{contacto.vias.telefono.nota}</span>
         </a>
 
         <a class="via" href={`mailto:${centro.email}`} data-revelar>
           <span class="via__relleno" aria-hidden="true"></span>
-          <span class="caps via__marca">Correo</span>
+          <span class="caps via__marca">{contacto.vias.correo.marca}</span>
           <span class="via__valor via__valor--correo">{centro.email}</span>
-          <span class="via__nota">Puedes escribirnos por email.</span>
+          <span class="via__nota">{contacto.vias.correo.nota}</span>
         </a>
       </div>
 
       <div class="envoltura" data-revelar>
         <p class="vias__aviso">
-          Escoge la vía que te resulte más cómoda y cuéntame qué necesitas; estaré encantada de atenderte, resolver tus dudas y ayudarte a encontrar la información que buscas.
+          {contacto.vias.aviso}
         </p>
       </div>
     </section>
@@ -72,7 +71,7 @@ import { contacto } from '../data/paginas.js';
       <div class="envoltura donde__reticula">
         <div class="donde__texto" data-revelar-grupo>
           <h2 class="caps donde__epigrafe" id="donde-titulo" data-revelar>
-            Dónde estamos
+            {contacto.donde.epigrafe}
           </h2>
 
           <address class="donde__direccion" data-revelar>
@@ -81,7 +80,7 @@ import { contacto } from '../data/paginas.js';
           </address>
 
           <p class="donde__nota" data-revelar>
-            Una consulta privada para sentirte cómodo y atendido, a escasos minutos del centro urbano de {centro.localidad}.
+            {contacto.donde.nota}
           </p>
 
           <Boton
@@ -92,8 +91,8 @@ import { contacto } from '../data/paginas.js';
             target="_blank"
             data-revelar
           >
-            Abrir en Google Maps
-            <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
+            {contacto.donde.mapa}
+            <span class="solo-lectores"> {t.nuevaPestana}</span>
           </Boton>
         </div>
 
@@ -117,7 +116,7 @@ import { contacto } from '../data/paginas.js';
     <section class="registros" aria-labelledby="registros-titulo">
       <div class="envoltura registros__caja" data-revelar-grupo>
         <h2 class="caps registros__epigrafe" id="registros-titulo" data-revelar>
-          Registros del centro
+          {contacto.registros}
         </h2>
         <dl class="registros__lista" data-revelar>
           {

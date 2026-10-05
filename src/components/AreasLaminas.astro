@@ -1,16 +1,18 @@
 ---
-import { areas, resumenAreas } from '../data/contenido.js';
+import { i18n } from '../i18n/index.js';
 
 const { id = 'areas' } = Astro.props;
+const { t, d, ruta } = i18n(Astro);
+const { areas } = d;
 ---
 
 <section class="laminas" id={id} aria-labelledby={`${id}-titulo`}>
   <div class="laminas__poro" aria-hidden="true"></div>
 
   <div class="envoltura laminas__cabecera">
-    <p class="caps laminas__marca">Áreas</p>
+    <p class="caps laminas__marca">{t.inicio.areasMarca}</p>
     <h2 class="h2 laminas__titulo" id={`${id}-titulo`}>
-      Valoración e intervención
+      {t.inicio.areasTitulo}
     </h2>
   </div>
 
@@ -18,7 +20,7 @@ const { id = 'areas' } = Astro.props;
     {
       areas.map((a) => (
         <li class="laminas__fila" data-revelar>
-          <a class="hoja" href={`/areas/${a.id}`}>
+          <a class="hoja" href={ruta('area', a.id)}>
             <span class="hoja__relleno" aria-hidden="true" />
             <span class="hoja__linea">
               <span class="hoja__nombre">{a.titulo}</span>

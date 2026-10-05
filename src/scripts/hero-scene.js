@@ -1136,6 +1136,12 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
   let primero = true;
   let escenaPreparada = false;
 
+  // La cámara respira un poco con la escena parada. Pasados 5 s sin scroll
+  // se detiene (WCAG 2.2.2) y vuelve con el siguiente movimiento, sin saltos.
+  const OSCILACION_MS = 5000;
+  let oscilacion = 1;
+  let ultimoMovimiento = performance.now();
+
   function colocarCamara(p, t) {
     const tt = Math.pow(clamp01(p), 0.8);
 
@@ -1145,7 +1151,7 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
     camera.position.copy(punto);
 
     if (!movimientoReducido && !revisionFija) {
-      const amp = lerp(0.0015, 0.05, tt * tt);
+      const amp = lerp(0.0015, 0.05, tt * tt) * oscilacion;
       camera.position.x += Math.sin(t * 0.00021) * amp;
       camera.position.y += Math.cos(t * 0.00016) * amp * 0.55;
     }
@@ -1177,6 +1183,10 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
     requestAnimationFrame(fotograma);
     if (!visible) return;
     if (!pendiente && (movimientoReducido || !escenaPreparada)) return;
+
+    const quieta = t - ultimoMovimiento > OSCILACION_MS;
+    oscilacion += ((quieta ? 0 : 1) - oscilacion) * 0.04;
+    if (oscilacion < 0.001) oscilacion = 0;
 
     colocarCamara(progreso, t);
     renderer.render(scene, camera);
@@ -1322,7 +1332,9 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
 
   return {
     setProgreso(p) {
-      progreso = clamp01(p);
+      const nuevo = clamp01(p);
+      if (nuevo !== progreso) ultimoMovimiento = performance.now();
+      progreso = nuevo;
       pendiente = true;
     },
     destruir() {

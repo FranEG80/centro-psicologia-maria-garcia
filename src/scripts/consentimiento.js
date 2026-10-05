@@ -18,18 +18,31 @@ function guardar(valor) {
   }
 }
 
-const TEXTOS = {
-  [ACEPTADO]:
-    'Has aceptado el contenido de terceros: el mapa de Google se carga donde aparece.',
-  [RECHAZADO]:
-    'Has rechazado el contenido de terceros: el mapa de Google no se carga.',
-  sin: 'Todavía no has elegido. Mientras tanto, el mapa de Google no se carga.',
-};
-
 export function consentimiento() {
   const franja = document.querySelector('[data-consentimiento]');
+  const anuncio = document.querySelector('[data-consentimiento-anuncio]');
+  // Los textos de estado llegan ya en el idioma de la página (Consentimiento.astro).
+  const TEXTOS = {
+    [ACEPTADO]: franja?.dataset.textoAceptado,
+    [RECHAZADO]: franja?.dataset.textoRechazado,
+    sin: franja?.dataset.textoSin,
+  };
   const marcos = [...document.querySelectorAll('[data-tercero]')];
   let valor = leer();
+
+  // Último elemento con foco fuera del aviso. Al decidir, el aviso se oculta
+  // con el foco dentro y el navegador lo suelta en <body>: se devuelve aquí.
+  let previo = null;
+  document.addEventListener('focusin', (e) => {
+    if (e.target !== document.body && !franja?.contains(e.target)) previo = e.target;
+  });
+
+  function devolverFoco() {
+    const vale = (el) =>
+      el?.isConnected && !el.closest('[hidden]') && el.getClientRects().length > 0;
+    if (vale(previo)) previo.focus();
+    else document.getElementById('contenido')?.focus({ preventScroll: true });
+  }
 
   function montar(marco) {
     if (marco.querySelector('iframe')) return;
@@ -38,10 +51,14 @@ export function consentimiento() {
     iframe.title = marco.dataset.terceroTitulo || '';
     iframe.referrerPolicy = 'no-referrer-when-downgrade';
     iframe.loading = 'eager';
+    const aviso = marco.querySelector('[data-tercero-aviso]');
+    // «Cargar el mapa» está dentro del aviso que se va a ocultar: el foco pasa
+    // al mapa, que es lo que se acaba de pedir.
+    const traiaFoco = aviso?.contains(document.activeElement);
     marco.append(iframe);
     marco.classList.add('esta-cargado');
-    const aviso = marco.querySelector('[data-tercero-aviso]');
     if (aviso) aviso.hidden = true;
+    if (traiaFoco) iframe.focus();
   }
 
   function desmontar(marco) {
@@ -58,15 +75,44 @@ export function consentimiento() {
     });
   }
 
+  // El aviso es fijo y tapa el final de la página: mientras está abierto se
+  // reserva su alto (margen del pie y scroll-padding-bottom) para que un
+  // elemento enfocado no quede debajo de él (WCAG 2.4.11).
+  function reservarAlto(abierto) {
+    const alto = abierto
+      ? Math.ceil(franja.offsetHeight + parseFloat(getComputedStyle(franja).bottom || '0'))
+      : 0;
+    document.documentElement.style.setProperty('--aviso-alto', `${alto}px`);
+  }
+  if (franja && 'ResizeObserver' in window) {
+    new ResizeObserver(() => {
+      if (!franja.hidden) reservarAlto(true);
+    }).observe(franja);
+  }
+  // La reserva solo se aplica a quien navega con teclado (clase en <html>):
+  // con ratón o táctil el aviso se cierra sin más y no queda hueco bajo el pie.
+  const html = document.documentElement;
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') html.classList.add('usa-teclado');
+  });
+  document.addEventListener('pointerdown', () => html.classList.remove('usa-teclado'));
+
   function abrir({ foco = false } = {}) {
     if (!franja) return;
     franja.hidden = false;
+    reservarAlto(true);
     requestAnimationFrame(() => franja.classList.add('esta-visible'));
     if (foco) franja.querySelector('[data-consentimiento-aceptar]')?.focus();
+    // Apertura automática: el foco no se mueve, se anuncia. Con un pequeño
+    // retraso para que el lector no lo pise con lo que esté leyendo.
+    else if (anuncio) setTimeout(() => (anuncio.textContent = anuncio.dataset.texto), 150);
   }
 
   function cerrar() {
     if (!franja) return;
+    if (franja.contains(document.activeElement)) devolverFoco();
+    if (anuncio) anuncio.textContent = '';
+    reservarAlto(false);
     franja.classList.remove('esta-visible');
     let hecho = false;
     const ocultar = () => {

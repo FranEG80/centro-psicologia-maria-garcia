@@ -1,0 +1,10 @@
+---
+// Versión inglesa de la portada: la misma página, renderizada en inglés por la URL.
+import Inicio from '../index.astro';
+import { bilingue, ruta } from '../../i18n/index.js';
+
+// Con PUBLIC_BILINGUE=false el inglés se apaga y la URL lleva al español.
+if (!bilingue) return Astro.redirect(ruta('es', 'inicio'));
+---
+
+<Inicio />

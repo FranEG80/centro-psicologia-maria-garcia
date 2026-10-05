@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import Consentimiento from '../components/Consentimiento.astro';
-import { centro } from '../data/contenido.js';
+import { alternas, i18n, idiomas } from '../i18n/index.js';
 
 interface Props {
   titulo: string;
@@ -9,15 +9,35 @@ interface Props {
 }
 
 const { titulo, descripcion } = Astro.props;
+const { lang, t, d } = i18n(Astro);
+const { centro } = d;
 const canonica = new URL(Astro.url.pathname, Astro.site).href;
 
-const jsonLd = {
-  '@context': 'https://schema.org',
+const ogLocale = { es: 'es_ES', en: 'en_GB' };
+// Imagen para redes: cada idioma con su texto.
+const imagenOg = new URL(lang === 'en' ? '/media/og-en.jpg' : '/media/og.jpg', Astro.site).href;
+// Solo las páginas que existen en más de un idioma declaran alternativas. Se
+// escriben con la misma barra final que el canonical (el build la añade).
+const conBarra = Astro.url.pathname.length > 1 && Astro.url.pathname.endsWith('/');
+const versiones = alternas(Astro.url.pathname);
+const alternativas =
+  versiones && Object.keys(versiones).length > 1
+    ? Object.entries(versiones).map(([idioma, ruta]) => ({
+        idioma,
+        href: new URL(conBarra && !ruta.endsWith('/') ? `${ruta}/` : ruta, Astro.site).href,
+      }))
+    : [];
+
+// Datos estructurados: la consulta y el sitio web. Los @id son fijos para que
+// todas las páginas (y el BreadcrumbList de Portico) apunten a la misma entidad.
+const portada = new URL('/', Astro.site).href;
+const consulta = {
   '@type': 'Psychologist',
+  '@id': `${portada}#consulta`,
   name: centro.nombre,
-  description: descripcion,
-  url: canonica,
-  image: new URL('/media/og.jpg', Astro.site).href,
+  description: d.metas.inicio.descripcion(centro),
+  url: portada,
+  image: imagenOg,
   telephone: `+34 ${centro.telefono}`,
   email: centro.email,
   founder: { '@type': 'Person', name: centro.profesional },
@@ -34,28 +54,57 @@ const jsonLd = {
   knowsLanguage: 'es-ES',
   identifier: centro.credenciales.map((c) => `${c.etiqueta} ${c.valor}`),
 };
+
+const sitio = {
+  '@type': 'WebSite',
+  '@id': `${portada}#web`,
+  name: centro.nombre,
+  url: portada,
+  inLanguage: idiomas,
+  publisher: { '@id': consulta['@id'] },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [consulta, sitio],
+};
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />
     <link rel="canonical" href={canonica} />
+    {alternativas.map((a) => <link rel="alternate" hreflang={a.idioma} href={a.href} />)}
+    {
+      alternativas.length > 0 && (
+        <link
+          rel="alternate"
+          hreflang="x-default"
+          href={alternativas.find((a) => a.idioma === 'es').href}
+        />
+      )
+    }
     <meta name="theme-color" content="#F8F4EB" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    {
+      alternativas
+        .filter((a) => a.idioma !== lang)
+        .map((a) => <meta property="og:locale:alternate" content={ogLocale[a.idioma]} />)
+    }
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descripcion} />
     <meta property="og:url" content={canonica} />
-    <meta property="og:image" content={new URL('/media/og.jpg', Astro.site).href} />
+    <meta property="og:image" content={imagenOg} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={titulo} />
     <meta name="twitter:description" content={descripcion} />
-    <meta name="twitter:image" content={new URL('/media/og.jpg', Astro.site).href} />
+    <meta name="twitter:image" content={imagenOg} />
     <meta property="og:image:alt" content={titulo} />
     <meta name="twitter:image:alt" content={titulo} />
 
@@ -89,8 +138,10 @@ const jsonLd = {
   </head>
 
   <body>
-    <a class="salto-contenido" href="#contenido">Saltar al contenido</a>
-    <slot />
+    <a class="salto-contenido" href="#contenido">{t.saltar}</a>
+    <!-- Justo tras el enlace de salto: es fijo y visual, pero con teclado debe
+         estar al alcance sin recorrer toda la página. -->
     <Consentimiento />
+    <slot />
   </body>
 </html>

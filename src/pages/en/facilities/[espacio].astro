@@ -1,0 +1,14 @@
+---
+import Espacio from '../../instalaciones/[espacio].astro';
+import { bilingue, ruta, rutasEstaticas } from '../../../i18n/index.js';
+
+export function getStaticPaths() {
+  return rutasEstaticas('espacio', 'en');
+}
+
+const { id } = Astro.props;
+// Con PUBLIC_BILINGUE=false el inglés se apaga y la URL lleva al español.
+if (!bilingue) return Astro.redirect(ruta('es', 'espacio', id));
+---
+
+<Espacio id={id} />

@@ -4,18 +4,16 @@ import Nav from '../../components/Nav.astro';
 import Portico from '../../components/Portico.astro';
 import IconoArea from '../../components/IconoArea.astro';
 import Pie from '../../components/Pie.astro';
-import { centro, areas, resumenAreas } from '../../data/contenido.js';
-import { indiceAreas } from '../../data/paginas.js';
+import { i18n } from '../../i18n/index.js';
 
+const { t, d, ruta } = i18n(Astro);
+const { centro, areas, resumenAreas, indiceAreas, metas } = d;
 ---
 
-<Base
-  titulo={`Áreas de atención · ${centro.nombre}`}
-  descripcion={indiceAreas.entradilla}
->
+<Base titulo={metas.areas.titulo(centro)} descripcion={indiceAreas.entradilla}>
   <Nav />
 
-  <main id="contenido">
+  <main id="contenido" tabindex="-1">
     <Portico
       marca={indiceAreas.marca}
       titulo={indiceAreas.titulo}
@@ -23,25 +21,25 @@ import { indiceAreas } from '../../data/paginas.js';
       cuerpo={indiceAreas.cuerpo}
     />
 
-    <section class="indice" aria-label="Las áreas">
+    <section class="indice" aria-label={t.areas.indiceAria}>
       <div class="indice__poro" aria-hidden="true"></div>
 
       <ul class="envoltura indice__reticula" data-revelar-grupo>
         {
           areas.map((a) => (
             <li class="area" data-revelar>
-              <a class="area__hoja" href={`/areas/${a.id}`}>
+              <a class="area__hoja" href={ruta('area', a.id)}>
                 <span class="area__relleno" aria-hidden="true" />
 
                 <span class="area__icono" aria-hidden="true">
                   <IconoArea id={a.id} />
                 </span>
 
-                <span class="area__cuerpo">
+                <div class="area__cuerpo">
                   <span class="caps caps--contenido area__sumario">
                     {a.sumario}
                   </span>
-                  <span class="area__nombre">{a.titulo}</span>
+                  <h2 class="area__nombre">{a.titulo}</h2>
                   <span class="area__nota">
                     {resumenAreas[a.id] ?? a.sumario}
                   </span>
@@ -53,7 +51,7 @@ import { indiceAreas } from '../../data/paginas.js';
                   </span>
 
                   <span class="area__pie">
-                    <span class="area__ir">Ver el área</span>
+                    <span class="area__ir">{t.areas.ver}</span>
                     <span class="area__flecha" aria-hidden="true">
                       <svg viewBox="0 0 24 10" width="24" height="10" fill="none">
                         <path
@@ -64,7 +62,7 @@ import { indiceAreas } from '../../data/paginas.js';
                       </svg>
                     </span>
                   </span>
-                </span>
+                </div>
               </a>
             </li>
           ))
