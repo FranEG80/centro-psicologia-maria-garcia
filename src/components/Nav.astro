@@ -171,6 +171,13 @@ const destinoIdioma =
     gap: var(--paso-2);
   }
 
+  /* Entre páginas la barra se queda quieta (transición de vista). En la portada
+     el logo grande vive en ella: solo se nombra cuando ya está montada. */
+  .nav:not(.nav--portada) .nav__barra,
+  :global(body.barra-montada) .nav--portada .nav__barra {
+    view-transition-name: nav-barra;
+  }
+
   .nav__marca {
     display: flex;
     align-items: center;
@@ -187,7 +194,7 @@ const destinoIdioma =
   }
 
   .nav__monograma {
-    width: 26px;
+    width: 38px;
     height: auto;
     aspect-ratio: 382 / 305;
     flex: none;
