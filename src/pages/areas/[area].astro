@@ -6,20 +6,19 @@ import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Portico from '../../components/Portico.astro';
 import Pie from '../../components/Pie.astro';
-import { centro, areas } from '../../data/contenido.js';
-import { detallesAreas, metaAreas } from '../../data/paginas.js';
+import { i18n, rutasEstaticas } from '../../i18n/index.js';
 
 export function getStaticPaths() {
-  return areas.map((area) => ({
-    params: { area: area.id },
-    props: { area },
-  }));
+  return rutasEstaticas('area', 'es');
 }
 
-const { area } = Astro.props;
-const detalle = detallesAreas[area.id];
+const { id } = Astro.props;
+const { t, d, ruta } = i18n(Astro);
+const { centro, areas, detallesAreas, metaAreas } = d;
+const area = areas.find((a) => a.id === id);
+const detalle = detallesAreas[id];
 
-const otras = areas.filter((a) => a.id !== area.id);
+const otras = areas.filter((a) => a.id !== id);
 ---
 
 <Base
@@ -35,8 +34,8 @@ const otras = areas.filter((a) => a.id !== area.id);
       entradilla={detalle.entradilla}
       cuerpo={detalle.cuerpo}
       migas={[
-        { href: '/', texto: 'Inicio' },
-        { href: '/areas', texto: 'Áreas' },
+        { href: ruta('inicio'), texto: t.migas.inicio },
+        { href: ruta('areas'), texto: t.migas.areas },
       ]}
       image={detalle.imagenAdicional}
     />
@@ -44,7 +43,7 @@ const otras = areas.filter((a) => a.id !== area.id);
       <div class="envoltura listado__reticula" data-revelar-grupo>
         <div class="listado__texto">
           <h2 class="caps listado__epigrafe" id="listado-titulo" data-revelar>
-            {detalle.listadoTitulo ?? 'Se valora e interviene en'}
+            {detalle.listadoTitulo ?? t.areas.listadoPorDefecto}
           </h2>
 
           <ul class="listado__puntos" data-revelar>
@@ -63,12 +62,12 @@ const otras = areas.filter((a) => a.id !== area.id);
           }
         </div>
 
-        <div class:list={['listado__galeria', { 'listado__galeria--solapada': detalle.imagenComplementaria }]}>
-          <figure class="listado__figura" data-revelar="lamina">
+        <div class="listado__galeria">
+          <figure class="listado__figura" data-revelar>
             <Foto
               src={detalle.imagen.src}
               widths={[420, 640, 860]}
-              sizes={detalle.imagenComplementaria ? '(max-width: 900px) 75vw, 32vw' : '(max-width: 900px) 100vw, 40vw'}
+              sizes="(max-width: 900px) 100vw, 40vw"
               alt={detalle.imagen.alt}
               loading="eager"
               fetchpriority="low"
@@ -84,11 +83,11 @@ const otras = areas.filter((a) => a.id !== area.id);
           </figure>
           {
             detalle.imagenComplementaria && (
-              <figure class="listado__figura listado__figura--adicional" data-revelar="lamina">
+              <figure class="listado__figura listado__figura--adicional" data-revelar>
                 <Foto
                   src={detalle.imagenComplementaria.src}
                   widths={[420, 640, 860]}
-                  sizes="(max-width: 900px) 55vw, 24vw"
+                  sizes="(max-width: 900px) 100vw, 40vw"
                   alt={detalle.imagenComplementaria.alt}
                   loading="lazy"
                   decoding="async"
@@ -110,7 +109,7 @@ const otras = areas.filter((a) => a.id !== area.id);
         <section class="ambitos" aria-labelledby="ambitos-titulo">
           <div class="envoltura">
             <h2 class="h2 ambitos__titulo" id="ambitos-titulo">
-              Áreas de actuación
+              {t.areas.ambitos}
             </h2>
             <div class="ambitos__lista" data-revelar-grupo>
               {detalle.ambitos.map((ambito) => (
@@ -139,11 +138,11 @@ const otras = areas.filter((a) => a.id !== area.id);
 
     <nav class="vecinas" aria-labelledby="vecinas-titulo">
       <div class="envoltura">
-        <h2 class="caps vecinas__titulo" id="vecinas-titulo">Otras áreas</h2>
+        <h2 class="caps vecinas__titulo" id="vecinas-titulo">{t.areas.otras}</h2>
         <ul class="vecinas__reticula" data-revelar-grupo>
           {otras.map((a) => (
             <li class="vecina" data-revelar>
-              <a class="vecina__enlace" href={`/areas/${a.id}`}>
+              <a class="vecina__enlace" href={ruta('area', a.id)}>
                 <span class="vecina__icono" aria-hidden="true">
                   <IconoArea id={a.id} />
                 </span>
@@ -239,6 +238,18 @@ const otras = areas.filter((a) => a.id !== area.id);
     box-shadow: var(--sombra-baja);
   }
 
+  .listado__galeria .listado__figura {
+    --revelar-y: 56px;
+  }
+
+  html.js .listado__galeria .listado__figura.es-visible {
+    transition-duration: 1100ms;
+  }
+
+  html.js .listado__galeria .listado__figura--adicional.es-visible {
+    transition-delay: calc(var(--revelar-retardo, 0ms) + 160ms);
+  }
+
   .listado__figura img {
     width: 100%;
     height: clamp(15rem, 30vw, 24rem);
@@ -247,37 +258,6 @@ const otras = areas.filter((a) => a.id !== area.id);
 
   .listado__figura--adicional img {
     height: clamp(10rem, 20vw, 16rem);
-  }
-
-  .listado__galeria--solapada {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: repeat(10, minmax(0, 1fr)) auto;
-    gap: 0;
-    aspect-ratio: 1 / 1.05;
-    isolation: isolate;
-  }
-
-  .listado__galeria--solapada .listado__figura {
-    grid-column: 1 / 10;
-    grid-row: 1 / 9;
-    min-height: 0;
-    padding: var(--paso-1);
-  }
-
-  .listado__galeria--solapada .listado__figura--adicional {
-    grid-column: 6 / 13;
-    grid-row: 5 / 11;
-    z-index: 1;
-  }
-
-  .listado__galeria--solapada .listado__figura img {
-    height: 100%;
-    object-position: center 60%;
-  }
-
-  .listado__pie--conjunto {
-    grid-column: 1 / -1;
-    grid-row: 11;
   }
 
   .listado__pie {

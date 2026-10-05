@@ -1,13 +1,15 @@
 ---
 import Foto from './Foto.astro';
-import { ambientes } from '../data/contenido.js';
+import { i18n } from '../i18n/index.js';
 
+const { t, d } = i18n(Astro);
+const { ambientes } = d;
 ---
 
 <section class="ambientes" aria-labelledby="ambientes-titulo">
   <div class="envoltura ambientes__cabecera">
     <h2 class="h2 ambientes__titulo" id="ambientes-titulo">
-      Espacios adaptados según la edad y las necesidades del paciente
+      {t.inicio.ambientesTitulo}
     </h2>
   </div>
 

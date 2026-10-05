@@ -1,15 +1,19 @@
 ---
-import { areasHero, centro } from '../data/contenido.js';
+import { i18n } from '../i18n/index.js';
 import Boton from './Boton.astro';
 
-const credencial = (prefijo) =>
-  centro.credenciales.find((c) => c.etiqueta.startsWith(prefijo)).valor;
+const { t, d } = i18n(Astro);
+const { areasHero, centro } = d;
+
+const credencial = (id) => centro.credenciales.find((c) => c.id === id).valor;
+const etiqueta = t.hero.registros;
 
 const registros = [
-  `Nº colegiada ${credencial('Nº colegiada')}`,
-  `Mediadora familiar ${credencial('Mediadora').replace('nº ', '')}`,
-  `NICA ${credencial('NICA')}`,
-  `Ofreciendo servicios desde ${centro.desde}`,
+  `${etiqueta.colegiada} ${credencial('colegiada')}`,
+  // El valor viene como «nº 631» / «no. 631»; aquí solo el número.
+  `${etiqueta.mediadora} ${credencial('mediadora').replace(/^(nº|no\.)\s*/, '')}`,
+  `${etiqueta.nica} ${credencial('nica')}`,
+  `${etiqueta.desde} ${centro.desde}`,
 ];
 ---
 
@@ -23,10 +27,10 @@ const registros = [
 
     <div class="hero__copia" data-hero-copia>
       <p class="caps caps--ancho hero__antetitulo">
-        Psicología · {centro.localidad}, {centro.provincia}
+        {t.hero.antetitulo} · {centro.localidad}, {centro.provincia}
       </p>
 
-      <h1 class="hero__titulo">Tu realidad, vista<br />con luz diferente</h1>
+      <h1 class="hero__titulo">{t.hero.titulo[0]}<br />{t.hero.titulo[1]}</h1>
 
       <ul class="hero__areas" role="list">
         {areasHero.map((a) => <li>{a}</li>)}

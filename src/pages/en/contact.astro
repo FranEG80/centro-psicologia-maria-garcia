@@ -1,0 +1,9 @@
+---
+import Contacto from '../contacto.astro';
+import { bilingue, ruta } from '../../i18n/index.js';
+
+// Con PUBLIC_BILINGUE=false el inglés se apaga y la URL lleva al español.
+if (!bilingue) return Astro.redirect(ruta('es', 'contacto'));
+---
+
+<Contacto />

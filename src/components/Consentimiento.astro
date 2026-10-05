@@ -1,5 +1,9 @@
 ---
+import { i18n } from '../i18n/index.js';
 import Boton from './Boton.astro';
+
+const { lang, t, ruta } = i18n(Astro);
+const texto = t.consentimiento;
 
 ---
 
@@ -8,20 +12,22 @@ import Boton from './Boton.astro';
   data-consentimiento
   hidden
   aria-labelledby="consentimiento-titulo"
+  data-texto-aceptado={texto.aceptado}
+  data-texto-rechazado={texto.rechazado}
+  data-texto-sin={texto.sin}
 >
-  <h2 class="caps aviso__epigrafe" id="consentimiento-titulo">Cookies</h2>
+  <h2 class="caps aviso__epigrafe" id="consentimiento-titulo">{texto.epigrafe}</h2>
   <p class="aviso__texto">
-    Sin analítica ni publicidad. Solo el mapa del pie es de Google y deja
-    cookies suyas al cargarse.
-    <a class="aviso__enlace" href="/cookies">Más detalle</a>
+    {texto.texto}
+    <a class="aviso__enlace" href={ruta('cookies')} hreflang={lang === 'es' ? undefined : 'es'}>{texto.mas}</a>
   </p>
 
   <div class="aviso__acciones">
     <Boton class="aviso__boton" data-consentimiento-rechazar>
-      Rechazar
+      {texto.rechazar}
     </Boton>
     <Boton class="aviso__boton aviso__boton--si" data-consentimiento-aceptar>
-      Aceptar
+      {texto.aceptar}
     </Boton>
   </div>
 </aside>

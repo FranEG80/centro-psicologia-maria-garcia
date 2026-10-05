@@ -1,6 +1,9 @@
 ---
-import { centro, navegacion } from '../data/contenido.js';
+import { alternas, i18n, idiomas, ruta as rutaDe } from '../i18n/index.js';
 import Boton from './Boton.astro';
+
+const { t, d, ruta } = i18n(Astro);
+const { centro, navegacion } = d;
 
 const nucleo = 'María García';
 const prefijo = centro.nombre.endsWith(nucleo)
@@ -8,14 +11,22 @@ const prefijo = centro.nombre.endsWith(nucleo)
   : '';
 const letras = [...prefijo];
 
-const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
+const sinBarra = (p) => p.replace(/\/+$/, '');
+const portada = sinBarra(Astro.url.pathname) === sinBarra(ruta('inicio'));
+
+// Enlace al otro idioma: a la misma página si existe allí; si no (páginas
+// legales, solo en español), a su portada.
+const otro = t.otroIdioma;
+const hayOtroIdioma = idiomas.includes(otro.lang);
+const destinoIdioma =
+  alternas(Astro.url.pathname)?.[otro.lang] ?? rutaDe(otro.lang, 'inicio');
 ---
 
 <header class:list={['nav', portada && 'nav--portada']} data-nav>
   <div class="nav__material vitrina" aria-hidden="true"></div>
 
   <div class="nav__barra">
-    <a class="nav__marca" href="/" data-nav-marca>
+    <a class="nav__marca" href={ruta('inicio')} data-nav-marca>
       <span class="solo-lectores">{centro.nombre}</span>
       <svg
         class="nav__monograma"
@@ -48,7 +59,7 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
       </span>
     </a>
 
-    <nav class="nav__enlaces" aria-label="Secciones">
+    <nav class="nav__enlaces" aria-label={t.nav.secciones}>
       <ul>
         {
           navegacion.map((n) => (
@@ -63,6 +74,19 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     </nav>
 
     <div class="nav__derecha">
+      {
+        hayOtroIdioma && (
+          <a
+            class="nav__idioma"
+            href={destinoIdioma}
+            lang={otro.lang}
+            hreflang={otro.lang}
+            aria-label={otro.aria}
+          >
+            {otro.codigo}
+          </a>
+        )
+      }
       <a class="nav__telefono" href={`tel:${centro.telefonoTel}`}>
         {centro.telefono}
       </a>
@@ -72,8 +96,10 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
         aria-expanded="false"
         aria-controls="nav-panel"
         data-nav-boton
+        data-texto-abrir={t.nav.abrirMenu}
+        data-texto-cerrar={t.nav.cerrarMenu}
       >
-        <span class="solo-lectores">Abrir el menú</span>
+        <span class="solo-lectores">{t.nav.abrirMenu}</span>
         <span class="nav__trazos" aria-hidden="true"><i></i><i></i></span>
       </button>
     </div>
@@ -238,7 +264,8 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     gap: var(--paso-2);
   }
 
-  .nav__telefono {
+  .nav__telefono,
+  .nav__idioma {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
@@ -251,7 +278,8 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     position: relative;
   }
 
-  .nav__telefono::after {
+  .nav__telefono::after,
+  .nav__idioma::after {
     content: '';
     position: absolute;
     left: 0;
@@ -263,13 +291,26 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     transition: clip-path var(--dur-ui) var(--ease-out);
   }
 
+  /* Solo son dos letras: el relleno da un área táctil razonable sin mover el texto. */
+  .nav__idioma {
+    padding-inline: 0.6rem;
+    margin-inline: -0.3rem;
+  }
+
+  .nav__idioma::after {
+    left: 0.6rem;
+    right: 0.6rem;
+  }
+
   @media (hover: hover) and (pointer: fine) {
-    .nav__telefono:hover::after {
+    .nav__telefono:hover::after,
+    .nav__idioma:hover::after {
       clip-path: inset(0 0 0 0);
     }
   }
 
-  .nav__telefono:focus-visible::after {
+  .nav__telefono:focus-visible::after,
+  .nav__idioma:focus-visible::after {
     clip-path: inset(0 0 0 0);
   }
 
@@ -360,6 +401,7 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
 
   .nav__enlaces,
   .nav__telefono,
+  .nav__idioma,
   .nav__conmutador {
     transition:
       opacity var(--dur-material) var(--ease-hoja),
@@ -369,6 +411,7 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
 
   html.js .nav--portada .nav__enlaces,
   html.js .nav--portada .nav__telefono,
+  html.js .nav--portada .nav__idioma,
   html.js .nav--portada .nav__conmutador {
     opacity: 0;
     visibility: hidden;
@@ -380,6 +423,7 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
 
   html.js :global(body.barra-montada) .nav--portada .nav__enlaces,
   html.js :global(body.barra-montada) .nav--portada .nav__telefono,
+  html.js :global(body.barra-montada) .nav--portada .nav__idioma,
   html.js :global(body.barra-montada) .nav--portada .nav__conmutador {
     opacity: 1;
     visibility: visible;
@@ -417,6 +461,7 @@ const portada = Astro.url.pathname.replace(/\/+$/, '') === '';
     .nav__material,
     .nav__enlace::after,
     .nav__telefono::after,
+    .nav__idioma::after,
     .nav__trazos i {
       transition: none;
     }

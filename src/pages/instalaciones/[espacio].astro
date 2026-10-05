@@ -3,7 +3,7 @@ import Foto from '../../components/Foto.astro';
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Pie from '../../components/Pie.astro';
-import { centro } from '../../data/contenido.js';
+import { i18n, rutasEstaticas } from '../../i18n/index.js';
 
 import officeDarkwood from '../../assets/photo/office-darkwood.webp';
 import officeCalm from '../../assets/photo/office-calm.webp';
@@ -13,63 +13,20 @@ import reception from '../../assets/photo/reception.webp';
 import waitingRoom from '../../assets/photo/waiting-room.webp';
 
 export function getStaticPaths() {
-  return [
-    {
-      params: { espacio: 'adultos' },
-      props: {
-        titulo: 'Los despachos',
-        sumario: 'Adultos, pareja y familia',
-        entradilla:
-          'Salas de consulta tranquilas para hablar con calma, ya vengas solo, en pareja o con tu familia.',
-        vistas: [officeDarkwood, officeCalm, officeFamily],
-        alts: [
-          'Despacho de consulta del Centro de Psicología María García.',
-          'El mismo despacho, luminoso y tranquilo.',
-          'Segundo despacho del centro, preparado para sesiones de pareja y familia.',
-        ],
-        notas: [
-          'Sesiones individuales, de pareja y de familia.',
-          'Valoración, intervención y seguimiento en el mismo espacio y con la misma persona.',
-          'Distintas salas de trabajo según las necesidades de cada paciente.',
-        ],
-      },
-    },
-    {
-      params: { espacio: 'infantil' },
-      props: {
-        titulo: 'La zona infantil',
-        sumario: 'Un espacio para niños',
-        entradilla:
-          'Una sala aparte, a su altura y con su propio material. Aquí se trabaja jugando, porque jugando es como un niño cuenta lo que le pasa.',
-        vistas: [childrenRoom],
-        alts: ['Zona infantil del centro, un espacio propio pensado para los niños.'],
-        notas: [
-          'Valoración e intervención con niños.',
-          'Pruebas y material de trabajo pensados para su edad.',
-          'Un ambiente cómodo y seguro, donde el niño se siente a gusto.',
-        ],
-      },
-    },
-    {
-      params: { espacio: 'juvenil' },
-      props: {
-        titulo: 'La sala juvenil',
-        sumario: 'Un espacio para adolescentes',
-        entradilla:
-          'Los adolescentes cuentan con una sala propia, tranquila y reservada, donde hablar con confianza y a su manera.',
-        vistas: [],
-        alts: [],
-        notas: [
-          'Privacidad y confianza para contar lo que les pasa.',
-          'El espacio se adapta a la edad y a las necesidades de cada paciente.',
-        ],
-      },
-    },
-  ];
+  return rutasEstaticas('espacio', 'es');
 }
 
-const { titulo, sumario, entradilla, vistas, alts, notas } =
-  Astro.props;
+const vistasPorEspacio = {
+  adultos: [officeDarkwood, officeCalm, officeFamily],
+  infantil: [childrenRoom],
+  juvenil: [],
+};
+
+const { id } = Astro.props;
+const { d } = i18n(Astro);
+const { centro, espacios } = d;
+const { titulo, sumario, entradilla, alts, notas } = espacios[id];
+const vistas = vistasPorEspacio[id];
 ---
 
 <Base titulo={`${titulo} · ${centro.nombre}`} descripcion={entradilla}>
@@ -118,14 +75,14 @@ const { titulo, sumario, entradilla, vistas, alts, notas } =
         </ul>
 
         <aside class="espacio__resto">
-          <h2 class="caps espacio__epigrafe">El resto del centro</h2>
+          <h2 class="caps espacio__epigrafe">{espacios.resto.epigrafe}</h2>
           <div class="espacio__miniaturas">
             <figure class="mini">
               <Foto
                 src={reception}
                 widths={[280, 420]}
                 sizes="(max-width: 640px) 45vw, 220px"
-                alt="Recepción del centro."
+                alt={espacios.resto.recepcion}
                 loading="eager"
                 fetchpriority="low"
                 decoding="async"
@@ -137,7 +94,7 @@ const { titulo, sumario, entradilla, vistas, alts, notas } =
                 src={waitingRoom}
                 widths={[280, 420]}
                 sizes="(max-width: 640px) 45vw, 220px"
-                alt="Sala de espera del centro."
+                alt={espacios.resto.espera}
                 loading="eager"
                 fetchpriority="low"
                 decoding="async"

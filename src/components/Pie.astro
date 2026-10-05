@@ -1,11 +1,18 @@
 ---
-import { centro, navegacion, areas } from '../data/contenido.js';
+import { i18n } from '../i18n/index.js';
 import Boton from './Boton.astro';
+
+const { lang, t, d, ruta } = i18n(Astro);
+const { centro, navegacion, areas } = d;
+const texto = t.pie;
 
 const anio = new Date().getFullYear();
 
 const { lat, lon } = centro.coordenadas;
-const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&output=embed`;
+const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=${lang}&output=embed`;
+
+// Las páginas legales solo existen en español: fuera de él, el enlace lo avisa.
+const idiomaLegal = lang === 'es' ? undefined : 'es';
 
 ---
 
@@ -14,9 +21,9 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
     <hr class="canto" />
     <div class="envoltura cierre__caja">
       <div class="cierre__texto">
-        <h2 class="cierre__titulo" id="cierre-titulo">Escríbeme y lo vemos</h2>
+        <h2 class="cierre__titulo" id="cierre-titulo">{texto.cierre.titulo}</h2>
         <p class="cierre__plomo">
-          Llama o escríbeme y lo vemos. Se responderá en un plazo máximo de 24 horas.
+          {texto.cierre.plomo}
         </p>
       </div>
 
@@ -68,8 +75,8 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
         </dl>
       </div>
 
-      <nav class="pie__bloque" aria-label="Páginas">
-        <h2 class="caps pie__epigrafe">Páginas</h2>
+      <nav class="pie__bloque" aria-label={texto.paginas}>
+        <h2 class="caps pie__epigrafe">{texto.paginas}</h2>
         <ul class="pie__lista">
           {
             navegacion.map((n) => (
@@ -83,13 +90,13 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
         </ul>
       </nav>
 
-      <nav class="pie__bloque" aria-label="Áreas de atención">
-        <h2 class="caps pie__epigrafe">Áreas</h2>
+      <nav class="pie__bloque" aria-label={texto.areasAria}>
+        <h2 class="caps pie__epigrafe">{texto.areas}</h2>
         <ul class="pie__lista">
           {
             areas.map((a) => (
               <li>
-                <a class="pie__enlace" href={`/areas/${a.id}`}>
+                <a class="pie__enlace" href={ruta('area', a.id)}>
                   {a.titulo}
                 </a>
               </li>
@@ -99,7 +106,7 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
       </nav>
 
       <div class="pie__bloque pie__bloque--contacto">
-        <h2 class="caps pie__epigrafe">Contacto</h2>
+        <h2 class="caps pie__epigrafe">{texto.contacto}</h2>
         <ul class="pie__lista">
           <li>
             <a class="pie__enlace" href={`tel:${centro.telefonoTel}`}>
@@ -123,7 +130,7 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
           </li>
         </ul>
 
-        <h2 class="caps pie__epigrafe pie__epigrafe--sitio">Dónde estamos</h2>
+        <h2 class="caps pie__epigrafe pie__epigrafe--sitio">{texto.donde}</h2>
         <address class="pie__direccion">
           {centro.direccion}<br />
           {centro.cp} {centro.localidad}, {centro.provincia}
@@ -134,8 +141,8 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
           rel="noopener noreferrer"
           target="_blank"
         >
-          Cómo llegar
-          <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
+          {texto.comoLlegar}
+          <span class="solo-lectores"> {t.nuevaPestana}</span>
         </a>
       </div>
 
@@ -144,7 +151,7 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
           class="pie__lienzo"
           data-tercero="mapa"
           data-tercero-src={mapaEmbebido}
-          data-tercero-titulo={`Mapa con la ubicación del centro en ${centro.direccion}, ${centro.localidad}`}
+          data-tercero-titulo={texto.mapa.titulo(centro.direccion, centro.localidad)}
         >
           <div class="marco" data-tercero-aviso>
             <img
@@ -157,13 +164,12 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
               decoding="async"
             />
             <div class="marco__contenido">
-              <p class="caps marco__epigrafe">Mapa de Google</p>
+              <p class="caps marco__epigrafe">{texto.mapa.epigrafe}</p>
               <p class="marco__texto">
-                Este mapa lo sirve Google y deja cookies suyas en tu navegador.
-                No se carga hasta que lo autorices.
+                {texto.mapa.texto}
               </p>
               <Boton class="marco__boton" variant="claro" data-tercero-cargar>
-                Cargar el mapa
+                {texto.mapa.cargar}
               </Boton>
               <a
                 class="pie__enlace marco__alterna"
@@ -171,8 +177,8 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                O abrirlo en Google Maps
-                <span class="solo-lectores"> (se abre en una pestaña nueva)</span>
+                {texto.mapa.alterna}
+                <span class="solo-lectores"> {t.nuevaPestana}</span>
               </a>
             </div>
           </div>
@@ -183,14 +189,14 @@ const mapaEmbebido = `https://maps.google.com/maps?q=${lat},${lon}&z=16&hl=es&ou
 
       <div class="pie__cola">
         <p class="pie__legal">
-          © {anio} {centro.profesional}. Todos los derechos reservados.
+          {texto.copyright(anio, centro.profesional)}
         </p>
-        <nav class="pie__legales" aria-label="Información legal">
-          <a class="pie__enlace" href="/aviso-legal">Aviso legal</a>
-          <a class="pie__enlace" href="/privacidad">Protección de datos</a>
-          <a class="pie__enlace" href="/cookies">Cookies</a>
+        <nav class="pie__legales" aria-label={texto.legalesAria}>
+          <a class="pie__enlace" href={ruta('avisoLegal')} hreflang={idiomaLegal}>{texto.avisoLegal}</a>
+          <a class="pie__enlace" href={ruta('privacidad')} hreflang={idiomaLegal}>{texto.privacidad}</a>
+          <a class="pie__enlace" href={ruta('cookies')} hreflang={idiomaLegal}>{texto.cookies}</a>
           <button class="pie__enlace pie__preferencias" type="button" data-consentimiento-abrir>
-            Preferencias de cookies
+            {texto.preferencias}
           </button>
         </nav>
       </div>

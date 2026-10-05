@@ -1,7 +1,8 @@
 ---
-import { prisma } from '../data/contenido.js';
+import { i18n } from '../i18n/index.js';
 
-const { texto, autor } = prisma;
+const { d } = i18n(Astro);
+const { texto, autor } = d.prisma;
 ---
 
 <section class="prisma">

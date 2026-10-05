@@ -4,17 +4,16 @@ import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import Prisma from '../components/Prisma.astro';
 import AreasLaminas from '../components/AreasLaminas.astro';
-import AreasMuro from '../components/AreasMuro.astro';
 import Ambientes from '../components/Ambientes.astro';
 import Profesional from '../components/Profesional.astro';
 import Pie from '../components/Pie.astro';
+import { i18n } from '../i18n/index.js';
 
+const { d } = i18n(Astro);
+const { centro, metas } = d;
 ---
 
-<Base
-  titulo="Centro de Psicología María García · Motril, Granada"
-  descripcion="Psicología general, infantil y juvenil, mediación familiar, neuropsicología, psicología jurídica y psicología forense en Motril. María García Molina, psicóloga sanitaria y mediadora familiar desde 2005."
->
+<Base titulo={metas.inicio.titulo(centro)} descripcion={metas.inicio.descripcion(centro)}>
   <Nav />
   <main id="contenido">
     <Hero />
