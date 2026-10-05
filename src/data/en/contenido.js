@@ -157,7 +157,7 @@ export const trayectoria = [
 
 const textosGaleria = [
   {
-    alt: 'A private practice where you can feel comfortable and cared for, just minutes from the town centre of Motril.',
+    alt: 'Dark granite façade of the centre, with the sign “Centro de Psicología María García” above the glazed entrance and María García Molina’s signature on the shop window.',
     pie: 'Façade of the María García psychology centre on C. Rafael Alberti',
   },
   {

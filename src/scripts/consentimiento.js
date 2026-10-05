@@ -29,6 +29,20 @@ export function consentimiento() {
   const marcos = [...document.querySelectorAll('[data-tercero]')];
   let valor = leer();
 
+  // Último elemento con foco fuera del aviso. Al decidir, el aviso se oculta
+  // con el foco dentro y el navegador lo suelta en <body>: se devuelve aquí.
+  let previo = null;
+  document.addEventListener('focusin', (e) => {
+    if (e.target !== document.body && !franja?.contains(e.target)) previo = e.target;
+  });
+
+  function devolverFoco() {
+    const vale = (el) =>
+      el?.isConnected && !el.closest('[hidden]') && el.getClientRects().length > 0;
+    if (vale(previo)) previo.focus();
+    else document.getElementById('contenido')?.focus({ preventScroll: true });
+  }
+
   function montar(marco) {
     if (marco.querySelector('iframe')) return;
     const iframe = document.createElement('iframe');
@@ -65,6 +79,7 @@ export function consentimiento() {
 
   function cerrar() {
     if (!franja) return;
+    if (franja.contains(document.activeElement)) devolverFoco();
     franja.classList.remove('esta-visible');
     let hecho = false;
     const ocultar = () => {

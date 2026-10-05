@@ -166,7 +166,7 @@ export const trayectoria = [
 export const galeria = [
   {
     src: centerExterior,
-    alt: 'Una consulta privada para sentirte cómodo y atendido, a escasos minutos del centro urbano de Motril.',
+    alt: 'Fachada de granito oscuro del centro, con el rótulo «Centro de Psicología María García» sobre la entrada acristalada y la firma de María García Molina en el cristal del escaparate.',
     pie: 'Fachada del centro psicológico María García en C. Rafael Alberti',
   },
   {

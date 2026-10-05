@@ -139,7 +139,9 @@ const jsonLd = {
 
   <body>
     <a class="salto-contenido" href="#contenido">{t.saltar}</a>
-    <slot />
+    <!-- Justo tras el enlace de salto: es fijo y visual, pero con teclado debe
+         estar al alcance sin recorrer toda la página. -->
     <Consentimiento />
+    <slot />
   </body>
 </html>

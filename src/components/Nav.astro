@@ -1,5 +1,5 @@
 ---
-import { alternas, i18n, idiomas, ruta as rutaDe } from '../i18n/index.js';
+import { alternas, ariaCurrent, i18n, idiomas, ruta as rutaDe } from '../i18n/index.js';
 import Boton from './Boton.astro';
 
 const { t, d, ruta } = i18n(Astro);
@@ -64,7 +64,11 @@ const destinoIdioma =
         {
           navegacion.map((n) => (
             <li>
-              <a class="caps nav__enlace" href={n.href}>
+              <a
+                class="caps nav__enlace"
+                href={n.href}
+                aria-current={ariaCurrent(Astro.url.pathname, n.href)}
+              >
                 {n.texto}
               </a>
             </li>
@@ -106,17 +110,23 @@ const destinoIdioma =
   </div>
 
   <div class="nav__panel vitrina" id="nav-panel" hidden data-nav-panel>
-    <ul>
-      {
-        navegacion.map((n) => (
-          <li>
-            <a class="nav__panel-enlace" href={n.href}>
-              {n.texto}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    <nav aria-label={t.nav.secciones}>
+      <ul>
+        {
+          navegacion.map((n) => (
+            <li>
+              <a
+                class="nav__panel-enlace"
+                href={n.href}
+                aria-current={ariaCurrent(Astro.url.pathname, n.href)}
+              >
+                {n.texto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
     <Boton class="nav__panel-boton" href={centro.whatsapp} rel="noopener">
       WhatsApp
     </Boton>
@@ -355,6 +365,15 @@ const destinoIdioma =
     justify-items: start;
     transform-origin: top center;
     animation: nav-hoja var(--dur-material) var(--ease-hoja) both;
+    /* Con ventana baja o zoom alto el panel no cabe: scroll propio, para
+       que los últimos enlaces no queden fuera de alcance. */
+    max-height: calc(100dvh - 4rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .nav__panel nav {
+    width: 100%;
   }
 
   @keyframes nav-hoja {
@@ -392,7 +411,8 @@ const destinoIdioma =
     font-size: var(--t-cuerpo);
     letter-spacing: 0.14em;
     font-variant-numeric: tabular-nums;
-    color: var(--tinta-2);
+    /* El panel es translúcido: sobre secciones oscuras, tinta-2 no llega a 4,5:1. */
+    color: var(--tinta);
     text-decoration: none;
     min-height: 44px;
     display: inline-flex;

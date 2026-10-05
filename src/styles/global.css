@@ -17,6 +17,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* La barra fija (4rem) no tapa el elemento que recibe el foco ni el ancla. */
+  scroll-padding-top: 5rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -111,6 +113,12 @@ html {
   outline: 2px solid var(--canto);
   outline-offset: 3px;
   box-shadow: 0 0 0 5px var(--carbon);
+}
+
+/* Destino del enlace de salto: recibe el foco por programa, no es un control. */
+main:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .caps {

@@ -14,6 +14,18 @@ export {
   alternas,
 } from './rutas.js';
 
+// aria-current de un enlace de navegación: «page» si apunta a la página
+// actual, «true» si es la sección que la contiene (/areas dentro de
+// /areas/adultos) y nada en el resto.
+export function ariaCurrent(pathname, href) {
+  const sinBarra = (p) => p.replace(/\/+$/, '');
+  const actual = sinBarra(pathname);
+  const destino = sinBarra(href);
+  if (!destino) return undefined;
+  if (destino === actual) return 'page';
+  return actual.startsWith(`${destino}/`) ? 'true' : undefined;
+}
+
 export function idiomaDe(Astro) {
   return idiomas.includes(Astro.currentLocale) ? Astro.currentLocale : idiomaPorDefecto;
 }

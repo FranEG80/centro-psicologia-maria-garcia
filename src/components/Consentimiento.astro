@@ -67,8 +67,10 @@ const texto = t.consentimiento;
     opacity: 1;
   }
 
+  /* El fondo es translúcido y se oscurece sobre el pie o las secciones en
+     petróleo: tinta-2 y acento-fuerte no llegan a 4,5:1 en el peor caso. */
   .aviso__epigrafe {
-    color: var(--tinta-2);
+    color: var(--tinta);
   }
 
   .aviso__texto {
@@ -79,7 +81,7 @@ const texto = t.consentimiento;
   }
 
   .aviso__enlace {
-    color: var(--acento-fuerte);
+    color: color-mix(in srgb, var(--acento-fuerte) 55%, var(--carbon));
     text-decoration: none;
     border-bottom: 1px solid
       color-mix(in srgb, var(--acento-fuerte) 45%, transparent);

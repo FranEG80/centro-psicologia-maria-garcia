@@ -1,5 +1,5 @@
 ---
-import { i18n } from '../i18n/index.js';
+import { ariaCurrent, i18n } from '../i18n/index.js';
 import Boton from './Boton.astro';
 
 const { lang, t, d, ruta } = i18n(Astro);
@@ -81,7 +81,11 @@ const idiomaLegal = lang === 'es' ? undefined : 'es';
           {
             navegacion.map((n) => (
               <li>
-                <a class="pie__enlace" href={n.href}>
+                <a
+                  class="pie__enlace"
+                  href={n.href}
+                  aria-current={ariaCurrent(Astro.url.pathname, n.href)}
+                >
                   {n.texto}
                 </a>
               </li>
@@ -96,7 +100,11 @@ const idiomaLegal = lang === 'es' ? undefined : 'es';
           {
             areas.map((a) => (
               <li>
-                <a class="pie__enlace" href={ruta('area', a.id)}>
+                <a
+                  class="pie__enlace"
+                  href={ruta('area', a.id)}
+                  aria-current={ariaCurrent(Astro.url.pathname, ruta('area', a.id))}
+                >
                   {a.titulo}
                 </a>
               </li>

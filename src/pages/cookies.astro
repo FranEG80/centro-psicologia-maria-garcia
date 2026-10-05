@@ -14,7 +14,7 @@ import { centro } from '../data/contenido.js';
 >
   <Nav />
 
-  <main id="contenido">
+  <main id="contenido" tabindex="-1">
     <Portico
       marca="Información legal"
       titulo="Política de cookies"
@@ -74,7 +74,7 @@ import { centro } from '../data/contenido.js';
       </p>
 
       <h2>Tu elección, y cómo cambiarla</h2>
-      <p data-consentimiento-estado>
+      <p data-consentimiento-estado role="status">
         Todavía no has elegido. Mientras tanto, el mapa de Google no se carga.
       </p>
       <p>

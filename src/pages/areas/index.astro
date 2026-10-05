@@ -13,7 +13,7 @@ const { centro, areas, resumenAreas, indiceAreas, metas } = d;
 <Base titulo={metas.areas.titulo(centro)} descripcion={indiceAreas.entradilla}>
   <Nav />
 
-  <main id="contenido">
+  <main id="contenido" tabindex="-1">
     <Portico
       marca={indiceAreas.marca}
       titulo={indiceAreas.titulo}
@@ -35,11 +35,11 @@ const { centro, areas, resumenAreas, indiceAreas, metas } = d;
                   <IconoArea id={a.id} />
                 </span>
 
-                <span class="area__cuerpo">
+                <div class="area__cuerpo">
                   <span class="caps caps--contenido area__sumario">
                     {a.sumario}
                   </span>
-                  <span class="area__nombre">{a.titulo}</span>
+                  <h2 class="area__nombre">{a.titulo}</h2>
                   <span class="area__nota">
                     {resumenAreas[a.id] ?? a.sumario}
                   </span>
@@ -62,7 +62,7 @@ const { centro, areas, resumenAreas, indiceAreas, metas } = d;
                       </svg>
                     </span>
                   </span>
-                </span>
+                </div>
               </a>
             </li>
           ))
