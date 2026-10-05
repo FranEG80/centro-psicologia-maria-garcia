@@ -557,3 +557,44 @@ html.js [data-revelar='lamina'].es-visible > * {
     --vidrio: color-mix(in srgb, var(--petroleo) 14%, var(--crema));
   }
 }
+
+/* Transiciones entre páginas: se funden, la barra de navegación se queda quieta
+   y el título de un área viaja de la lista a su ficha (script de Base.astro).
+   Sin soporte, o con movimiento reducido, se navega como siempre. El opt-in
+   (@view-transition) está inline en el head de Base.astro. */
+
+/* La página vieja queda opaca debajo y la nueva se funde encima: si se
+   desvanecieran a la vez, entre las dos se vería el fondo. */
+::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: pagina-entra 650ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  mix-blend-mode: normal;
+}
+
+/* La página llega con el contenido ya visible: si no, el fundido terminaría
+   sobre una página vacía hasta que cargue el JS que lo revela. Base.astro pone
+   la clase al llegar y main.js la quita cuando el revelado toma el relevo. */
+html.llega [data-revelar],
+html.llega [data-revelar='lamina'] {
+  opacity: 1;
+  transform: none;
+}
+
+html.llega [data-revelar='lamina'] > * {
+  clip-path: none;
+}
+
+@keyframes pagina-entra {
+  from {
+    opacity: 0;
+  }
+}
+
+::view-transition-group(area-titulo) {
+  animation-duration: 520ms;
+  animation-timing-function: var(--ease-hoja);
+}

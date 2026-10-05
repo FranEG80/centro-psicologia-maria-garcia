@@ -383,6 +383,16 @@ function revelados() {
   });
 
   objetivos.forEach((el) => io.observe(el));
+
+  // Si se llegó con transición de vista, lo de la primera pantalla ya se veía
+  // (html.llega, en global.css): se da por revelado para que no entre dos veces.
+  const raiz = document.documentElement;
+  if (raiz.classList.contains('llega')) {
+    objetivos.forEach((el) => {
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('es-visible');
+    });
+    raiz.classList.remove('llega');
+  }
 }
 
 function areas() {

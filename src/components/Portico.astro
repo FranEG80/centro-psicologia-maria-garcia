@@ -16,9 +16,11 @@ interface Props {
   migas?: Miga[];
   /** Nombre corto de esta página en el BreadcrumbList (por defecto, el título). */
   miga?: string;
+  /** id del h1, para señalarlo desde fuera (destino de una transición de vista). */
+  idTitulo?: string;
 }
 
-const { marca, titulo, entradilla, cuerpo, migas, miga = titulo } = Astro.props;
+const { marca, titulo, entradilla, cuerpo, migas, miga = titulo, idTitulo } = Astro.props;
 const { t } = i18n(Astro);
 
 // La misma ruta de las migas, para buscadores: migas + página actual. Las URL
@@ -61,7 +63,7 @@ const rastro = migas?.length
     }
 
     <p class="caps portico__marca" data-revelar>{marca}</p>
-    <h1 class="portico__titulo" data-revelar>{titulo}</h1>
+    <h1 class="portico__titulo" id={idTitulo} data-revelar>{titulo}</h1>
     {entradilla && <p class="plomo portico__entradilla" data-revelar>{entradilla}</p>}
     {cuerpo && <p class="cuerpo cuerpo--2 portico__cuerpo" data-revelar>{cuerpo}</p>}
     <slot />
