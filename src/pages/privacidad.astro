@@ -22,7 +22,7 @@ import { centro } from '../data/contenido.js';
       migas={[{ href: '/', texto: 'Inicio' }]}
     />
 
-    <PaginaLegal>
+    <PaginaLegal borrador={false}>
       <h2>Responsable del tratamiento</h2>
       <dl>
         <div>
@@ -31,7 +31,7 @@ import { centro } from '../data/contenido.js';
         </div>
         <div>
           <dt>NIF</dt>
-          <dd><span class="pendiente">Pendiente</span></dd>
+          <dd>23808826P</dd>
         </div>
         <div>
           <dt>Domicilio</dt>
@@ -74,9 +74,9 @@ import { centro } from '../data/contenido.js';
       <p>
         El alojamiento del sitio registra, como cualquier servidor, los datos
         técnicos imprescindibles para prestar el servicio y mantenerlo seguro
-        (dirección IP, fecha y hora de la petición, navegador). Proveedor de
-        alojamiento y plazo de conservación de esos registros:{' '}
-        <span class="pendiente">Pendiente</span>.
+        (dirección IP, fecha y hora de la petición, navegador). Esos registros
+        los trata el proveedor de alojamiento web, se usan solo para ese fin y
+        se conservan el tiempo imprescindible para cumplirlo.
       </p>
 
       <h2>Cuando escribes o llamas</h2>
@@ -134,9 +134,10 @@ import { centro } from '../data/contenido.js';
       <p>
         Esa información se trata para prestar la asistencia y cumplir las
         obligaciones legales que la acompañan, y está amparada por el secreto
-        profesional. La conservación se ajusta a los plazos de la Ley 41/2002 y
-        de la normativa sanitaria de la Junta de Andalucía. Plazo concreto
-        aplicado por el centro: <span class="pendiente">Pendiente</span>.
+        profesional. La historia clínica se conserva, como mínimo, cinco años
+        desde el alta de cada proceso asistencial (art. 17.1 de la Ley 41/2002),
+        y durante más tiempo cuando lo requiera la debida asistencia o lo exija
+        la ley.
       </p>
       <p>
         En los encargos de psicología jurídica y forense, el informe pericial
@@ -156,9 +157,15 @@ import { centro } from '../data/contenido.js';
       <h2>A quién se comunican los datos</h2>
       <p>
         No se ceden datos a terceros salvo obligación legal. Sí acceden a ellos,
-        en calidad de encargados del tratamiento y con el contrato del art. 28
-        RGPD, los proveedores necesarios para el funcionamiento del centro.
-        Relación de encargados: <span class="pendiente">Pendiente</span>.
+        en la medida necesaria para prestar su servicio, los proveedores de los
+        que depende el funcionamiento del centro: alojamiento web, correo
+        electrónico y, en su caso, asesoría y programas de gestión de la
+        consulta.
+      </p>
+      <p>
+        El correo del centro es una cuenta de Gmail: los mensajes que envíes por
+        esa vía los trata también Google con arreglo a sus propias condiciones,
+        igual que ocurre con WhatsApp.
       </p>
       <p>
         Cuando un informe se emite para un procedimiento judicial, se entrega a
@@ -185,7 +192,10 @@ import { centro } from '../data/contenido.js';
           class="enlace"
           href="https://www.aepd.es"
           rel="noopener noreferrer"
-          target="_blank">www.aepd.es</a
+          target="_blank"
+          >www.aepd.es<span class="solo-lectores">
+            (se abre en una pestaña nueva)</span
+          ></a
         >).
       </p>
 

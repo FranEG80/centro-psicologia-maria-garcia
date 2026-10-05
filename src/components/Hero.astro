@@ -232,6 +232,12 @@ const registros = [
   .hero__boton::before {
     background: var(--carbon);
   }
+  /* Es variante «claro» (texto carbón al enfocar) pero con relleno carbón:
+     sin esto, con teclado el texto quedaba carbón sobre carbón. */
+  .hero__boton:focus-visible {
+    color: var(--crema);
+    border-color: var(--carbon);
+  }
   @media (hover: hover) and (pointer: fine) {
     .hero__boton:hover {
       color: var(--crema);
@@ -282,6 +288,39 @@ const registros = [
     }
     .hero__registros {
       letter-spacing: 0.1em;
+    }
+  }
+
+  /* A 320 px (móviles pequeños o zoom del 400 %) el bloque ocupaba ~655 px y
+     la escena mide 100dvh o 34rem como mínimo: se cortaba por abajo. Tipografía
+     y tracking más ajustados bajan el bloque a ~446 px sin quitar contenido. */
+  @media (max-width: 359px) {
+    .hero__copia {
+      gap: 0.75rem;
+      padding-bottom: 1rem;
+    }
+    .hero__antetitulo {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-indent: 0.1em;
+    }
+    .hero__titulo {
+      font-size: 1.3125rem;
+      letter-spacing: 0.05em;
+      text-indent: 0.05em;
+    }
+    .hero__areas {
+      font-size: 0.8125rem;
+      letter-spacing: 0.06em;
+      gap: 0.1rem 0.6rem;
+    }
+    .hero__areas li + li::before {
+      margin-right: 0.6rem;
+    }
+    .hero__registros {
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      line-height: 1.5;
     }
   }
 

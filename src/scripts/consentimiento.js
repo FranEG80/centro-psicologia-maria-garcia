@@ -50,10 +50,14 @@ export function consentimiento() {
     iframe.title = marco.dataset.terceroTitulo || '';
     iframe.referrerPolicy = 'no-referrer-when-downgrade';
     iframe.loading = 'eager';
+    const aviso = marco.querySelector('[data-tercero-aviso]');
+    // «Cargar el mapa» está dentro del aviso que se va a ocultar: el foco pasa
+    // al mapa, que es lo que se acaba de pedir.
+    const traiaFoco = aviso?.contains(document.activeElement);
     marco.append(iframe);
     marco.classList.add('esta-cargado');
-    const aviso = marco.querySelector('[data-tercero-aviso]');
     if (aviso) aviso.hidden = true;
+    if (traiaFoco) iframe.focus();
   }
 
   function desmontar(marco) {

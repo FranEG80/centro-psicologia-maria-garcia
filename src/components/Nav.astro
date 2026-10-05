@@ -433,12 +433,12 @@ const destinoIdioma =
   html.js .nav--portada .nav__telefono,
   html.js .nav--portada .nav__idioma,
   html.js .nav--portada .nav__conmutador {
+    /* Solo opacity, sin visibility:hidden: con teclado y lectores de pantalla
+       los enlaces siguen al alcance y, al recibir el foco, main.js lleva la
+       escena a su último fotograma, donde la barra ya está montada. */
     opacity: 0;
-    visibility: hidden;
     pointer-events: none;
-    transition:
-      opacity var(--dur-ui) var(--ease-out),
-      visibility 0s linear var(--dur-ui);
+    transition: opacity var(--dur-ui) var(--ease-out);
   }
 
   html.js :global(body.barra-montada) .nav--portada .nav__enlaces,
@@ -446,11 +446,8 @@ const destinoIdioma =
   html.js :global(body.barra-montada) .nav--portada .nav__idioma,
   html.js :global(body.barra-montada) .nav--portada .nav__conmutador {
     opacity: 1;
-    visibility: visible;
     pointer-events: auto;
-    transition:
-      opacity var(--dur-material) var(--ease-hoja),
-      visibility 0s linear 0s;
+    transition: opacity var(--dur-material) var(--ease-hoja);
   }
 
   html.js .nav--portada .nav__marca {

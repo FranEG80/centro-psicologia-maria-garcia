@@ -252,21 +252,29 @@ button.enlace {
   z-index: var(--z-salto);
   color: var(--carbon);
   background: var(--crema);
-  font-size: var(--t-micro);
-  letter-spacing: 0.14em;
+  font-size: 0.8125rem;
+  font-weight: 450;
+  letter-spacing: 0.12em;
+  text-indent: 0.12em;
   text-transform: uppercase;
   text-decoration: none;
 }
 
+/* Al enfocarse: etiqueta compacta, con aire a los lados. Borde carbón + halo
+   crema: se ve tanto sobre la barra clara como sobre la escena oscura. El
+   contorno transparente lo recupera el modo de alto contraste. */
 .salto-contenido:focus-visible {
   width: auto;
   height: auto;
   margin: 0;
-  padding: 0.6rem 0 0.65rem;
+  padding: 0.65rem 1.25rem 0.7rem;
   overflow: visible;
   clip-path: none;
-  border-block: 1px solid var(--carbon);
-  outline-offset: 4px;
+  background: var(--crema-alta);
+  border: 1px solid var(--carbon);
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px var(--crema-alta), var(--sombra-baja);
 }
 
 .boton {
@@ -294,6 +302,15 @@ button.enlace {
   overflow: hidden;
   transition: transform var(--dur-pulsar) var(--ease-out),
     color var(--dur-ui) ease, border-color var(--dur-ui) ease;
+}
+
+/* En pantallas estrechas, o con más espaciado de texto, la etiqueta pasa a
+   varias líneas en vez de cortarse; el botón crece con min-height. */
+@media (max-width: 400px) {
+  .boton {
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 .boton::before {

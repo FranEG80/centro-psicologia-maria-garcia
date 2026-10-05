@@ -327,15 +327,23 @@ export const contacto = {
 export const avisoBorrador =
   'Borrador. El texto definitivo lo entrega la asesoría que redactó el aviso legal del centro; este bloque se sustituye íntegro antes de publicar.';
 
+// Literal del aviso legal de PROTECTION REPORT (23-06-2026); la clienta exige
+// publicarlo tal cual. Solo se rellenan los huecos que el PDF dejó en blanco
+// y se corrige el domicilio («3» en el PDF; es el Local 3, confirmado).
 export const identificacion = [
-  { etiqueta: 'Titular', valor: 'María García Molina' },
-  { etiqueta: 'Actividad', valor: 'Psicóloga sanitaria y mediadora familiar' },
-  { etiqueta: 'NIF', valor: 'PENDIENTE' },
-  { etiqueta: 'Domicilio', valor: 'C. Rafael Alberti, Local 3 · 18600 Motril, Granada' },
-  { etiqueta: 'Teléfono', valor: '637 03 34 48' },
-  { etiqueta: 'Correo', valor: 'mariagarciamolina16@gmail.com' },
-  { etiqueta: 'Nº colegiada', valor: 'AO 05323' },
-  { etiqueta: 'Mediadora Familiar de la Junta de Andalucía', valor: 'nº 631' },
-  { etiqueta: 'NICA', valor: '67672' },
-  { etiqueta: 'Dominio', valor: 'PENDIENTE' },
+  { etiqueta: 'Nombre de dominio', valor: 'psicologiamariagarcia.es' },
+  { etiqueta: 'Denominación social', valor: 'MARÍA GARCÍA MOLINA' },
+  { etiqueta: 'NIF', valor: '23808826P' },
+  {
+    etiqueta: 'Domicilio social',
+    valor:
+      'C/ RAFAEL ALBERTI, LOCAL 3, - 18600 MOTRIL (Granada). E-mail: mariagarciamolina16@gmail.com',
+  },
+  { etiqueta: 'Teléfono', valor: '637033448' },
+  { etiqueta: 'E-mail', valor: 'mariagarciamolina16@gmail.com' },
+  {
+    etiqueta: 'Datos registrales',
+    valor:
+      'Nº colegiada AO 05323 · Mediadora Familiar de la Junta de Andalucía nº 631 · NICA 67672',
+  },
 ];
