@@ -52,7 +52,7 @@ mano en todo momento» (palabras de la clienta).
 
 ## Operating Context
 
-- Centro físico en C. Rafael Alberti, 3 · 18600 Motril, Granada. Fachada de
+- Centro físico en C. Rafael Alberti, Local 3 · 18600 Motril, Granada. Fachada de
   granito negro con rotulación.
 - El espacio importa y se usa como prueba: recepción con las titulaciones
   enmarcadas a la vista, sala de espera, **tres despachos distintos** (adultos, uno con luz natural,

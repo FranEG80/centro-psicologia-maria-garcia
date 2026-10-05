@@ -223,7 +223,7 @@ export const identificacion = [
   { etiqueta: 'Titular', valor: 'María García Molina' },
   { etiqueta: 'Actividad', valor: 'Psicóloga sanitaria y mediadora familiar' },
   { etiqueta: 'NIF', valor: 'PENDIENTE' },
-  { etiqueta: 'Domicilio', valor: 'C. Rafael Alberti, 3 · 18600 Motril, Granada' },
+  { etiqueta: 'Domicilio', valor: 'C. Rafael Alberti, Local 3 · 18600 Motril, Granada' },
   { etiqueta: 'Teléfono', valor: '637 03 34 48' },
   { etiqueta: 'Correo', valor: 'mariagarciamolina16@gmail.com' },
   { etiqueta: 'Nº colegiada', valor: 'AO 05323' },

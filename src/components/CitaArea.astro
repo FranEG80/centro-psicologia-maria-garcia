@@ -1,4 +1,6 @@
 ---
+import '@fontsource-variable/host-grotesk/wght-italic.css';
+
 interface Props {
   texto: string;
   autor: string;
@@ -9,10 +11,9 @@ const { texto, autor } = Astro.props;
 
 <aside class="cita-area" aria-label={`Cita de ${autor}`}>
   <div class="envoltura cita-area__reticula">
-    <span class="cita-area__comilla" aria-hidden="true">«</span>
     <figure class="cita-area__figura">
       <blockquote class="cita-area__texto">
-        <p>{texto}</p>
+        <p><em class="cita-area__cursiva">{texto}</em></p>
       </blockquote>
       <figcaption class="cita-area__autor">{autor}</figcaption>
     </figure>
@@ -34,14 +35,6 @@ const { texto, autor } = Astro.props;
     align-items: start;
   }
 
-  .cita-area__comilla {
-    grid-column: 2;
-    font-size: clamp(3.5rem, 6vw, 6rem);
-    font-weight: 300;
-    line-height: 0.85;
-    color: var(--petroleo);
-  }
-
   .cita-area__figura {
     grid-column: 3 / span 8;
   }
@@ -54,6 +47,11 @@ const { texto, autor } = Astro.props;
     letter-spacing: -0.02em;
     text-wrap: balance;
     overflow-wrap: break-word;
+  }
+
+  .cita-area__cursiva {
+    font-family: 'Host Grotesk Variable', var(--fuente);
+    font-style: italic;
   }
 
   .cita-area__autor {
@@ -76,10 +74,6 @@ const { texto, autor } = Astro.props;
   }
 
   @media (max-width: 900px) {
-    .cita-area__comilla {
-      grid-column: 1;
-    }
-
     .cita-area__figura {
       grid-column: 2 / -1;
     }
@@ -88,10 +82,8 @@ const { texto, autor } = Astro.props;
   @media (max-width: 560px) {
     .cita-area__reticula {
       grid-template-columns: minmax(0, 1fr);
-      row-gap: var(--paso-2);
     }
 
-    .cita-area__comilla,
     .cita-area__figura {
       grid-column: 1;
     }

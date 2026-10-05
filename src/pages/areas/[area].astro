@@ -1,6 +1,7 @@
 ---
 import Foto from '../../components/Foto.astro';
 import CitaArea from '../../components/CitaArea.astro';
+import IconoArea from '../../components/IconoArea.astro';
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Portico from '../../components/Portico.astro';
@@ -18,9 +19,7 @@ export function getStaticPaths() {
 const { area } = Astro.props;
 const detalle = detallesAreas[area.id];
 
-const i = areas.findIndex((a) => a.id === area.id);
-const anterior = areas[(i - 1 + areas.length) % areas.length];
-const siguiente = areas[(i + 1) % areas.length];
+const otras = areas.filter((a) => a.id !== area.id);
 ---
 
 <Base
@@ -75,13 +74,13 @@ const siguiente = areas[(i + 1) % areas.length];
               fetchpriority="low"
               decoding="async"
             />
-            {
+            <!-- {
               detalle.imagen.pie && !detalle.imagenComplementaria && (
                 <figcaption class="caps caps--contenido listado__pie">
                   {detalle.imagen.pie}
                 </figcaption>
               )
-            }
+            } -->
           </figure>
           {
             detalle.imagenComplementaria && (
@@ -97,11 +96,11 @@ const siguiente = areas[(i + 1) % areas.length];
               </figure>
             )
           }
-          {detalle.imagenComplementaria && detalle.imagen.pie && (
+          <!-- {detalle.imagenComplementaria && detalle.imagen.pie && (
             <p class="caps caps--contenido listado__pie listado__pie--conjunto">
               {detalle.imagen.pie}
             </p>
-          )}
+          )} -->
         </div>
       </div>
     </section>
@@ -138,20 +137,30 @@ const siguiente = areas[(i + 1) % areas.length];
       </div>
     </section>
 
-    <nav class="vecinas" aria-label="Otras áreas">
-      <div class="envoltura vecinas__reticula">
-        <a class="vecina vecina--atras" href={`/areas/${anterior.id}`}>
-          <span class="caps vecina__marca">Área anterior</span>
-          <span class="vecina__nombre">{anterior.titulo}</span>
-        </a>
-        <a class="vecina vecina--adelante" href={`/areas/${siguiente.id}`}>
-          <span class="caps vecina__marca">Área siguiente</span>
-          <span class="vecina__nombre">{siguiente.titulo}</span>
-        </a>
+    <nav class="vecinas" aria-labelledby="vecinas-titulo">
+      <div class="envoltura">
+        <h2 class="caps vecinas__titulo" id="vecinas-titulo">Otras áreas</h2>
+        <ul class="vecinas__reticula" data-revelar-grupo>
+          {otras.map((a) => (
+            <li class="vecina" data-revelar>
+              <a class="vecina__enlace" href={`/areas/${a.id}`}>
+                <span class="vecina__icono" aria-hidden="true">
+                  <IconoArea id={a.id} />
+                </span>
+                <span class="vecina__texto">
+                  <span class="vecina__nombre">{a.titulo}</span>
+                  <span class="vecina__sumario">{a.sumario}</span>
+                </span>
+                <span class="vecina__flecha" aria-hidden="true">
+                  <svg viewBox="0 0 24 10" width="24" height="10" fill="none">
+                    <path d="M0 5h22M18 1l4 4-4 4" stroke="currentColor" stroke-width="1" />
+                  </svg>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
-      <p class="envoltura vecinas__todas">
-        <a class="enlace" href="/areas">Ver las áreas</a>
-      </p>
     </nav>
   </main>
 
@@ -343,47 +352,145 @@ const siguiente = areas[(i + 1) % areas.length];
     padding-block: var(--paso-4);
   }
 
+  .vecinas__titulo {
+    color: var(--tinta-2);
+    margin-bottom: var(--paso-2);
+  }
+
   .vecinas__reticula {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--paso-2);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--paso-3);
   }
 
   .vecina {
-    display: flex;
-    flex-direction: column;
-    gap: var(--paso-1);
+    position: relative;
+  }
+
+  /* Filete: se traza de izquierda a derecha al revelarse, escalonado con el grupo. */
+  .vecina::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: var(--filete);
+    transform-origin: left;
+  }
+
+  :global(html.js) .vecina::before {
+    transform: scaleX(0);
+  }
+
+  :global(html.js) .vecina:global(.es-visible)::before {
+    transform: scaleX(1);
+    transition: transform 900ms var(--ease-out);
+    transition-delay: var(--revelar-retardo, 0ms);
+  }
+
+  .vecina__enlace {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    gap: var(--paso-2);
+    align-items: start;
+    height: 100%;
     padding: var(--paso-2) 0;
     color: var(--carbon);
     text-decoration: none;
-    border-top: 1px solid var(--filete);
+  }
+
+  /* Línea de acento sobre el filete: entra por la izquierda y sale por la derecha. */
+  .vecina__enlace::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: var(--acento-fuerte);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--dur-material) var(--ease-hoja);
+  }
+
+  .vecina__flecha {
+    align-self: center;
+    color: var(--acento-fuerte);
+    opacity: 0;
+    translate: -0.5rem 0;
+    transition: opacity var(--dur-ui) ease,
+      translate var(--dur-ui) var(--ease-out);
+  }
+
+  .vecina__icono {
+    color: var(--tinta-2);
     transition: color var(--dur-ui) ease;
   }
 
-  .vecina--adelante {
-    text-align: right;
+  .vecina__icono :global(svg) {
+    width: 2rem;
+    height: 2rem;
   }
 
-  .vecina__marca {
-    color: var(--tinta-2);
+  .vecina__texto {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
   }
 
   .vecina__nombre {
-    font-size: var(--t-h3);
-    font-weight: 300;
-    line-height: 1.2;
+    font-size: var(--t-lista);
+    line-height: 1.3;
     text-wrap: balance;
+    transition: color var(--dur-ui) ease;
+  }
+
+  .vecina__sumario {
+    font-size: var(--t-micro-2);
+    line-height: 1.4;
+    color: var(--tinta-2);
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .vecina:hover {
+    .vecina__enlace:hover::before {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+    .vecina__enlace:hover .vecina__nombre,
+    .vecina__enlace:hover .vecina__icono {
       color: var(--acento-fuerte);
+    }
+    .vecina__enlace:hover .vecina__flecha {
+      opacity: 1;
+      translate: 0 0;
     }
   }
 
-  .vecinas__todas {
-    margin-top: var(--paso-3);
-    font-size: var(--t-micro-2);
+  .vecina__enlace:focus-visible::before {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .vecina__enlace:focus-visible .vecina__nombre,
+  .vecina__enlace:focus-visible .vecina__icono {
+    color: var(--acento-fuerte);
+  }
+  .vecina__enlace:focus-visible .vecina__flecha {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .vecina::before {
+      transform: none;
+      transition: none;
+    }
+    .vecina__enlace::before,
+    .vecina__flecha,
+    .vecina__nombre,
+    .vecina__icono {
+      transition-duration: 1ms;
+    }
+    .vecina__flecha {
+      translate: 0 0;
+    }
   }
 
   @media (max-width: 900px) {
@@ -406,12 +513,15 @@ const siguiente = areas[(i + 1) % areas.length];
     }
   }
 
+  @media (max-width: 860px) {
+    .vecinas__reticula {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
   @media (max-width: 560px) {
     .vecinas__reticula {
       grid-template-columns: minmax(0, 1fr);
-    }
-    .vecina--adelante {
-      text-align: left;
     }
   }
 </style>

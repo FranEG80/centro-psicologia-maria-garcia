@@ -58,7 +58,7 @@ Cada una lleva a su página:
 
 > **Un despacho y una zona infantil**
 >
-> Recepción, sala de espera, el despacho de consulta y una zona infantil aparte, en C. Rafael Alberti, 3, Motril. Espacios tranquilos y reservados, pensados para que cada persona se sienta cómoda y con total privacidad.
+> Recepción, sala de espera, el despacho de consulta y una zona infantil aparte, en C. Rafael Alberti, Local 3, Motril. Espacios tranquilos y reservados, pensados para que cada persona se sienta cómoda y con total privacidad.
 >
 > Una sala aparte para los niños, porque no es lo mismo sentarse a hablar que sentarse a jugar.
 
@@ -313,7 +313,7 @@ Aquí falta el texto, porque solo tú puedes dármelo. La idea es contar en cuat
 
 | | |
 |---|---|
-| Dirección | C. Rafael Alberti, 3 · 18600 Motril, Granada |
+| Dirección | C. Rafael Alberti, Local 3 · 18600 Motril, Granada |
 | Teléfono | 637 03 34 48 |
 | WhatsApp | 637 03 34 48 |
 | Correo | mariagarciamolina16@gmail.com |
@@ -328,7 +328,7 @@ Con el mapa para llegar.
 
 ```
 Centro de Psicología María García
-C. Rafael Alberti, 3 · 18600 Motril, Granada
+C. Rafael Alberti, Local 3 · 18600 Motril, Granada
 637 03 34 48 · mariagarciamolina16@gmail.com
 
 Nº colegiada AO 05323

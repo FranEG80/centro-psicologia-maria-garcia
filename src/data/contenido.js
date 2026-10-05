@@ -20,14 +20,15 @@ export const centro = {
   telefonoTel: '+34637033448',
   whatsapp: 'https://wa.me/34637033448',
   email: 'mariagarciamolina16@gmail.com',
-  direccion: 'C. Rafael Alberti, 3',
+  direccion: 'C. Rafael Alberti, Local 3',
   cp: '18600',
   mapa: 'https://maps.google.com/?q=C.+Rafael+Alberti+3,+18600+Motril,+Granada',
   coordenadas: { lat: 36.750956, lon: -3.5215472 },
   credenciales: [
     { etiqueta: 'Nº colegiada', valor: 'AO 05323' },
-    { etiqueta: 'NICA', valor: '631' },
-    { etiqueta: 'Mediadora Familiar de la Junta de Andalucía', valor: 'nº 67672' },
+    // Verificado con la clienta: Mediadora 631, NICA 67672. No intercambiar.
+    { etiqueta: 'Mediadora Familiar de la Junta de Andalucía', valor: 'nº 631' },
+    { etiqueta: 'NICA', valor: '67672' },
   ],
 };
 

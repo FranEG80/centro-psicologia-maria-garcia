@@ -2,10 +2,13 @@
 import { areasHero, centro } from '../data/contenido.js';
 import Boton from './Boton.astro';
 
+const credencial = (prefijo) =>
+  centro.credenciales.find((c) => c.etiqueta.startsWith(prefijo)).valor;
+
 const registros = [
-  `Nº colegiada ${centro.credenciales[0].valor}`,
-  `Mediadora familiar ${centro.credenciales[1].valor.replace('nº ', '')}`,
-  `NICA ${centro.credenciales[2].valor}`,
+  `Nº colegiada ${credencial('Nº colegiada')}`,
+  `Mediadora familiar ${credencial('Mediadora').replace('nº ', '')}`,
+  `NICA ${credencial('NICA')}`,
   `Ofreciendo servicios desde ${centro.desde}`,
 ];
 ---
