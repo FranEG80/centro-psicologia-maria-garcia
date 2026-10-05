@@ -118,6 +118,18 @@ const jsonLd = {
       crossorigin
     />
 
+    <slot name="head" />
+
+    <!-- Inline a propósito: con el CSS externo, Chrome a veces decide el opt-in
+         antes de aplicarlo y se salta la transición. El resto va en global.css. -->
+    <style is:inline>
+      @media (prefers-reduced-motion: no-preference) {
+        @view-transition {
+          navigation: auto;
+        }
+      }
+    </style>
+
     <script is:inline>
       document.documentElement.classList.add('js');
 
@@ -128,6 +140,62 @@ const jsonLd = {
           document.documentElement.classList.remove('js');
         }
       }, 3000);
+    </script>
+
+    <script is:inline>
+      // Transiciones entre páginas (CSS en global.css): el título de un área
+      // viaja de la lista a su ficha. Solo se nombran el título pulsado y el h1
+      // de destino, y solo al avanzar; con nombres fijos, volver atrás los
+      // cruzaría volando. Va aquí y no en main.js porque pagereveal salta antes
+      // del primer pintado y el módulo llega tarde.
+      (() => {
+        const sinBarra = (ruta) => ruta.replace(/\/+$/, '') || '/';
+
+        const nombrar = (el) => {
+          el.style.viewTransitionName = 'area-titulo';
+          // La caja ocupa toda la columna: ceñida al texto, la captura no se
+          // deforma al viajar.
+          el.style.width = 'fit-content';
+        };
+
+        const soltar = (el) => {
+          el.style.viewTransitionName = '';
+          el.style.width = '';
+        };
+
+        window.addEventListener('pageswap', async (e) => {
+          if (!e.viewTransition || e.activation?.navigationType !== 'push') return;
+          const destino = sinBarra(new URL(e.activation.entry.url).pathname);
+          const titulo = [...document.querySelectorAll('[data-titulo-viaja]')].find(
+            (el) => sinBarra(new URL(el.closest('a').href).pathname) === destino
+          );
+          if (!titulo) return;
+          // Por si el h1 de esta página conserva el nombre de la transición anterior.
+          document.getElementById('area-titulo')?.style.removeProperty('view-transition-name');
+          nombrar(titulo);
+          try {
+            await e.viewTransition.ready;
+          } catch {}
+          soltar(titulo);
+        });
+
+        window.addEventListener('pagereveal', async (e) => {
+          if (!e.viewTransition) return;
+          // Llega con el contenido visible (ver html.llega en global.css). Si
+          // main.js ya corrió, el revelado está en marcha y no hay quien la quite.
+          if (!window.__revelado) document.documentElement.classList.add('llega');
+          if (window.navigation?.activation?.navigationType !== 'push') return;
+          const titulo = document.getElementById('area-titulo');
+          if (!titulo) return;
+          // Sin revelado: el título llega ya en su sitio, no sube después.
+          titulo.removeAttribute('data-revelar');
+          nombrar(titulo);
+          try {
+            await e.viewTransition.finished;
+          } catch {}
+          soltar(titulo);
+        });
+      })();
     </script>
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

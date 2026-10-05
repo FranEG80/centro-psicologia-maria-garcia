@@ -25,12 +25,15 @@ const otras = areas.filter((a) => a.id !== id);
   titulo={`${area.titulo} · ${centro.nombre}`}
   descripcion={metaAreas[area.id]}
 >
+  {/* Sin pintar hasta tener el h1: es el destino de la transición del título. */}
+  <link slot="head" rel="expect" href="#area-titulo" blocking="render" />
   <Nav />
 
   <main id="contenido" tabindex="-1">
     <Portico
       marca={area.sumario}
       titulo={area.titulo}
+      idTitulo="area-titulo"
       entradilla={detalle.entradilla}
       cuerpo={detalle.cuerpo}
       migas={[
@@ -147,7 +150,7 @@ const otras = areas.filter((a) => a.id !== id);
                   <IconoArea id={a.id} />
                 </span>
                 <span class="vecina__texto">
-                  <span class="vecina__nombre">{a.titulo}</span>
+                  <span class="vecina__nombre" data-titulo-viaja>{a.titulo}</span>
                   <span class="vecina__sumario">{a.sumario}</span>
                 </span>
                 <span class="vecina__flecha" aria-hidden="true">
