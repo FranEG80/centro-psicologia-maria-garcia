@@ -2,7 +2,7 @@
 import { i18n } from '../i18n/index.js';
 import Boton from './Boton.astro';
 
-const { t, d } = i18n(Astro);
+const { t, d, ruta } = i18n(Astro);
 const { areasHero, centro } = d;
 
 const credencial = (id) => centro.credenciales.find((c) => c.id === id).valor;
@@ -32,8 +32,14 @@ const registros = [
 
       <h1 class="hero__titulo">{t.hero.titulo[0]}<br />{t.hero.titulo[1]}</h1>
 
-      <ul class="hero__areas" role="list">
-        {areasHero.map((a) => <li>{a}</li>)}
+      <ul class="hero__areas" role="list" aria-label={t.hero.areasAria}>
+        {
+          areasHero.map((a) => (
+            <li>
+              <a href={ruta('area', a.id)}>{a.titulo}</a>
+            </li>
+          ))
+        }
       </ul>
 
       <div class="hero__acciones">
@@ -209,8 +215,18 @@ const registros = [
     max-width: 74rem;
   }
 
+  /* Enlaces a cada área con el mismo aspecto que el texto: solo cambia el
+     cursor (el del enlace) y el foco con teclado (el global). */
+  .hero__areas a {
+    color: inherit;
+    text-decoration: none;
+  }
+
   .hero__areas li + li::before {
     content: '·';
+    /* Separador decorativo: sin texto alternativo, el lector no lo anuncia
+       entre enlace y enlace. */
+    content: '·' / '';
     display: inline-block;
     margin-right: 0.85rem;
     color: var(--piedra);

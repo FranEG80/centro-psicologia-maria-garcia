@@ -25,14 +25,16 @@ export const centro = {
   }),
 };
 
-export const areasHero = [
-  'Adults',
-  'Children and teens',
-  'Family mediation',
-  'Neuropsychology',
-  'Legal',
-  'Forensic',
-];
+const titulosHero = {
+  adultos: 'Adults',
+  infancia: 'Children and teens',
+  familia: 'Family mediation',
+  neuropsicologia: 'Neuropsychology',
+  juridica: 'Legal',
+  forense: 'Forensic',
+};
+
+export const areasHero = es.areasHero.map((a) => ({ ...a, titulo: titulosHero[a.id] }));
 
 const textosAreas = {
   adultos: {

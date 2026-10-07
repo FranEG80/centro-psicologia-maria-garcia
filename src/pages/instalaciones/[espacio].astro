@@ -11,6 +11,7 @@ import officeFamily from '../../assets/photo/office-family.webp';
 import childrenRoom from '../../assets/photo/children-room.webp';
 import reception from '../../assets/photo/reception.webp';
 import waitingRoom from '../../assets/photo/waiting-room.webp';
+import corridor from '../../assets/photo/corridor.webp';
 
 export function getStaticPaths() {
   return rutasEstaticas('espacio', 'es');
@@ -81,7 +82,7 @@ const vistas = vistasPorEspacio[id];
               <Foto
                 src={reception}
                 widths={[280, 420]}
-                sizes="(max-width: 640px) 45vw, 220px"
+                sizes="(max-width: 640px) 30vw, 220px"
                 alt={espacios.resto.recepcion}
                 loading="eager"
                 fetchpriority="low"
@@ -93,13 +94,24 @@ const vistas = vistasPorEspacio[id];
               <Foto
                 src={waitingRoom}
                 widths={[280, 420]}
-                sizes="(max-width: 640px) 45vw, 220px"
+                sizes="(max-width: 640px) 30vw, 220px"
                 alt={espacios.resto.espera}
                 loading="eager"
                 fetchpriority="low"
                 decoding="async"
               />
               <!-- <figcaption class="mini__pie">Sala de espera</figcaption> -->
+            </figure>
+            <figure class="mini">
+              <Foto
+                src={corridor}
+                widths={[280, 420]}
+                sizes="(max-width: 640px) 30vw, 220px"
+                alt={espacios.resto.pasillo}
+                loading="eager"
+                fetchpriority="low"
+                decoding="async"
+              />
             </figure>
           </div>
         </div>
@@ -213,7 +225,7 @@ const vistas = vistasPorEspacio[id];
 
   .espacio__miniaturas {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--paso-2);
   }
 

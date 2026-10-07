@@ -21,6 +21,7 @@ export const ui = {
     hero: {
       antetitulo: 'Psicología',
       titulo: ['Tu realidad, vista', 'con luz diferente'],
+      areasAria: 'Áreas de atención',
       registros: {
         colegiada: 'Nº colegiada',
         mediadora: 'Mediadora familiar',
@@ -112,6 +113,7 @@ export const ui = {
     hero: {
       antetitulo: 'Psychology',
       titulo: ['Your reality, seen', 'in a different light'],
+      areasAria: 'Areas of care',
       registros: {
         colegiada: 'College member no.',
         mediadora: 'Family mediator',

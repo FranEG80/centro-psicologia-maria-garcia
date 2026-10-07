@@ -3,6 +3,7 @@ import childrenRoom from '../assets/photo/children-room.webp';
 import gameForms from '../assets/photo/game-forms.webp';
 import gameRings from '../assets/photo/game-rings.webp';
 import officeCalm from '../assets/photo/office-calm.webp';
+import officeFamily from '../assets/photo/office-family.webp';
 import officeDarkwood from '../assets/photo/office-darkwood.webp';
 
 export const detallesAreas = {
@@ -22,7 +23,7 @@ export const detallesAreas = {
       pie: 'Espacios del centro para la infancia y la adolescencia',
     },
     imagenComplementaria: {
-      src: officeCalm,
+      src: officeFamily,
       alt: 'Despacho del centro, luminoso y tranquilo, para la atención a adolescentes.',
     },
   },
@@ -250,6 +251,7 @@ export const espacios = {
     epigrafe: 'El resto del centro',
     recepcion: 'Recepción del centro.',
     espera: 'Sala de espera del centro.',
+    pasillo: 'Pasillo del centro, con paneles de madera oscura que llevan a los despachos.',
   },
 };
 
