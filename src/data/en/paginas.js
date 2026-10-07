@@ -298,6 +298,7 @@ export const espacios = {
     epigrafe: 'The rest of the centre',
     recepcion: 'Reception at the centre.',
     espera: 'Waiting room at the centre.',
+    pasillo: 'Corridor at the centre, lined with dark wood panels leading to the consulting rooms.',
   },
 };
 

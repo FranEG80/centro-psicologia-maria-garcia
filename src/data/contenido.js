@@ -30,13 +30,16 @@ export const centro = {
   ],
 };
 
+// `id` es el de `areas`: cada etiqueta del hero enlaza a esa página. No hay una
+// por área (Problemas escolares no sale) y algunas se nombran por la parte que
+// más se busca: «Mediación familiar» lleva a Familia y pareja.
 export const areasHero = [
-  'Adultos',
-  'Infantil y juvenil',
-  'Mediación familiar',
-  'Neuropsicología',
-  'Jurídica',
-  'Forense',
+  { id: 'adultos', titulo: 'Adultos' },
+  { id: 'infancia', titulo: 'Infantil y juvenil' },
+  { id: 'familia', titulo: 'Mediación familiar' },
+  { id: 'neuropsicologia', titulo: 'Neuropsicología' },
+  { id: 'juridica', titulo: 'Jurídica' },
+  { id: 'forense', titulo: 'Forense' },
 ];
 
 export const areas = [

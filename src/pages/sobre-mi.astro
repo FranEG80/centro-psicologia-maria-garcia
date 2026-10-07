@@ -4,6 +4,8 @@ import Nav from '../components/Nav.astro';
 import Portico from '../components/Portico.astro';
 import Pie from '../components/Pie.astro';
 import Boton from '../components/Boton.astro';
+import Foto from '../components/Foto.astro';
+import retrato from '../assets/photo/maria-garcia.webp';
 import { i18n } from '../i18n/index.js';
 
 const { t, d, ruta } = i18n(Astro);
@@ -29,9 +31,17 @@ const { centro, formacion, perfil, trayectoria, sobreMi, metas } = d;
       <h2 class="solo-lectores" id="quien-titulo">{sobreMi.quien}</h2>
 
       <div class="envoltura quien__reticula" data-revelar-grupo>
-        <div class="quien__figura" data-revelar="lamina" aria-hidden="true">
+        <div class="quien__figura" data-revelar="lamina">
           <div class="quien__hueco">
-            <span class="quien__marco"></span>
+            <Foto
+              src={retrato}
+              widths={[400, 600, 800]}
+              sizes="(max-width: 900px) 100vw, 40vw"
+              alt={centro.profesional}
+              loading="eager"
+              decoding="async"
+            />
+            <span class="quien__marco" aria-hidden="true"></span>
           </div>
         </div>
 
@@ -141,6 +151,14 @@ const { centro, formacion, perfil, trayectoria, sobreMi, metas } = d;
     position: relative;
     height: clamp(20rem, 42vw, 34rem);
     background: color-mix(in srgb, var(--topo) 12%, transparent);
+  }
+
+  .quien__hueco img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 20%;
   }
 
   .quien__marco {
