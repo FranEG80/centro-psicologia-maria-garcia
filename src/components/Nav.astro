@@ -2,7 +2,7 @@
 import { alternas, ariaCurrent, i18n, idiomas, ruta as rutaDe } from '../i18n/index.js';
 import Boton from './Boton.astro';
 
-const { t, d, ruta } = i18n(Astro);
+const { lang, t, d, ruta } = i18n(Astro);
 const { centro, navegacion } = d;
 
 const nucleo = 'María García';
@@ -20,6 +20,13 @@ const otro = t.otroIdioma;
 const hayOtroIdioma = idiomas.includes(otro.lang);
 const destinoIdioma =
   alternas(Astro.url.pathname)?.[otro.lang] ?? rutaDe(otro.lang, 'inicio');
+
+// Las dos banderas, siempre en el mismo orden: la del idioma actual no es
+// enlace. Cada nombre va en su propio idioma, como el resto del selector.
+const nombresIdioma = { es: 'Español', en: 'English' };
+const opcionesIdioma = idiomas
+  .filter((l) => l === lang || l === otro.lang)
+  .map((l) => ({ lang: l, nombre: nombresIdioma[l] }));
 ---
 
 <header class:list={['nav', portada && 'nav--portada']} data-nav>
@@ -78,22 +85,60 @@ const destinoIdioma =
     </nav>
 
     <div class="nav__derecha">
-      {
-        hayOtroIdioma && (
-          <a
-            class="nav__idioma"
-            href={destinoIdioma}
-            lang={otro.lang}
-            hreflang={otro.lang}
-            aria-label={otro.aria}
-          >
-            {otro.codigo}
-          </a>
-        )
-      }
       <a class="nav__telefono" href={`tel:${centro.telefonoTel}`}>
         {centro.telefono}
       </a>
+      {
+        hayOtroIdioma && (
+          <ul class="nav__idiomas">
+            {opcionesIdioma.map((o) => {
+              const bandera =
+                o.lang === 'es' ? (
+                  <svg class="nav__bandera" viewBox="0 0 3 2" aria-hidden="true">
+                    <rect width="3" height="2" fill="#AA151B" />
+                    <rect y="0.5" width="3" height="1" fill="#F1BF00" />
+                  </svg>
+                ) : (
+                  <svg class="nav__bandera" viewBox="7.5 0 45 30" aria-hidden="true">
+                    <clipPath id="nav-bandera-gb-aspas">
+                      <path d="M30,15h30v15zv15h-30zh-30v-15zv-15h30z" />
+                    </clipPath>
+                    <path d="M0,0v30h60v-30z" fill="#012169" />
+                    <path d="M0,0L60,30M60,0L0,30" stroke="#FFF" stroke-width="6" />
+                    <path
+                      d="M0,0L60,30M60,0L0,30"
+                      clip-path="url(#nav-bandera-gb-aspas)"
+                      stroke="#C8102E"
+                      stroke-width="4"
+                    />
+                    <path d="M30,0v30M0,15h60" stroke="#FFF" stroke-width="10" />
+                    <path d="M30,0v30M0,15h60" stroke="#C8102E" stroke-width="6" />
+                  </svg>
+                );
+              return (
+                <li>
+                  {o.lang === lang ? (
+                    <span class="nav__idioma" lang={o.lang} aria-current="true">
+                      {bandera}
+                      <span class="solo-lectores">{o.nombre}</span>
+                    </span>
+                  ) : (
+                    <a
+                      class="nav__idioma"
+                      href={destinoIdioma}
+                      lang={o.lang}
+                      hreflang={o.lang}
+                      aria-label={otro.aria}
+                    >
+                      {bandera}
+                    </a>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )
+      }
       <button
         class="nav__conmutador"
         type="button"
@@ -281,8 +326,7 @@ const destinoIdioma =
     gap: var(--paso-2);
   }
 
-  .nav__telefono,
-  .nav__idioma {
+  .nav__telefono {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
@@ -295,8 +339,7 @@ const destinoIdioma =
     position: relative;
   }
 
-  .nav__telefono::after,
-  .nav__idioma::after {
+  .nav__telefono::after {
     content: '';
     position: absolute;
     left: 0;
@@ -308,27 +351,53 @@ const destinoIdioma =
     transition: clip-path var(--dur-ui) var(--ease-out);
   }
 
-  /* Solo son dos letras: el relleno da un área táctil razonable sin mover el texto. */
-  .nav__idioma {
-    padding-inline: 0.6rem;
-    margin-inline: -0.3rem;
+  .nav__idiomas {
+    display: flex;
+    margin-inline: -0.35rem;
   }
 
-  .nav__idioma::after {
-    left: 0.6rem;
-    right: 0.6rem;
+  /* Solo la bandera: el relleno da un área táctil razonable sin separarlas. */
+  .nav__idioma {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 0.35rem;
+  }
+
+  .nav__bandera {
+    display: block;
+    width: 18px;
+    height: 12px;
+    border-radius: 1.5px;
+    box-shadow: 0 0 0 1px var(--filete);
+    transition:
+      opacity var(--dur-ui) var(--ease-out),
+      filter var(--dur-ui) var(--ease-out);
+  }
+
+  /* El idioma actual va a color pleno; el otro, apagado hasta que se apunta. */
+  a.nav__idioma .nav__bandera {
+    opacity: 0.45;
+    filter: grayscale(0.6);
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .nav__telefono:hover::after,
-    .nav__idioma:hover::after {
+    .nav__telefono:hover::after {
       clip-path: inset(0 0 0 0);
+    }
+    a.nav__idioma:hover .nav__bandera {
+      opacity: 1;
+      filter: none;
     }
   }
 
-  .nav__telefono:focus-visible::after,
-  .nav__idioma:focus-visible::after {
+  .nav__telefono:focus-visible::after {
     clip-path: inset(0 0 0 0);
+  }
+
+  a.nav__idioma:focus-visible .nav__bandera {
+    opacity: 1;
+    filter: none;
   }
 
   .nav__conmutador {
@@ -428,7 +497,7 @@ const destinoIdioma =
 
   .nav__enlaces,
   .nav__telefono,
-  .nav__idioma,
+  .nav__idiomas,
   .nav__conmutador {
     transition:
       opacity var(--dur-material) var(--ease-hoja),
@@ -438,7 +507,7 @@ const destinoIdioma =
 
   html.js .nav--portada .nav__enlaces,
   html.js .nav--portada .nav__telefono,
-  html.js .nav--portada .nav__idioma,
+  html.js .nav--portada .nav__idiomas,
   html.js .nav--portada .nav__conmutador {
     /* Solo opacity, sin visibility:hidden: con teclado y lectores de pantalla
        los enlaces siguen al alcance y, al recibir el foco, main.js lleva la
@@ -450,7 +519,7 @@ const destinoIdioma =
 
   html.js :global(body.barra-montada) .nav--portada .nav__enlaces,
   html.js :global(body.barra-montada) .nav--portada .nav__telefono,
-  html.js :global(body.barra-montada) .nav--portada .nav__idioma,
+  html.js :global(body.barra-montada) .nav--portada .nav__idiomas,
   html.js :global(body.barra-montada) .nav--portada .nav__conmutador {
     opacity: 1;
     pointer-events: auto;
@@ -485,7 +554,7 @@ const destinoIdioma =
     .nav__material,
     .nav__enlace::after,
     .nav__telefono::after,
-    .nav__idioma::after,
+    .nav__bandera,
     .nav__trazos i {
       transition: none;
     }
