@@ -5,7 +5,7 @@ import Nav from '../components/Nav.astro';
 import Portico from '../components/Portico.astro';
 import Pie from '../components/Pie.astro';
 import Boton from '../components/Boton.astro';
-import { i18n } from '../i18n/index.js';
+import { i18n, whatsapp } from '../i18n/index.js';
 
 const { t, d, ruta } = i18n(Astro);
 const { centro, galeria, contacto, metas } = d;
@@ -29,7 +29,7 @@ const { centro, galeria, contacto, metas } = d;
       <div class="envoltura vias__reticula" data-revelar-grupo>
         <a
           class="via via--principal"
-          href={centro.whatsapp}
+          href={whatsapp(centro.whatsapp, t.whatsapp.general)}
           rel="noopener noreferrer"
           target="_blank"
           data-revelar

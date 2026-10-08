@@ -1,10 +1,20 @@
 ---
-import { ariaCurrent, i18n } from '../i18n/index.js';
+import { ariaCurrent, i18n, whatsapp } from '../i18n/index.js';
 import Boton from './Boton.astro';
 
+interface Props {
+  /** Título del área de la página: el mensaje de WhatsApp la nombra. */
+  area?: string;
+}
+
+const { area } = Astro.props;
 const { lang, t, d, ruta } = i18n(Astro);
 const { centro, navegacion, areas } = d;
 const texto = t.pie;
+const enlaceWhatsapp = whatsapp(
+  centro.whatsapp,
+  area ? t.whatsapp.area(area) : t.whatsapp.general
+);
 
 const anio = new Date().getFullYear();
 
@@ -31,7 +41,7 @@ const idiomaLegal = lang === 'es' ? undefined : 'es';
         <Boton
           class="cierre__boton"
           variant="claro"
-          href={centro.whatsapp}
+          href={enlaceWhatsapp}
           rel="noopener noreferrer"
           target="_blank"
         >
@@ -125,7 +135,7 @@ const idiomaLegal = lang === 'es' ? undefined : 'es';
           <li>
             <a
               class="pie__enlace"
-              href={centro.whatsapp}
+              href={enlaceWhatsapp}
               rel="noopener noreferrer"
               target="_blank"
             >

@@ -1,9 +1,19 @@
 ---
-import { alternas, ariaCurrent, i18n, idiomas, ruta as rutaDe } from '../i18n/index.js';
+import { alternas, ariaCurrent, i18n, idiomas, ruta as rutaDe, whatsapp } from '../i18n/index.js';
 import Boton from './Boton.astro';
 
+interface Props {
+  /** Título del área de la página: el mensaje de WhatsApp la nombra. */
+  area?: string;
+}
+
+const { area } = Astro.props;
 const { lang, t, d, ruta } = i18n(Astro);
 const { centro, navegacion } = d;
+const enlaceWhatsapp = whatsapp(
+  centro.whatsapp,
+  area ? t.whatsapp.area(area) : t.whatsapp.general
+);
 
 const nucleo = 'María García';
 const prefijo = centro.nombre.endsWith(nucleo)
@@ -172,7 +182,7 @@ const opcionesIdioma = idiomas
         }
       </ul>
     </nav>
-    <Boton class="nav__panel-boton" href={centro.whatsapp} rel="noopener">
+    <Boton class="nav__panel-boton" href={enlaceWhatsapp} rel="noopener">
       WhatsApp
     </Boton>
     <a class="nav__panel-tel" href={`tel:${centro.telefonoTel}`}>
