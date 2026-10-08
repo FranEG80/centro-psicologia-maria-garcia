@@ -18,6 +18,13 @@ export const ui = {
 
     nuevaPestana: '(se abre en una pestaña nueva)',
 
+    // Mensaje que aparece ya escrito al abrir WhatsApp. En las páginas de área
+    // nombra el área: la clienta sabe que viene de la web y por qué escriben.
+    whatsapp: {
+      general: 'Hola, te escribo desde la web.',
+      area: (titulo) => `Hola, te escribo desde la web, por el área de ${titulo}.`,
+    },
+
     hero: {
       antetitulo: 'Psicología',
       titulo: ['Tu realidad, vista', 'con luz diferente'],
@@ -109,6 +116,11 @@ export const ui = {
     otroIdioma: { lang: 'es', codigo: 'ES', aria: 'Ver esta página en español' },
 
     nuevaPestana: '(opens in a new tab)',
+
+    whatsapp: {
+      general: "Hi, I'm writing from your website.",
+      area: (titulo) => `Hi, I'm writing from your website about the ${titulo} area.`,
+    },
 
     hero: {
       antetitulo: 'Psychology',

@@ -26,6 +26,11 @@ export function ariaCurrent(pathname, href) {
   return actual.startsWith(`${destino}/`) ? 'true' : undefined;
 }
 
+// Enlace de WhatsApp (wa.me) con el mensaje ya escrito en el chat.
+export function whatsapp(url, texto) {
+  return `${url}?text=${encodeURIComponent(texto)}`;
+}
+
 export function idiomaDe(Astro) {
   return idiomas.includes(Astro.currentLocale) ? Astro.currentLocale : idiomaPorDefecto;
 }

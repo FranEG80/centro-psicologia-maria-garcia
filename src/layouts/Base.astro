@@ -66,7 +66,7 @@ const consulta = {
     addressCountry: 'ES',
   },
   areaServed: `${centro.localidad}, ${centro.provincia}`,
-  knowsLanguage: 'es-ES',
+  knowsLanguage: ['es-ES', 'en'],
   identifier: centro.credenciales.map((c) => `${c.etiqueta} ${c.valor}`),
 };
 

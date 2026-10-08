@@ -1,5 +1,5 @@
 ---
-import { i18n } from '../i18n/index.js';
+import { i18n, whatsapp } from '../i18n/index.js';
 import Boton from './Boton.astro';
 
 const { t, d, ruta } = i18n(Astro);
@@ -43,7 +43,7 @@ const registros = [
       </ul>
 
       <div class="hero__acciones">
-        <Boton class="hero__boton" variant="claro" href={centro.whatsapp} rel="noopener">
+        <Boton class="hero__boton" variant="claro" href={whatsapp(centro.whatsapp, t.whatsapp.general)} rel="noopener">
           WhatsApp
         </Boton>
         <a class="hero__telefono" href={`tel:${centro.telefonoTel}`}>
