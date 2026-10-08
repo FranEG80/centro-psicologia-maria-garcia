@@ -55,12 +55,12 @@ const { centro, galeria, ambientes, consulta, metas } = d;
 
       <div class="espacio__tira" data-revelar-grupo>
         {
-          galeria.slice(1, 3).map((g) => (
+          galeria.slice(1, 5).map((g) => (
             <figure class="vista" data-revelar="lamina">
               <Foto
                 src={g.src}
-                widths={[520, 780, 1040]}
-                sizes="(max-width: 860px) 100vw, 50vw"
+                widths={[400, 600, 800]}
+                sizes="(max-width: 860px) 50vw, 25vw"
                 alt={g.alt}
                 loading="eager"
                 fetchpriority="low"
@@ -195,7 +195,7 @@ const { centro, galeria, ambientes, consulta, metas } = d;
 
   .espacio__tira {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     border-top: 1px solid var(--filete-hoja);
   }
 
@@ -374,12 +374,16 @@ const { centro, galeria, ambientes, consulta, metas } = d;
   }
 
   @media (max-width: 860px) {
-    .espacio__tira,
+    .espacio__tira {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
     .ambientes__tira {
       grid-template-columns: minmax(0, 1fr);
     }
-    .vista + .vista {
+    .vista:nth-child(odd) {
       border-left: 0;
+    }
+    .vista:nth-child(n + 3) {
       border-top: 1px solid var(--filete-hoja);
     }
     .ambiente + .ambiente {

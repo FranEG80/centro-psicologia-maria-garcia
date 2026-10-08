@@ -1,6 +1,8 @@
 
 import centerExterior from '../assets/photo/center-exterior.webp';
 import childrenRoom from '../assets/photo/children-room.webp';
+import corridor from '../assets/photo/corridor.webp';
+import evaluation from '../assets/photo/evaluation.webp';
 import officeCalm from '../assets/photo/office-calm.webp';
 import officeDarkwood from '../assets/photo/office-darkwood.webp';
 import officeFamily from '../assets/photo/office-family.webp';
@@ -181,6 +183,16 @@ export const galeria = [
     src: waitingRoom,
     alt: 'Sala de espera tranquila, con privacidad.',
     pie: 'Sala de espera',
+  },
+  {
+    src: corridor,
+    alt: 'Pasillo del centro, con paneles de madera oscura que llevan a los despachos.',
+    pie: 'El pasillo hacia los despachos',
+  },
+  {
+    src: evaluation,
+    alt: 'Mesa de trabajo con una silla blanca, en un rincón tranquilo y luminoso del centro.',
+    pie: 'Un rincón tranquilo para trabajar',
   },
   {
     src: officeDarkwood,
