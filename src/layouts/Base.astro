@@ -6,9 +6,11 @@ import { alternas, i18n, idiomas } from '../i18n/index.js';
 interface Props {
   titulo: string;
   descripcion: string;
+  /** false: noindex y sin canonical ni alternativas (la 404). */
+  indexable?: boolean;
 }
 
-const { titulo, descripcion } = Astro.props;
+const { titulo, descripcion, indexable = true } = Astro.props;
 const { lang, t, d } = i18n(Astro);
 const { centro } = d;
 const canonica = new URL(Astro.url.pathname, Astro.site).href;
@@ -31,8 +33,10 @@ const alternativas =
 // Datos estructurados: la consulta y el sitio web. Los @id son fijos para que
 // todas las páginas (y el BreadcrumbList de Portico) apunten a la misma entidad.
 const portada = new URL('/', Astro.site).href;
+// «Psychologist» no existe en schema.org: con ese tipo Google descartaba la
+// entidad entera. MedicalBusiness es un LocalBusiness y sí cuenta como ficha.
 const consulta = {
-  '@type': 'Psychologist',
+  '@type': 'MedicalBusiness',
   '@id': `${portada}#consulta`,
   name: centro.nombre,
   description: d.metas.inicio.descripcion(centro),
@@ -40,7 +44,18 @@ const consulta = {
   image: imagenOg,
   telephone: `+34 ${centro.telefono}`,
   email: centro.email,
-  founder: { '@type': 'Person', name: centro.profesional },
+  founder: {
+    '@type': 'Person',
+    '@id': `${portada}#profesional`,
+    name: centro.profesional,
+    jobTitle: lang === 'en' ? 'Health psychologist and family mediator' : 'Psicóloga sanitaria y mediadora familiar',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: centro.coordenadas.lat,
+    longitude: centro.coordenadas.lon,
+  },
+  hasMap: centro.mapa,
   foundingDate: centro.desde,
   address: {
     '@type': 'PostalAddress',
@@ -77,7 +92,7 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />
-    <link rel="canonical" href={canonica} />
+    {indexable ? <link rel="canonical" href={canonica} /> : <meta name="robots" content="noindex" />}
     {alternativas.map((a) => <link rel="alternate" hreflang={a.idioma} href={a.href} />)}
     {
       alternativas.length > 0 && (
@@ -107,8 +122,6 @@ const jsonLd = {
     <meta name="twitter:image" content={imagenOg} />
     <meta property="og:image:alt" content={titulo} />
     <meta name="twitter:image:alt" content={titulo} />
-
-    <meta name="robots" content="noindex, nofollow" />
 
     <link
       rel="preload"

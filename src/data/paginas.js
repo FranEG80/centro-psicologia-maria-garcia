@@ -40,7 +40,7 @@ export const detallesAreas = {
     },
     imagen: {
       src: gameForms,
-      alt: 'Cubos pequeños de colores rojo, blanco y azul dispuestos sobre una superficie clara.',
+      alt: 'Piezas pequeñas de colores rojo, blanco y azul dispuestas sobre una superficie clara.',
     },
   },
 
@@ -170,7 +170,7 @@ export const metaAreas = {
   familia:
     'Terapia familiar y de pareja, separación y divorcio. Mediación familiar acreditada por la Junta de Andalucía, en Motril.',
   juridica:
-    'Acompañamiento y asesoramiento psicológico en procesos judiciales y legales en Motril, Granada.',
+    'Informes psicológicos, asesoramiento y asistencia a juicios en procesos judiciales y legales. Psicología jurídica en Motril, Granada.',
   forense:
     'Peritajes psicológicos en los ámbitos penal, civil, familiar y laboral, con informes y ratificación en juzgados. Motril, Granada.',
   neuropsicologia:
@@ -256,30 +256,43 @@ export const espacios = {
 };
 
 // Título y descripción de cada página (<title>, meta y Open Graph).
+// La búsqueda va delante («Psicóloga en Motril»): si Google corta el título,
+// pierde la marca y no lo que se busca. Descripciones por debajo de 160.
 export const metas = {
   inicio: {
-    titulo: (c) => `${c.nombre} · ${c.localidad}, ${c.provincia}`,
+    titulo: (c) => `Psicóloga en ${c.localidad} · ${c.nombre}`,
     descripcion: (c) =>
-      `Psicología general, infantil y juvenil, mediación familiar, neuropsicología, psicología jurídica y psicología forense en ${c.localidad}. ${c.profesional}, psicóloga sanitaria y mediadora familiar desde ${c.desde}.`,
+      `Psicóloga sanitaria en ${c.localidad} desde ${c.desde}: adultos, infancia y adolescencia, pareja y familia, mediación familiar, neuropsicología y psicología forense.`,
   },
   areas: {
-    titulo: (c) => `Áreas de atención · ${c.nombre}`,
+    titulo: (c) => `Áreas de atención psicológica en ${c.localidad} · ${c.nombre}`,
   },
   consulta: {
-    titulo: (c) => `El centro · ${c.nombre}`,
+    titulo: (c) => `Instalaciones en ${c.localidad} · ${c.nombre}`,
     descripcion: (c) =>
       `Espacios adaptados según la edad y las necesidades del paciente en ${c.direccion}, ${c.localidad}. Conoce las distintas zonas de trabajo del centro.`,
   },
   sobreMi: {
-    titulo: (c) => `Sobre mí · ${c.profesional}`,
+    titulo: (c) => `Sobre mí · ${c.profesional}, psicóloga en ${c.localidad}`,
     descripcion: (c) =>
       `${c.profesional}, psicóloga sanitaria y mediadora familiar en ${c.localidad} desde ${c.desde}. Especialista en Neuropsicología y Psicología Jurídica y Forense.`,
   },
   contacto: {
-    titulo: (c) => `Contacto · ${c.nombre}`,
+    titulo: (c) => `Contacto y cita · ${c.nombre}`,
     descripcion: (c) =>
-      `WhatsApp y teléfono ${c.telefono}. ${c.direccion}, ${c.cp} ${c.localidad}, ${c.provincia}.`,
+      `Pide cita con ${c.profesional}, psicóloga en ${c.localidad}. WhatsApp y teléfono ${c.telefono}. ${c.direccion}, ${c.cp} ${c.localidad} (${c.provincia}).`,
   },
+};
+
+// <title> de cada área: lo que se busca, no el nombre de la sección.
+export const titulosAreas = {
+  adultos: 'Psicología para adultos en Motril',
+  infancia: 'Psicología infantil y adolescente en Motril',
+  escolares: 'Problemas escolares, TDAH y aprendizaje en Motril',
+  familia: 'Terapia de pareja y mediación familiar en Motril',
+  neuropsicologia: 'Neuropsicología y estimulación cognitiva en Motril',
+  juridica: 'Psicología jurídica en Motril',
+  forense: 'Psicología forense y peritajes en Motril',
 };
 
 export const sobreMi = {
@@ -349,3 +362,12 @@ export const identificacion = [
       'Nº colegiada AO 05323 · Mediadora Familiar de la Junta de Andalucía nº 631 · NICA 67672',
   },
 ];
+
+// /404: la sirve el hosting para cualquier URL que no existe. Solo en español.
+export const noEncontrada = {
+  marca: 'Error 404',
+  titulo: 'Esta página no existe',
+  entradilla:
+    'Puede que el enlace esté mal escrito o que la página haya cambiado de sitio. Desde aquí puedes volver al inicio o ir a lo que buscabas.',
+  enlaces: { inicio: 'Volver al inicio', areas: 'Áreas de atención', contacto: 'Contacto' },
+};
