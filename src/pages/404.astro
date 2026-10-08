@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Portico from '../components/Portico.astro';
+import Pie from '../components/Pie.astro';
+import Boton from '../components/Boton.astro';
+import { i18n } from '../i18n/index.js';
+
+const { d, ruta } = i18n(Astro);
+const { centro, noEncontrada } = d;
+---
+
+<Base
+  titulo={`${noEncontrada.titulo} · ${centro.nombre}`}
+  descripcion={noEncontrada.entradilla}
+  indexable={false}
+>
+  <Nav />
+
+  <main id="contenido" tabindex="-1">
+    <Portico
+      marca={noEncontrada.marca}
+      titulo={noEncontrada.titulo}
+      entradilla={noEncontrada.entradilla}
+    >
+      <div class="salidas" data-revelar>
+        <Boton href={ruta('inicio')}>{noEncontrada.enlaces.inicio}</Boton>
+        <Boton href={ruta('areas')}>{noEncontrada.enlaces.areas}</Boton>
+        <Boton href={ruta('contacto')}>{noEncontrada.enlaces.contacto}</Boton>
+      </div>
+    </Portico>
+  </main>
+
+  <Pie />
+</Base>
+
+<style>
+  .salidas {
+    margin-top: var(--paso-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--paso-1);
+  }
+</style>

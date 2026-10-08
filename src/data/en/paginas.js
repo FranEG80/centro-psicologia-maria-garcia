@@ -38,7 +38,7 @@ const textosAreas = {
         'When grades don’t match the effort. When a child reads but doesn’t retain what they have read, or writes with a difficulty that doesn’t improve with practice. When the school suggests an assessment. When homework has become the daily conflict at home.',
     },
     imagen: {
-      alt: 'Small red, white and blue blocks arranged on a light surface.',
+      alt: 'Small red, white and blue pieces arranged on a light surface.',
     },
   },
 
@@ -176,7 +176,7 @@ export const metaAreas = {
   familia:
     'Family and couples therapy, separation and divorce. Family mediation accredited by the Junta de Andalucía, in Motril.',
   juridica:
-    'Psychological support and advice in judicial and legal proceedings in Motril, Granada.',
+    'Psychological reports, advice and attendance at hearings in judicial and legal proceedings. Legal psychology in Motril, Granada.',
   forense:
     'Psychological expert assessments in criminal, civil, family and employment matters, with reports and ratification in court. Motril, Granada.',
   neuropsicologia:
@@ -304,26 +304,36 @@ export const espacios = {
 
 export const metas = {
   inicio: {
-    titulo: (c) => `${c.nombre} · Psychologist in ${c.localidad}, ${c.provincia}`,
+    titulo: (c) => `Psychologist in ${c.localidad}, ${c.provincia} · ${c.nombre}`,
     descripcion: (c) =>
-      `General, child and adolescent psychology, family mediation, neuropsychology, legal psychology and forensic psychology in ${c.localidad}. ${c.profesional}, health psychologist and family mediator since ${c.desde}.`,
+      `Health psychologist in ${c.localidad} since ${c.desde}: adults, children and teens, couples and family, family mediation, neuropsychology and forensic psychology.`,
   },
   areas: {
-    titulo: (c) => `Areas of care · ${c.nombre}`,
+    titulo: (c) => `Psychology services in ${c.localidad} · ${c.nombre}`,
   },
   consulta: {
-    titulo: (c) => `The centre · ${c.nombre}`,
+    titulo: (c) => `Facilities in ${c.localidad} · ${c.nombre}`,
     descripcion: (c) =>
       `Spaces adapted to each patient’s age and needs at ${c.direccion}, ${c.localidad}. Discover the different working areas of the centre.`,
   },
   sobreMi: {
-    titulo: (c) => `About me · ${c.profesional}`,
+    titulo: (c) => `About me · ${c.profesional}, psychologist in ${c.localidad}`,
     descripcion: (c) =>
       `${c.profesional}, health psychologist and family mediator in ${c.localidad} since ${c.desde}. Specialist in Neuropsychology and Legal and Forensic Psychology.`,
   },
   contacto: {
-    titulo: (c) => `Contact · ${c.nombre}`,
+    titulo: (c) => `Contact and appointments · ${c.nombre}`,
     descripcion: (c) =>
-      `WhatsApp and phone ${c.telefono}. ${c.direccion}, ${c.cp} ${c.localidad}, ${c.provincia}.`,
+      `Book an appointment with ${c.profesional}, psychologist in ${c.localidad}. WhatsApp and phone ${c.telefono}. ${c.direccion}, ${c.cp} ${c.localidad} (${c.provincia}).`,
   },
+};
+
+export const titulosAreas = {
+  adultos: 'Psychology for adults in Motril',
+  infancia: 'Child and adolescent psychology in Motril',
+  escolares: 'School difficulties, ADHD and learning in Motril',
+  familia: 'Couples therapy and family mediation in Motril',
+  neuropsicologia: 'Neuropsychology and cognitive stimulation in Motril',
+  juridica: 'Legal psychology in Motril',
+  forense: 'Forensic psychology and expert reports in Motril',
 };

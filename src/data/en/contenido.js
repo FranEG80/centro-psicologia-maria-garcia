@@ -171,6 +171,14 @@ const textosGaleria = [
     pie: 'Waiting room',
   },
   {
+    alt: 'Corridor at the centre, lined with dark wood panels leading to the consulting rooms.',
+    pie: 'The corridor to the consulting rooms',
+  },
+  {
+    alt: 'Work desk with a white chair, in a calm, bright corner of the centre.',
+    pie: 'A quiet corner to work in',
+  },
+  {
     alt: 'The consulting room, a private space to talk things through calmly.',
     pie: 'The consulting room, a private space to talk things through calmly',
   },

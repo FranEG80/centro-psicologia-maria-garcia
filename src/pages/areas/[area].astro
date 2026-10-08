@@ -14,7 +14,7 @@ export function getStaticPaths() {
 
 const { id } = Astro.props;
 const { t, d, ruta } = i18n(Astro);
-const { centro, areas, detallesAreas, metaAreas } = d;
+const { centro, areas, detallesAreas, metaAreas, titulosAreas } = d;
 const area = areas.find((a) => a.id === id);
 const detalle = detallesAreas[id];
 
@@ -22,7 +22,7 @@ const otras = areas.filter((a) => a.id !== id);
 ---
 
 <Base
-  titulo={`${area.titulo} · ${centro.nombre}`}
+  titulo={`${titulosAreas[area.id] ?? area.titulo} · ${centro.nombre}`}
   descripcion={metaAreas[area.id]}
 >
   {/* Sin pintar hasta tener el h1: es el destino de la transición del título. */}
