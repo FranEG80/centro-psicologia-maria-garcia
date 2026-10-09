@@ -886,6 +886,10 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
   // Todo lo que antes caía en los dos primeros fotogramas: capas, subida de
   // texturas y compilación. El primer fotograma ya sale completo.
   async function preparar() {
+    // Primero se deja pintar la página (fondo provisional y marca): con la GPU
+    // ocupada compilando y subiendo texturas, el primer fotograma se retrasaba
+    // unos 350 ms y la pantalla seguía en blanco.
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
     await Promise.all([micro.listo, ...cargas]);
     for (const paso of diferidas) {
       if (!vivo) return;
