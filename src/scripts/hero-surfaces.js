@@ -1,8 +1,10 @@
 import {
-  CanvasTexture,
+  DataTexture,
   SRGBColorSpace,
   Color,
   ExtrudeGeometry,
+  LinearFilter,
+  LinearMipmapLinearFilter,
   Mesh,
   MultiplyBlending,
   PlaneGeometry,
@@ -11,6 +13,7 @@ import {
   Shape,
   Vector3,
 } from 'three';
+import { CANALES_HORMIGON, LADO_HORMIGON, generarHormigon } from './hormigon.js';
 
 export function geometriaVidrio(ancho, alto, grosor) {
   const bisel = 0.003;
@@ -54,36 +57,53 @@ export function geometriaVidrio(ancho, alto, grosor) {
   return geo;
 }
 
-export function microHormigon() {
-  const N = 1024;
-  const hacer = (semilla, canal) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = N;
-    const ctx = canvas.getContext('2d');
-    const pixels = ctx.createImageData(N, N);
-    let estado = semilla;
-    const random = () => {
-      estado = (Math.imul(estado, 1664525) + 1013904223) >>> 0;
-      return estado / 4294967296;
-    };
-    for (let i = 0; i < N * N; i++) {
-      const grano = random();
-      const poro = random() > 0.988 ? random() * 55 : 0;
-      const v = canal === 'albedo' ? 205 + grano * 36 - poro
-        : canal === 'rugosidad' ? 205 + grano * 44 : 116 + grano * 28 - poro;
-      const j = i * 4;
-      pixels.data[j] = pixels.data[j + 1] = pixels.data[j + 2] = v;
-      pixels.data[j + 3] = 255;
+// Los tres juegos de ruido (3 × 1024² píxeles) se calculan en un worker: en el
+// hilo principal eran la mayor parte de la primera tarea larga de la portada.
+// Si el worker no arranca, se calculan aquí.
+function datosHormigon() {
+  return new Promise((resolve) => {
+    const aqui = () =>
+      resolve(CANALES_HORMIGON.map(([canal, semilla]) => generarHormigon(semilla, canal)));
+    let worker;
+    try {
+      worker = new Worker(new URL('./hormigon.worker.js', import.meta.url), { type: 'module' });
+    } catch {
+      aqui();
+      return;
     }
-    ctx.putImageData(pixels, 0, 0);
-    const t = new CanvasTexture(canvas);
+    worker.onmessage = ({ data }) => {
+      worker.terminate();
+      resolve(data);
+    };
+    worker.onerror = () => {
+      worker.terminate();
+      aqui();
+    };
+    worker.postMessage(null);
+  });
+}
+
+// Las texturas se devuelven ya, vacías, para montar los materiales sin esperar;
+// `listo` se cumple cuando tienen datos. Antes no se pueden subir a la GPU.
+export function microHormigon() {
+  const capas = CANALES_HORMIGON.map(([canal]) => {
+    const t = new DataTexture(null, LADO_HORMIGON, LADO_HORMIGON);
     if (canal === 'albedo') t.colorSpace = SRGBColorSpace;
     t.wrapS = t.wrapT = RepeatWrapping;
+    t.magFilter = LinearFilter;
+    t.minFilter = LinearMipmapLinearFilter;
+    t.generateMipmaps = true;
     t.anisotropy = 8;
     return t;
-  };
-  return { albedo: hacer(5231, 'albedo'), altura: hacer(1709, 'altura'),
-           rugosidad: hacer(8213, 'rugosidad') };
+  });
+  const listo = datosHormigon().then((datos) => {
+    datos.forEach((d, i) => {
+      capas[i].image.data = new Uint8Array(d.buffer);
+      capas[i].needsUpdate = true;
+    });
+  });
+  const [albedo, altura, rugosidad] = capas;
+  return { albedo, altura, rugosidad, listo };
 }
 
 export function reflejosVidrio(laminas, direccionSol) {

@@ -96,8 +96,19 @@ const registros = [
     transition: opacity 460ms var(--ease-out);
   }
 
+  /* Mismo degradado que el primer fotograma de la escena (vista a través del
+     vidrio central), para que al aparecer el lienzo apenas cambie la imagen. */
   html.js .hero__ambiente {
-    background: #1d617d;
+    background: linear-gradient(
+      180deg,
+      #28779e 0%,
+      #28779e 40%,
+      #3a80a2 52%,
+      #4a88a9 62%,
+      #5ea2c8 68%,
+      #88b8d3 92%,
+      #96c1d7 100%
+    );
   }
 
   html.js .hero__ambiente.es-hormigon {

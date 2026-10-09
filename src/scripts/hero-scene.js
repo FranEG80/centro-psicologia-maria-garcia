@@ -27,6 +27,7 @@ import {
   TextureLoader,
   Vector2,
   Vector3,
+  WebGLRenderTarget,
   WebGLRenderer,
 } from 'three';
 import { geometriaVidrio, microHormigon, reflejosVidrio } from './hero-surfaces.js';
@@ -602,6 +603,9 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = NeutralToneMapping;
   renderer.toneMappingExposure = 1.38;
+  // Consultar los errores de cada shader obliga a esperar a que el driver
+  // termine de compilarlo: solo en desarrollo.
+  renderer.debug.checkShaderErrors = import.meta.env.DEV;
 
   const scene = new Scene();
   scene.background = new Color(0xf3eee4);
@@ -609,8 +613,17 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
 
   const cargador = new TextureLoader();
 
+  // La escena no se pinta hasta tener las imágenes (ver preparar). Un error de
+  // carga también cuenta como llegada: se pinta sin esa textura.
+  const cargas = [];
+  const cargar = (url) => {
+    let t;
+    cargas.push(new Promise((llega) => (t = cargador.load(url, llega, undefined, llega))));
+    return t;
+  };
+
   const mapa = (url, rx, ry) => {
-    const t = cargador.load(url, () => pedirFotograma());
+    const t = cargar(url);
     t.colorSpace = SRGBColorSpace;
     t.wrapS = t.wrapT = RepeatWrapping;
     t.repeat.set(rx, ry);
@@ -839,13 +852,56 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
     });
   }
 
-  let escenaListaPendiente = false;
-  function montarDiferidas() {
-    while (diferidas.length) {
-      diferidas.shift()();
+  // Devuelve el hilo al navegador entre paso y paso: cada uno va en su propia
+  // tarea en vez de sumarse todos en una sola tarea larga.
+  const ceder = () =>
+    globalThis.scheduler?.yield?.() ?? new Promise((r) => setTimeout(r, 0));
+
+  function texturasEscena() {
+    const texturas = new Set();
+    scene.traverse((o) => {
+      [o.material ?? []].flat().forEach((m) =>
+        Object.values(m).forEach((v) => {
+          if (v?.isTexture && !v.isRenderTargetTexture) texturas.add(v);
+        })
+      );
+    });
+    return texturas;
+  }
+
+  // Con KHR_parallel_shader_compile el driver compila en segundo plano y el
+  // hilo principal no espera. Dos pasadas: la del lienzo y la de un destino
+  // intermedio, que es como se pintan los opacos detrás del vidrio con
+  // transmisión (sin tone mapping y en lineal: otros programas).
+  async function compilar() {
+    const destino = new WebGLRenderTarget(1, 1);
+    renderer.setRenderTarget(destino);
+    const enDestino = renderer.compileAsync(scene, camera);
+    renderer.setRenderTarget(null);
+    await enDestino;
+    await renderer.compileAsync(scene, camera);
+    destino.dispose();
+  }
+
+  // Todo lo que antes caía en los dos primeros fotogramas: capas, subida de
+  // texturas y compilación. El primer fotograma ya sale completo.
+  async function preparar() {
+    // Primero se deja pintar la página (fondo provisional y marca): con la GPU
+    // ocupada compilando y subiendo texturas, el primer fotograma se retrasaba
+    // unos 350 ms y la pantalla seguía en blanco.
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    await Promise.all([micro.listo, ...cargas]);
+    for (const paso of diferidas) {
+      if (!vivo) return;
+      paso();
+      await ceder();
     }
-    escenaListaPendiente = true;
-    pedirFotograma();
+    for (const textura of texturasEscena()) {
+      if (!vivo) return;
+      renderer.initTexture(textura);
+      await ceder();
+    }
+    if (vivo) await compilar();
   }
 
   scene.add(new HemisphereLight(0xfffefd, 0xe4e0d8, 0.54));
@@ -860,9 +916,7 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
   const reflejos = reflejosVidrio(LAMINAS, SOL_DIR);
   scene.add(reflejos.malla);
 
-  const suciedad = cargador.load('/media/tex/glass-smudge.webp', () =>
-    pedirFotograma()
-  );
+  const suciedad = cargar('/media/tex/glass-smudge.webp');
   suciedad.wrapS = suciedad.wrapT = RepeatWrapping;
   suciedad.colorSpace = LinearSRGBColorSpace;
 
@@ -983,6 +1037,7 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
   }
 
   let ultimoT = 0;
+  let hojasEnMarcha = false;
   function girarHojas(p, t) {
     const dt = ultimoT ? Math.min(64, t - ultimoT) : 16;
     ultimoT = t;
@@ -1010,6 +1065,7 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
       h.mallas.forEach((m) => (m.rotation.y = y));
       reflejos.actualizar(i, y);
     });
+    hojasEnMarcha = hojas.some((h) => h.actual !== h.objetivo);
   }
 
   let fovArranque = FOV_INICIO;
@@ -1181,8 +1237,10 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
   function fotograma(t) {
     if (!vivo) return;
     requestAnimationFrame(fotograma);
-    if (!visible) return;
-    if (!pendiente && (movimientoReducido || !escenaPreparada)) return;
+    if (!visible || !escenaPreparada) return;
+    // Quieta (sin scroll, sin oscilación y sin hojas girando) no se repinta:
+    // el último fotograma sigue en el lienzo.
+    if (!pendiente && (movimientoReducido || (oscilacion === 0 && !hojasEnMarcha))) return;
 
     const quieta = t - ultimoMovimiento > OSCILACION_MS;
     oscilacion += ((quieta ? 0 : 1) - oscilacion) * 0.04;
@@ -1192,16 +1250,10 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
     renderer.render(scene, camera);
     pendiente = false;
 
-    if (escenaListaPendiente) {
-      escenaListaPendiente = false;
-      escenaPreparada = true;
-      alEscenaLista?.();
-    }
-
     if (primero) {
       primero = false;
       alPrimerFotograma?.();
-      montarDiferidas();
+      alEscenaLista?.();
     }
   }
 
@@ -1215,6 +1267,13 @@ export function crearEscenaVidrio({ canvas, alPrimerFotograma, alEscenaLista }) 
   io.observe(canvas);
 
   requestAnimationFrame(fotograma);
+
+  // Si algo falla al preparar, se pinta igual con lo que haya (el error sale en
+  // consola).
+  preparar().finally(() => {
+    escenaPreparada = true;
+    pendiente = true;
+  });
 
   if (import.meta.env.DEV) {
     const proyectar = (v3) => {
